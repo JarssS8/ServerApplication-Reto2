@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Entity class for rating.
+ * Entity class for rating. This entity has this fields:
  * 
  * @author Gaizka Andrés
  */
@@ -25,86 +25,71 @@ import javax.persistence.TemporalType;
 @Table(name="rating",schema="team6dbreto2")
 public class Rating implements Serializable{
    private static final long serialVersionUID=1L;
+   /**
+    * Id to indentificate the rating
+    */
    @Id
    @GeneratedValue(strategy=GenerationType.AUTO)
    private Long id;
+   /**
+    * The rating given to the document
+    */
    private int rating;
+   /**
+    * The rating given to the document
+    */
    private String review;
+   /**
+    * The date the review has been done
+    */
    private Timestamp ratingDate;
+   /**
+    * The document were the rating has been done
+    */
    private Document document;
-   
-    /**
-     * @return the id
-     */
+
     public Long getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the rating
-     */
     public int getRating() {
         return rating;
     }
 
-    /**
-     * @param rating the rating to set
-     */
     public void setRating(int rating) {
         this.rating = rating;
     }
 
-    /**
-     * @return the review
-     */
     public String getReview() {
         return review;
     }
 
-    /**
-     * @param review the review to set
-     */
     public void setReview(String review) {
         this.review = review;
     }
 
-    /**
-     * @return the ratingDate
-     */
     public Timestamp getRatingDate() {
         return ratingDate;
     }
 
-    /**
-     * @param ratingDate the ratingDate to set
-     */
     public void setRatingDate(Timestamp ratingDate) {
         this.ratingDate = ratingDate;
     }
 
-    /**
-     * @return the document
-     */
     public Document getDocument() {
         return document;
     }
 
-    /**
-     * @param document the document to set
-     */
     public void setDocument(Document document) {
         this.document = document;
     }
     /**
-     * 
-     * @return 
+     * Return an int calculated from id for the User
+     * @return an int representating the instance of this entity
      */
     @Override
     public int hashCode() {
@@ -113,9 +98,9 @@ public class Rating implements Serializable{
         return hash;
     }
     /**
-     * 
-     * @param object
-     * @return 
+     * Compares two instances of Users
+     * @param object the other User instance to compare to
+     * @return true if instances are equal
      */
     @Override
     public boolean equals(Object object) {
@@ -130,8 +115,8 @@ public class Rating implements Serializable{
         return true;
     }
     /**
-     * 
-     * @return 
+     * Obtains a String representation including id value and classes full Name
+     * @return a String of an User id
      */
     @Override
     public String toString() {

@@ -28,131 +28,107 @@ import javax.persistence.TemporalType;
 @Table(name="document",schema="team6dbreto2")
 public class Document implements Serializable{
     private static final long serialVersionUID=1L;
+    /**
+     * Id to identificate the document
+     */
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private String name;
-    private Timestamp uploadDate;
-    private int totalRating;
-    private int ratingAccount;
-    private Blob file;
-    private Set<Rating> ratings;
-    private Set<User> users;
-
     /**
-     * @return the id
+     * The name of the document
      */
+    private String name;
+    /**
+     * The date when the document has been upload
+     */
+    private Timestamp uploadDate;
+    /**
+     * The total rating of the document
+     */
+    private int totalRating;
+    /**
+     * The total of reviews the document has
+     */
+    private int ratingCount;
+    /**
+     * The file itself
+     */
+    private Blob file;
+    /**
+     * The collection of rating the document has been given
+     */
+    private Set<Rating> ratings;
+    /**
+     * The author of the document
+     */
+    private User user;
+    
     public Long getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * @return the uploadDate
-     */
     public Timestamp getUploadDate() {
         return uploadDate;
     }
 
-    /**
-     * @param uploadDate the uploadDate to set
-     */
     public void setUploadDate(Timestamp uploadDate) {
         this.uploadDate = uploadDate;
     }
 
-    /**
-     * @return the totalRating
-     */
     public int getTotalRating() {
         return totalRating;
     }
 
-    /**
-     * @param totalRating the totalRating to set
-     */
     public void setTotalRating(int totalRating) {
         this.totalRating = totalRating;
     }
 
-    /**
-     * @return the ratingAccount
-     */
     public int getRatingAccount() {
-        return ratingAccount;
+        return ratingCount;
     }
 
-    /**
-     * @param ratingAccount the ratingAccount to set
-     */
     public void setRatingAccount(int ratingAccount) {
-        this.ratingAccount = ratingAccount;
+        this.ratingCount = ratingAccount;
     }
 
-    /**
-     * @return the file
-     */
     public Blob getFile() {
         return file;
     }
 
-    /**
-     * @param file the file to set
-     */
     public void setFile(Blob file) {
         this.file = file;
     }
 
-    /**
-     * @return the ratings
-     */
     public Set<Rating> getRatings() {
         return ratings;
     }
 
-    /**
-     * @param ratings the ratings to set
-     */
     public void setRatings(Set<Rating> ratings) {
         this.ratings = ratings;
     }
 
-    /**
-     * @return the users
-     */
-    public Set<User> getUsers() {
-        return users;
+    public User getUsers() {
+        return user;
     }
 
-    /**
-     * @param users the users to set
-     */
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
     /**
-     * 
-     * @return 
+     * Return an int calculated from id for the User
+     * @return an int representating the instance of this entity
      */
     @Override
     public int hashCode() {
@@ -161,9 +137,9 @@ public class Document implements Serializable{
         return hash;
     }
     /**
-     * 
-     * @param object
-     * @return 
+     * Compares two instances of Users
+     * @param object the other User instance to compare to
+     * @return true if instances are equal
      */
     @Override
     public boolean equals(Object object) {
@@ -177,9 +153,9 @@ public class Document implements Serializable{
         }
         return true;
     }
-    /**
-     * 
-     * @return 
+     /**
+     * Obtains a String representation including id value and classes full Name
+     * @return a String of an User id
      */
     @Override
     public String toString() {
