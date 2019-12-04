@@ -5,10 +5,13 @@
  */
 package serverapplication.entities;
 
+
+
 /**
- *
- * @author aimar
+ * Privilege enumeration for the user
+ * @author Adrian
  */
-public class Privilege {
-    
+
+public enum Privilege {
+    ADMIN,FREE,PREMIUM
 }
