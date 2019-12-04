@@ -73,7 +73,7 @@ public class User implements Serializable {
      */
     private Set<Group> groups;
     
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
