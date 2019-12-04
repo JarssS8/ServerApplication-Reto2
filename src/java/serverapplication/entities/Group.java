@@ -6,7 +6,7 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * Entity of the groups of users
@@ -32,10 +31,10 @@ public class Group implements Serializable{
     private Long adminId;
     //List of users that are in the group
     @ManyToMany(mappedBy="group")
-    private Collection<User> users;
+    private Set<User> users;
     //List of documents that are uploaded by the group
     @ManyToOne
-    private Collection<Document> documents;
+    private Set<Document> documents;
     /**
      * @return the serialVersionUID
      */
@@ -102,29 +101,30 @@ public class Group implements Serializable{
     /**
      * @return the users
      */
-    public Collection<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
     /**
      * @param users the users to set
      */
-    public void setUsers(Collection<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
+    
 
     /**
      * @return the documents
      */
-    public Collection<Document> getDocuments() {
+    public Set<Document> getDocuments() {
         return documents;
     }
 
     /**
      * @param documents the documents to set
      */
-    public void setDocuments(Collection<Document> documents) {
-        this.documents = documents;
+    public void setDocuments(Set<Document> documents) {
+        this.setDocuments(documents);
     }
     
     /**
@@ -163,7 +163,5 @@ public class Group implements Serializable{
     public String toString() {
         return "serverapplication.entities.Group[ id=" + id + " ]";
     }
-    
-    
     
 }
