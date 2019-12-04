@@ -13,7 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity of the groups of users
@@ -26,21 +28,18 @@ public class Group implements Serializable{
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @NotNull
     private String name;
+    @NotNull
     private String password;
-    private Long adminId;
+    @ManyToOne
+    private User groupAdmin;
     //List of users that are in the group
     @ManyToMany(mappedBy="group")
     private Set<User> users;
     //List of documents that are uploaded by the group
-    @ManyToOne
+    @OneToMany
     private Set<Document> documents;
-    /**
-     * @return the serialVersionUID
-     */
-    public static Long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     /**
      * @return the id
@@ -87,15 +86,15 @@ public class Group implements Serializable{
     /**
      * @return the adminId
      */
-    public long getAdminId() {
-        return adminId;
+    public User getGroupAdmin() {
+        return groupAdmin;
     }
 
     /**
      * @param adminId the adminId to set
      */
-    public void setAdminId(long adminId) {
-        this.adminId = adminId;
+    public void setAdminId(User groupAdmin) {
+        this.groupAdmin = groupAdmin;
     }
 
     /**
