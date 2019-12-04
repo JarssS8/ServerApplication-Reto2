@@ -14,13 +14,17 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Extends of class User for users that are going to control the platform
+ *
  * @author Adrian
  */
 @Entity
 @Table(name = "admin", schema = "team6dbreto2")
-public class Admin extends User implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class Admin extends User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    /**
+     * A timestamp with the date of one user become admin
+     */
     private Timestamp adminDate;
 
     public Timestamp getAdminDate() {
@@ -30,9 +34,10 @@ public class Admin extends User implements Serializable{
     public void setAdminDate(Timestamp adminDate) {
         this.adminDate = adminDate;
     }
-    
+
     /**
      * Return an int calculated from id for the User
+     *
      * @return an int representating the instance of this entity
      */
     @Override
@@ -44,6 +49,7 @@ public class Admin extends User implements Serializable{
 
     /**
      * Compares two instances of Users
+     *
      * @param object the other User instance to compare to
      * @return true if instances are equal
      */
@@ -62,6 +68,7 @@ public class Admin extends User implements Serializable{
 
     /**
      * Obtains a String representation including id value and classes full Name
+     *
      * @return a String of an User id
      */
     @Override

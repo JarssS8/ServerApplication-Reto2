@@ -19,13 +19,33 @@ import javax.persistence.Table;
 public class Premium extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * Boolean true if the autorenovation is active
+     */
     private boolean autorenovation;
+    /**
+     * Timestamp with the date when the User starts being premium
+     */
     private Timestamp beginSub;
+    /**
+     * A long with the number of the user's credit card 
+     */
     private Long cardNumber;
+    /**
+     * A int with the CVC of the user's credit card
+     */
     private int cvc;
+    /**
+     * Timestamp with the date when the User should finish his premium period
+     */
     private Timestamp endSub;
+    /**
+     * A int with the month expiration of the user's credit card
+     */
     private int expirationMonth;
+    /**
+     * A int with the year expiration of the user's credit card
+     */
     private int expirationYear;
 
     public boolean isAutorenovation() {

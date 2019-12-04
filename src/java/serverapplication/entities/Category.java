@@ -25,10 +25,19 @@ import javax.validation.constraints.NotNull;
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * A long with the identifier of the category
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    /**
+     * A String with the name of the category
+     */
     private String Name;
+    /**
+     * A collection with the documents of this category
+     */
     @OneToMany(mappedBy = "category", fetch = EAGER)
     private Set<Document> documents;
 

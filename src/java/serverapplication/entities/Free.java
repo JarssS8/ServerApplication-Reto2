@@ -18,7 +18,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "free", schema = "team6dbreto2")
 public class Free extends User implements Serializable{
     private static final long serialVersionUID = 1L;
-    
+    /**
+     * A int with the count of how many time was the user on our platform
+     */
     private int timeOnline;
 
     public int getTimeOnline() {
