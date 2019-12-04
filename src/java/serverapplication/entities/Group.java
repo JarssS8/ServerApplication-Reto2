@@ -5,6 +5,7 @@
  */
 package serverapplication.entities;
 
+
 /**
  *
  * @author aimar
