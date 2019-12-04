@@ -5,10 +5,11 @@
  */
 package serverapplication.entities;
 
+
 /**
- *
- * @author aimar
+ * Status enumeration for the user
+ * @author Adrian
  */
-public class Status {
-    
+public enum Status{
+    ENABLED,DISABLED
 }
