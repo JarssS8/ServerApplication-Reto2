@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import javax.persistence.Entity;
 
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+
 
 /**
  * Extends of class User for users that are going to control the platform
