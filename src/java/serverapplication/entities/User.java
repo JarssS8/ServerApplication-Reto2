@@ -7,7 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,187 +22,150 @@ import javax.persistence.Table;
 @Table(name = "user", schema = "team6dbreto2")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+    /**
+     * The Id for the user.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String login;
-    private String email;
-    private String fullName;
-    private Status status;
-    private Privilege privilege;
-    private String password;
-    private Timestamp lastAccess;
-    private Timestamp lastPasswordChange;
-    private Collection<Rating> ratings;
-    private Collection<Document> documents;
-    private Collection<Group> groups;
-    
     /**
-     * @return the id
+     * The login value for the user.
      */
+    private String login;
+    /**
+     * The email value for the user.
+     */
+    private String email;
+    /**
+     * The full name for the user.
+     */
+    private String fullName;
+    /**
+     * The status for the users account.
+     */
+    private Status status;
+    /**
+     * The privilege for the user.
+     */
+    private Privilege privilege;
+    /**
+     * The password value for the user.
+     */
+    private String password;
+    /**
+     * The date when the user last acceded to the applicacion.
+     */
+    private Timestamp lastAccess;
+    /**
+     * The date when the user last changed password.
+     */
+    private Timestamp lastPasswordChange;
+    /**
+     * A collection with all the ratings given by the user.
+     */
+    private Set<Rating> ratings;
+    /**
+     * A collection with all the documents uploaded by the user.
+     */
+    private Set<Document> documents;
+    /**
+     * A collection with all the groups for the user.
+     */
+    private Set<Group> groups;
+    
     public long getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the login
-     */
     public String getLogin() {
         return login;
     }
 
-    /**
-     * @param login the login to set
-     */
     public void setLogin(String login) {
         this.login = login;
     }
 
-    /**
-     * @return the email
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * @param email the email to set
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * @return the fullName
-     */
     public String getFullName() {
         return fullName;
     }
 
-    /**
-     * @param fullName the fullName to set
-     */
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    /**
-     * @return the status
-     */
     public Status getStatus() {
         return status;
     }
 
-    /**
-     * @param status the status to set
-     */
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    /**
-     * @return the privilege
-     */
     public Privilege getPrivilege() {
         return privilege;
     }
 
-    /**
-     * @param privilege the privilege to set
-     */
     public void setPrivilege(Privilege privilege) {
         this.privilege = privilege;
     }
 
-    /**
-     * @return the password
-     */
     public String getPassword() {
         return password;
     }
 
-    /**
-     * @param password the password to set
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * @return the lastAccess
-     */
     public Timestamp getLastAccess() {
         return lastAccess;
     }
 
-    /**
-     * @param lastAccess the lastAccess to set
-     */
     public void setLastAccess(Timestamp lastAccess) {
         this.lastAccess = lastAccess;
     }
 
-    /**
-     * @return the lastPasswordChange
-     */
     public Timestamp getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    /**
-     * @param lastPasswordChange the lastPasswordChange to set
-     */
     public void setLastPasswordChange(Timestamp lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
-    /**
-     * @return the ratings
-     */
-    public Collection<Rating> getRatings() {
+    public Set<Rating> getRatings() {
         return ratings;
     }
 
-    /**
-     * @param ratings the ratings to set
-     */
-    public void setRatings(Collection<Rating> ratings) {
+    public void setRatings(Set<Rating> ratings) {
         this.ratings = ratings;
     }
 
-    /**
-     * @return the documents
-     */
-    public Collection<Document> getDocuments() {
+    public Set<Document> getDocuments() {
         return documents;
     }
 
-    /**
-     * @param documents the documents to set
-     */
-    public void setDocuments(Collection<Document> documents) {
+    public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }
-    
-    /**
-     * @return the groups
-     */
-    public Collection<Group> getGroups() {
+
+    public Set<Group> getGroups() {
         return groups;
     }
 
-    /**
-     * @param groups the groups to set
-     */
-    public void setGroups(Collection<Group> groups) {
+    public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
     
