@@ -5,10 +5,29 @@
  */
 package serverapplication.entities;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.Entity;
+
+import javax.persistence.Table;
+
 /**
  *
- * @author aimar
+ * @author Adrian
  */
-public class Admin {
+@Entity
+@Table(name = "admin", schema = "team6dbreto2")
+public class Admin extends User implements Serializable{
+    private static final long serialVersionUID = 1L;
+
+    private Timestamp adminDate;
+
+    public Timestamp getAdminDate() {
+        return adminDate;
+    }
+
+    public void setAdminDate(Timestamp adminDate) {
+        this.adminDate = adminDate;
+    }
     
 }
