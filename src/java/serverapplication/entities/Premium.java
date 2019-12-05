@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Extends of class User for users that access paying to our platform
@@ -22,10 +23,12 @@ public class Premium extends User implements Serializable {
     /**
      * Boolean true if the autorenovation is active
      */
+    @NotNull
     private boolean autorenovation;
     /**
      * Timestamp with the date when the User starts being premium
      */
+    @NotNull
     private Timestamp beginSub;
     /**
      * A long with the number of the user's credit card 
@@ -38,6 +41,7 @@ public class Premium extends User implements Serializable {
     /**
      * Timestamp with the date when the User should finish his premium period
      */
+    @NotNull
     private Timestamp endSub;
     /**
      * A int with the month expiration of the user's credit card

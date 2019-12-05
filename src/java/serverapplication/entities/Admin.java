@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+
 /**
  * Extends of class User for users that are going to control the platform
  *
@@ -25,6 +26,7 @@ public class Admin extends User implements Serializable {
     /**
      * A timestamp with the date of one user become admin
      */
+    @NotNull
     private Timestamp adminDate;
 
     public Timestamp getAdminDate() {

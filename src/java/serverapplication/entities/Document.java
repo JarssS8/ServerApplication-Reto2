@@ -8,20 +8,21 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Timestamp;
+
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity class for Document.
- * 
  * @author Gaizka Andrés
  */
 @Entity
@@ -37,10 +38,12 @@ public class Document implements Serializable{
     /**
      * The name of the document
      */
+    @NotNull
     private String name;
     /**
      * The date when the document has been upload
      */
+    @NotNull
     private Timestamp uploadDate;
     /**
      * The total rating of the document
@@ -53,15 +56,30 @@ public class Document implements Serializable{
     /**
      * The file itself
      */
+    @NotNull
+    @Lob
     private Blob file;
     /**
      * The collection of rating the document has been given
      */
+    @ManyToOne
+    @JoinColumn(name="id")
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
+    @OneToMany(mappedBy="document")
     private User user;
+    /**
+     * The category of the document
+     */
+    @ManyToOne
+    private Category category;
+    /**
+     * The author group of the document
+     */
+    @ManyToOne
+    private Group group;
     
     public Long getId() {
         return id;
@@ -95,11 +113,11 @@ public class Document implements Serializable{
         this.totalRating = totalRating;
     }
 
-    public int getRatingAccount() {
+    public int getRatingCount() {
         return ratingCount;
     }
 
-    public void setRatingAccount(int ratingAccount) {
+    public void setRatingCount(int ratingAccount) {
         this.ratingCount = ratingAccount;
     }
 
@@ -119,13 +137,31 @@ public class Document implements Serializable{
         this.ratings = ratings;
     }
 
-    public User getUsers() {
-        return user;
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
+    
+       public User getUser() {
+        return user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+ 
+ 
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+    
     /**
      * Return an int calculated from id for the User
      * @return an int representating the instance of this entity
@@ -161,4 +197,8 @@ public class Document implements Serializable{
     public String toString() {
         return "serverapplication.entities.Document[ id=" + id + " ]";
     }
+
+  
+
+    
 }

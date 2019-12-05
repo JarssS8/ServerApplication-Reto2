@@ -11,42 +11,49 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
- * Entity class for rating. This entity has this fields:
- * 
+ * Entity class for rating. 
  * @author Gaizka Andrés
  */
 @Entity
 @Table(name="rating",schema="team6dbreto2")
 public class Rating implements Serializable{
-   private static final long serialVersionUID=1L;
-   /**
-    * Id to indentificate the rating
-    */
-   @Id
-   @GeneratedValue(strategy=GenerationType.AUTO)
-   private Long id;
-   /**
-    * The rating given to the document
-    */
-   private int rating;
-   /**
-    * The rating given to the document
-    */
-   private String review;
-   /**
-    * The date the review has been done
-    */
-   private Timestamp ratingDate;
-   /**
-    * The document were the rating has been done
-    */
-   private Document document;
+    private static final long serialVersionUID=1L;
+    /**
+     * Id to indentificate the rating
+     */
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    /**
+     * The rating given to the document
+     */
+    @NotNull
+    private int rating;
+    /**
+     * The rating given to the document
+     */
+    private String review;
+    /**
+     * The date the review has been done
+     */
+    @NotNull
+    private Timestamp ratingDate;
+    /**
+     * The document were the rating has been done
+     */
+    @OneToMany(mappedBy="rating")
+    private Document document;
+    /**
+     * The user who rates the document
+     */
+    @ManyToOne
+    private User user;
 
     public Long getId() {
         return id;
@@ -87,6 +94,15 @@ public class Rating implements Serializable{
     public void setDocument(Document document) {
         this.document = document;
     }
+   
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     /**
      * Return an int calculated from id for the User
      * @return an int representating the instance of this entity
@@ -122,4 +138,6 @@ public class Rating implements Serializable{
     public String toString() {
         return "serverapplication.entities.Rating[ id=" + getId() + " ]";
     }
+
+    
 }
