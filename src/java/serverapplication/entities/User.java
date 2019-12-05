@@ -14,10 +14,17 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import static javax.persistence.InheritanceType.JOINED;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This class is an entity.
@@ -25,7 +32,9 @@ import javax.validation.constraints.NotNull;
  * @author aimar
  */
 @Entity
+@Inheritance(strategy=JOINED)
 @Table(name = "user", schema = "team6dbreto2")
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -88,6 +97,7 @@ public class User implements Serializable {
      * A collection with all the groups for the user.
      */
     @ManyToMany
+    @JoinTable(name = "user_group", schema = "team6dbreto2")
     private Set<Group> groups;
     /**
      * A collection with the group the user administrates.
@@ -167,6 +177,7 @@ public class User implements Serializable {
         this.lastPasswordChange = lastPasswordChange;
     }
 
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -175,6 +186,7 @@ public class User implements Serializable {
         this.ratings = ratings;
     }
 
+    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
@@ -183,6 +195,7 @@ public class User implements Serializable {
         this.documents = documents;
     }
 
+    @XmlTransient
     public Set<Group> getGroups() {
         return groups;
     }
@@ -194,6 +207,7 @@ public class User implements Serializable {
     /**
      * @return the adminGroups
      */
+    @XmlTransient
     public Set<Group> getAdminGroups() {
         return adminGroups;
     }

@@ -10,13 +10,15 @@ import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Extends of class User for users that access paying to our platform
  * @author Adrian
  */
 @Entity
-@Table(name = "status", schema = "team6dbreto2")
+@Table(name = "premium", schema = "team6dbreto2")
+@XmlRootElement
 public class Premium extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;

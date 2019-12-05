@@ -96,7 +96,7 @@ public class Group implements Serializable{
     /**
      * @param adminId the adminId to set
      */
-    public void setAdminId(User groupAdmin) {
+    public void setGroupAdmin(User groupAdmin) {
         this.groupAdmin = groupAdmin;
     }
 

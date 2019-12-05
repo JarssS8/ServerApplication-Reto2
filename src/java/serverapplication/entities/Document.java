@@ -21,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity class for Document.
@@ -28,6 +30,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="document",schema="team6dbreto2")
+@XmlRootElement
 public class Document implements Serializable{
     private static final long serialVersionUID=1L;
     /**
@@ -62,13 +65,12 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @ManyToOne
-    @JoinColumn(name="id")
+    @OneToMany(mappedBy="document")
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
-    @OneToMany(mappedBy="document")
+    @ManyToOne
     private User user;
     /**
      * The category of the document
@@ -129,6 +131,7 @@ public class Document implements Serializable{
         this.file = file;
     }
 
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -141,6 +144,7 @@ public class Document implements Serializable{
         this.user = user;
     }
     
+    @XmlTransient
        public User getUser() {
         return user;
     }

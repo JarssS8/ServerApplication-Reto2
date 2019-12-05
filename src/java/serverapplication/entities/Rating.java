@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity class for rating. 
@@ -22,6 +24,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="rating",schema="team6dbreto2")
+@XmlRootElement
 public class Rating implements Serializable{
     private static final long serialVersionUID=1L;
     /**
@@ -47,7 +50,7 @@ public class Rating implements Serializable{
     /**
      * The document were the rating has been done
      */
-    @OneToMany(mappedBy="rating")
+    @ManyToOne
     private Document document;
     /**
      * The user who rates the document
@@ -87,6 +90,7 @@ public class Rating implements Serializable{
         this.ratingDate = ratingDate;
     }
 
+    @XmlTransient
     public Document getDocument() {
         return document;
     }

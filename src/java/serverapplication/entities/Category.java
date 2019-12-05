@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Class category, with the different categories for our application. Every document must have a category
@@ -22,6 +24,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "category", schema = "team6dbreto2")
+@XmlRootElement
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +61,7 @@ public class Category implements Serializable {
         this.Name = Name;
     }
 
+    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
