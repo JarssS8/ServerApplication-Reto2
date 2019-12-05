@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -56,6 +57,7 @@ public class Document implements Serializable{
      * The file itself
      */
     @NotNull
+    @Lob
     private Blob file;
     /**
      * The collection of rating the document has been given
