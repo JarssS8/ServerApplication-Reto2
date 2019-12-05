@@ -34,6 +34,7 @@ public class Category implements Serializable {
     /**
      * A String with the name of the category
      */
+    @NotNull
     private String Name;
     /**
      * A collection with the documents of this category

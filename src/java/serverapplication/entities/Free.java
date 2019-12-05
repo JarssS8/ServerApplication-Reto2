@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+
 /**
  * Extends of class User for users that access free to our platform
  * @author Adrian
@@ -21,6 +22,7 @@ public class Free extends User implements Serializable{
     /**
      * A int with the count of how many time was the user on our platform
      */
+    @NotNull
     private int timeOnline;
 
     public int getTimeOnline() {
