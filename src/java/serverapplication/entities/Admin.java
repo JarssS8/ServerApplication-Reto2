@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import javax.persistence.Entity;
 
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -25,6 +26,7 @@ public class Admin extends User implements Serializable {
     /**
      * A timestamp with the date of one user become admin
      */
+    @NotNull
     private Timestamp adminDate;
 
     public Timestamp getAdminDate() {

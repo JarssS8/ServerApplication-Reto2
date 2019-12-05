@@ -8,6 +8,7 @@ package serverapplication.entities;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -21,6 +22,7 @@ public class Free extends User implements Serializable{
     /**
      * A int with the count of how many time was the user on our platform
      */
+    @NotNull
     private int timeOnline;
 
     public int getTimeOnline() {

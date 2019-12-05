@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Class category, with the different categories for our application. Every document must have a category
@@ -33,6 +34,7 @@ public class Category implements Serializable {
     /**
      * A String with the name of the category
      */
+    @NotNull
     private String Name;
     /**
      * A collection with the documents of this category
