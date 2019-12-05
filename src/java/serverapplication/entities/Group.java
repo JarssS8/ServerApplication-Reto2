@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity of the groups of users
@@ -23,6 +25,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="group",schema="team6dbreto2")
+@XmlRootElement
 public class Group implements Serializable{
     private static final long serialVersionUID= 1L;
     @Id
@@ -35,10 +38,10 @@ public class Group implements Serializable{
     @ManyToOne
     private User groupAdmin;
     //List of users that are in the group
-    @ManyToMany(mappedBy="group")
+    @ManyToMany(mappedBy="groups")
     private Set<User> users;
     //List of documents that are uploaded by the group
-    @OneToMany
+    @OneToMany(mappedBy="group")
     private Set<Document> documents;
 
     /**
@@ -100,6 +103,7 @@ public class Group implements Serializable{
     /**
      * @return the users
      */
+    @XmlTransient
     public Set<User> getUsers() {
         return users;
     }
@@ -115,6 +119,7 @@ public class Group implements Serializable{
     /**
      * @return the documents
      */
+    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
