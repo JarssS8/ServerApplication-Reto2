@@ -9,18 +9,25 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * This class is an entity.
+ *
  * @author aimar
  */
 @Entity
 @Table(name = "user", schema = "team6dbreto2")
 public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
     /**
      * The Id for the user.
@@ -31,10 +38,12 @@ public class User implements Serializable {
     /**
      * The login value for the user.
      */
+    @NotNull
     private String login;
     /**
      * The email value for the user.
      */
+    @NotNull
     private String email;
     /**
      * The full name for the user.
@@ -43,14 +52,19 @@ public class User implements Serializable {
     /**
      * The status for the users account.
      */
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
      * The privilege for the user.
      */
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
     private Privilege privilege;
     /**
      * The password value for the user.
      */
+    @NotNull
     private String password;
     /**
      * The date when the user last acceded to the applicacion.
@@ -63,16 +77,24 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
+    @OneToMany(mappedBy="user")
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
      */
+    @OneToMany(mappedBy="user")
     private Set<Document> documents;
     /**
      * A collection with all the groups for the user.
      */
+    @ManyToMany
     private Set<Group> groups;
-    
+    /**
+     * A collection with the group the user administrates.
+     */
+    @OneToMany(mappedBy="groupAdmin")
+    private Set<Group> adminGroups;
+
     public Long getId() {
         return id;
     }
@@ -168,8 +190,22 @@ public class User implements Serializable {
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
-    
-     @Override
+
+    /**
+     * @return the adminGroups
+     */
+    public Set<Group> getAdminGroups() {
+        return adminGroups;
+    }
+
+    /**
+     * @param adminGroups the adminGroups to set
+     */
+    public void setAdminGroups(Set<Group> adminGroups) {
+        this.adminGroups = adminGroups;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -193,5 +229,5 @@ public class User implements Serializable {
     public String toString() {
         return "serverapplication.entities.User[ id=" + id + " ]";
     }
-    
+
 }
