@@ -9,11 +9,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -52,13 +53,13 @@ public class User implements Serializable {
      * The status for the users account.
      */
     @NotNull
-    @ManyToOne
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
      * The privilege for the user.
      */
     @NotNull
-    @ManyToOne
+    @Enumerated(EnumType.ORDINAL)
     private Privilege privilege;
     /**
      * The password value for the user.
@@ -76,12 +77,12 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany
+    @OneToMany(mappedBy="user")
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
      */
-    @OneToMany
+    @OneToMany(mappedBy="user")
     private Set<Document> documents;
     /**
      * A collection with all the groups for the user.
@@ -91,7 +92,7 @@ public class User implements Serializable {
     /**
      * A collection with the group the user administrates.
      */
-    @OneToMany
+    @OneToMany(mappedBy="groupAdmin")
     private Set<Group> adminGroups;
 
     public Long getId() {
