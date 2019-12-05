@@ -10,6 +10,7 @@ import java.sql.Blob;
 import java.sql.Timestamp;
 
 import java.util.Set;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,9 +33,8 @@ public class Document implements Serializable{
     /**
      * Id to identificate the document
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    @EmbeddedId
+    private RatingId id;
     /**
      * The name of the document
      */
@@ -81,11 +81,11 @@ public class Document implements Serializable{
     @ManyToOne
     private Group group;
     
-    public Long getId() {
+    public RatingId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(RatingId id) {
         this.id = id;
     }
 
