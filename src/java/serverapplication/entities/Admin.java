@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "admin", schema = "team6dbreto2")
+@XmlRootElement
 public class Admin extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
