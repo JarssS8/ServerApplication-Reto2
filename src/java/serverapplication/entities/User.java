@@ -7,6 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -78,11 +79,13 @@ public class User implements Serializable {
     /**
      * The date when the user last acceded to the applicacion.
      */
-    private Timestamp lastAccess;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastAccess;
     /**
      * The date when the user last changed password.
      */
-    private Timestamp lastPasswordChange;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastPasswordChange;
     /**
      * A collection with all the ratings given by the user.
      */
@@ -161,19 +164,19 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 

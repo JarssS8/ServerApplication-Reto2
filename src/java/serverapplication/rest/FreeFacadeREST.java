@@ -22,7 +22,7 @@ import serverapplication.entities.Free;
 
 /**
  *
- * @author aimar
+ * @author Adrian
  */
 @Stateless
 @Path("serverapplication.entities.free")

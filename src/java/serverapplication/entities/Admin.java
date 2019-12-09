@@ -7,9 +7,12 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Entity;
 
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,13 +32,14 @@ public class Admin extends User implements Serializable {
      * A timestamp with the date of one user become admin
      */
     @NotNull
-    private Timestamp adminDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date adminDate;
 
-    public Timestamp getAdminDate() {
+    public Date getAdminDate() {
         return adminDate;
     }
 
-    public void setAdminDate(Timestamp adminDate) {
+    public void setAdminDate(Date adminDate) {
         this.adminDate = adminDate;
     }
 

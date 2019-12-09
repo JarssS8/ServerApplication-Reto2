@@ -7,8 +7,11 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,7 +34,7 @@ public class Premium extends User implements Serializable {
      * Timestamp with the date when the User starts being premium
      */
     @NotNull
-    private Timestamp beginSub;
+    private Date beginSub;
     /**
      * A long with the number of the user's credit card 
      */
@@ -62,11 +65,12 @@ public class Premium extends User implements Serializable {
         this.autorenovation = autorenovation;
     }
 
-    public Timestamp getBeginSub() {
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getBeginSub() {
         return beginSub;
     }
 
-    public void setBeginSub(Timestamp beginSub) {
+    public void setBeginSub(Date beginSub) {
         this.beginSub = beginSub;
     }
 

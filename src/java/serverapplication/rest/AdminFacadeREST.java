@@ -22,7 +22,7 @@ import serverapplication.entities.Admin;
 
 /**
  *
- * @author aimar
+ * @author Adrian
  */
 @Stateless
 @Path("serverapplication.entities.admin")

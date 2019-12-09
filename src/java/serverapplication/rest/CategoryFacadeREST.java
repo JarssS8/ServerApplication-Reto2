@@ -22,7 +22,7 @@ import serverapplication.entities.Category;
 
 /**
  *
- * @author aimar
+ * @author Adrian
  */
 @Stateless
 @Path("serverapplication.entities.category")
