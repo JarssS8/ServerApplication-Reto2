@@ -22,7 +22,7 @@ import serverapplication.entities.Rating;
 
 /**
  *
- * @author aimar
+ * @author Adrian
  */
 @Stateless
 @Path("serverapplication.entities.rating")

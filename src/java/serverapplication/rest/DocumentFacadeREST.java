@@ -24,7 +24,7 @@ import serverapplication.entities.RatingId;
 
 /**
  *
- * @author aimar
+ * @author Adrian
  */
 @Stateless
 @Path("serverapplication.entities.document")

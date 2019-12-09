@@ -39,7 +39,7 @@ public class Admin extends User implements Serializable {
         return adminDate;
     }
 
-    public void setAdminDate(Timestamp adminDate) {
+    public void setAdminDate(Date adminDate) {
         this.adminDate = adminDate;
     }
 
