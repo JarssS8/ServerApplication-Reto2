@@ -12,6 +12,8 @@ import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -19,9 +21,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Class category, with the different categories for our application. Every document must have a category
+ * Class category, with the different categories for our application. Every
+ * document must have a category
+ *
  * @author Adrian
  */
+@NamedQueries({
+    @NamedQuery(
+        name="findCategoryByName",
+        query="SELECT c FROM Category c WHERE c.name=:name"),
+    @NamedQuery(
+        name="findAllCategories",
+        query="SELECT c FROM Category c ORDER BY c.name")
+})
 @Entity
 @Table(name = "category", schema = "team6dbreto2")
 @XmlRootElement
@@ -69,9 +81,10 @@ public class Category implements Serializable {
     public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }
-    
+
     /**
      * Return an int calculated from id for the Category
+     *
      * @return an int representating the instance of this entity
      */
     @Override
@@ -83,6 +96,7 @@ public class Category implements Serializable {
 
     /**
      * Compares two instances of Category
+     *
      * @param object the other Category instance to compare to
      * @return true if instances are equal
      */
@@ -98,8 +112,10 @@ public class Category implements Serializable {
         }
         return true;
     }
+
     /**
      * Obtains a String representation including id value and classes full Name
+     *
      * @return a String of an User id
      */
     @Override
