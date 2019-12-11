@@ -6,7 +6,8 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.sql.Blob;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +19,8 @@ import javax.persistence.Inheritance;
 import static javax.persistence.InheritanceType.JOINED;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,6 +28,18 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+@NamedQueries({
+        @NamedQuery(
+            name="findAllUsers",
+            query="SELECT u FROM user u ORDER BY u.id DESC"
+        ),
+        @NamedQuery(
+            name="findUserByName",
+            query="SELECT u FROM user u WHERE u.name = :name"
+        )
+})
+
 
 /**
  * This class is an entity.
@@ -65,6 +80,10 @@ public class User implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
+     * The profile picture for the user.
+     */
+    private Blob profilePicture;
+    /**
      * The privilege for the user.
      */
     @NotNull
@@ -78,11 +97,13 @@ public class User implements Serializable {
     /**
      * The date when the user last acceded to the applicacion.
      */
-    private Timestamp lastAccess;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastAccess;
     /**
      * The date when the user last changed password.
      */
-    private Timestamp lastPasswordChange;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastPasswordChange;
     /**
      * A collection with all the ratings given by the user.
      */
@@ -144,7 +165,15 @@ public class User implements Serializable {
     public void setStatus(Status status) {
         this.status = status;
     }
+ 
+    public Blob getProfilePicture() {
+        return profilePicture;
+    }
 
+    public void setProfilePicture(Blob profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+    
     public Privilege getPrivilege() {
         return privilege;
     }
@@ -161,19 +190,19 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 

@@ -5,10 +5,10 @@
  */
 package serverapplication.rest;
 
+import serverapplication.interfaces.EJBUserLocal;
 import java.util.List;
-import javax.ejb.Stateless;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,42 +24,34 @@ import serverapplication.entities.User;
  *
  * @author aimar
  */
-@Stateless
-@Path("serverapplication.entities.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+@Path("user")
+public class UserFacadeREST {
 
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
-
-    public UserFacadeREST() {
-        super(User.class);
-    }
+    @EJB
+    private EJBUserLocal ejb;
 
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
-        super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void create(User user) {
+        ejb.createUser(user);
     }
 
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, User entity) {
-        super.edit(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void modifyUserData(User user) {
+        ejb.modifyUserData(user);
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
+    public void deleteUser(User user) {
+        ejb.deleteUser(user);
     }
 
     @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Long id) {
-        return super.find(id);
+    @Path("{name}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User findUserByName(String name) {
+        return ejb.findUserByName(name);
     }
 
     @GET
@@ -87,5 +79,5 @@ public class UserFacadeREST extends AbstractFacade<User> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
