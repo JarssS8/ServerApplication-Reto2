@@ -5,7 +5,10 @@
  */
 package serverapplication.rest;
 
+import serverapplication.interfaces.EJBDocumentRatingLocal;
+import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,15 +27,11 @@ import serverapplication.entities.RatingId;
 
 /**
  *
- * @author Adrian
+ * @author Gaizka Andrés
  */
-@Stateless
-@Path("serverapplication.entities.document")
-public class DocumentFacadeREST extends AbstractFacade<Document> {
-
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
-
+@Path("document")
+public class DocumentFacadeREST{
+    
     private RatingId getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
@@ -53,47 +52,43 @@ public class DocumentFacadeREST extends AbstractFacade<Document> {
         }
         return key;
     }
-
-    public DocumentFacadeREST() {
-        super(Document.class);
-    }
-
+    
+    @EJB
+    private EJBDocumentRatingLocal ejb;
+    
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Document entity) {
-        super.create(entity);
+    public void create(Document document) {
+        ejb.createDocument(document);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, Document entity) {
-        super.edit(entity);
+    public void edit(Document document) {
+        ejb.createDocument(document);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) {
-        serverapplication.entities.RatingId key = getPrimaryKey(id);
-        super.remove(super.find(key));
+    public void remove(Document document) {
+        ejb.removeDocument(document);
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Document find(@PathParam("id") PathSegment id) {
-        serverapplication.entities.RatingId key = getPrimaryKey(id);
-        return super.find(key);
+    public Document findDocument(@PathParam("id") Long id) {
+        return ejb.findDocument(id);
     }
-
+    
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Document> findAll() {
-        return super.findAll();
+        return ejb.findAll();
     }
-
+    
+    /*
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -107,10 +102,48 @@ public class DocumentFacadeREST extends AbstractFacade<Document> {
     public String countREST() {
         return String.valueOf(super.count());
     }
+    */
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+    @GET
+    @Path("DocumentByName")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByName(@PathParam("name") String name){
+        return ejb.findDocumentByName(name);
+    }
+    
+    @GET
+    @Path("DocumentByCategory")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByCategory(@PathParam("category") String category){
+        return ejb.findDocumentByCategory(category);
+    }
+    
+    @GET
+    @Path("DocumentByDate")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByDate(@PathParam("uploadDate") Date uploadDate){
+        return ejb.findDocumentByDate(uploadDate);
+    }
+    
+    @GET
+    @Path("DocumentByNameAndCategory")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByNameAndCategory(@PathParam("name") String name, @PathParam("category") String category){
+        return ejb.findDocumentByNameAndCategory(name,category);
+    }
+    
+    @GET
+    @Path("DocumentByNameAndDate")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByNameAndDate(@PathParam("name") String name, @PathParam("uploadDate") Date uploadDate){
+        return ejb.findDocumentByNameAndDate(name,uploadDate);
+    }
+    
+    @GET
+    @Path("DocumentByCategoryAndDate")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentByCategoryAndDate(@PathParam("category") String category, @PathParam("uploadDate") Date uploadDate){
+        return ejb.findDocumentByCategoryAndDate(category,uploadDate);
     }
     
 }

@@ -8,21 +8,45 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Timestamp;
-
 import java.util.Set;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+@NamedQueries({
+    @NamedQuery(
+        name="findDocumentByName",
+        query="SELECT d FROM Document d WHERE d.name = :name"),
+    
+    @NamedQuery(
+        name="findDocumentByCategory",
+        query="SELECT d FROM Document d WHERE d category = :category"),
+    
+    @NamedQuery(
+        name="findDocumentByDate",
+        query="SELECT d FROM Document d WHERE d.uploadDate = :uploadDate"),
+    
+    @NamedQuery(
+        name="findDocumentByNameAndCategory",
+        query="SELECT d FROM Document d WHERE d.name = :name AND d.category = :category"),
+    
+    @NamedQuery(
+        name="findDocumentByNameAndDate",
+        query="SELECT d FROM Document d WHERE d.name = :name AND d.uploadDate = :uploadDate"),
+    
+    @NamedQuery(
+        name="findDocumentByCategoryAndDate",
+        query="SELECT d FROM Document d WHERE d.category = :category AND d.uploadDate = :uploadDate"),
+    
+})
 
 /**
  * Entity class for Document.
@@ -37,6 +61,7 @@ public class Document implements Serializable{
      * Id to identificate the document
      */
     @EmbeddedId
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private RatingId id;
     /**
      * The name of the document
