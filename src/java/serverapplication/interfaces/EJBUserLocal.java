@@ -6,6 +6,9 @@
 package serverapplication.interfaces;
 
 import java.util.List;
+import serverapplication.entities.Admin;
+import serverapplication.entities.Free;
+import serverapplication.entities.Premium;
 import serverapplication.entities.User;
 
 /**
@@ -15,13 +18,16 @@ import serverapplication.entities.User;
 public interface EJBUserLocal {
 
     public void createUser(User user);
-
     public void modifyUserData(User user);
-
     public void deleteUser(User user);
-
-    public User findUserByName(String name);
-
+    public User findUserByLogin(String login);
     public List<User> findAllUsers();
+    public void banUser(User user);
+    public Premium modifyFreeToPremium(Free free);
+    public Free modifyPremiumToFree(Premium premium);
+    public Free modifyAdminToFree(Admin admin);
+    public User logIn(User user);
+    public User signUp(User user);
+    public void logOut();
 
 }

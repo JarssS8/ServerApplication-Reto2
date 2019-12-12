@@ -6,7 +6,6 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -31,12 +30,20 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
         @NamedQuery(
-            name="findAllUsers",
-            query="SELECT u FROM user u ORDER BY u.id DESC"
+            name="findIfLoginExists",
+            query="SELECT u FROM user u WHERE u.login = :login"
         ),
         @NamedQuery(
-            name="findUserByName",
-            query="SELECT u FROM user u WHERE u.name = :name"
+            name="findIfPasswordExists",
+            query="SELECT u FROM user u WHERE u.login = (SELECT u FROM user u WHERE u.login = :login) AND u.password = :password"
+        ),
+        @NamedQuery(
+            name="findAllUsers",
+            query="SELECT u FROM user u ORDER BY u.id ASC"
+        ),
+        @NamedQuery(
+            name="findUserByLogin",
+            query="SELECT u FROM user u WHERE u.login = :login"
         )
 })
 
@@ -80,10 +87,6 @@ public class User implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
-     * The profile picture for the user.
-     */
-    private Blob profilePicture;
-    /**
      * The privilege for the user.
      */
     @NotNull
@@ -94,6 +97,10 @@ public class User implements Serializable {
      */
     @NotNull
     private String password;
+    /**
+     * The profile picture for the user.
+     */
+    private Byte[] profilePicture;
     /**
      * The date when the user last acceded to the applicacion.
      */
@@ -166,11 +173,11 @@ public class User implements Serializable {
         this.status = status;
     }
  
-    public Blob getProfilePicture() {
+    public Byte[] getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(Blob profilePicture) {
+    public void setProfilePicture(Byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
     

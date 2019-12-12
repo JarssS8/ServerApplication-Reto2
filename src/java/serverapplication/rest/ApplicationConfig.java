@@ -35,8 +35,8 @@ public class ApplicationConfig extends Application {
         resources.add(serverapplication.rest.FreeFacadeREST.class);
         resources.add(serverapplication.rest.GroupFacadeREST.class);
         resources.add(serverapplication.rest.PremiumFacadeREST.class);
+        resources.add(serverapplication.rest.RESTUser.class);
         resources.add(serverapplication.rest.RatingFacadeREST.class);
-        resources.add(serverapplication.rest.UserFacadeREST.class);
     }
     
 }
