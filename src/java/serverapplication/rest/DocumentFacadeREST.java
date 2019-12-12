@@ -8,10 +8,9 @@ package serverapplication.rest;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import serverapplication.entities.Document;
 import serverapplication.entities.RatingId;
+import serverapplication.exceptions.documentNotFoundException;
 
 /**
  *
@@ -31,7 +31,7 @@ import serverapplication.entities.RatingId;
  */
 @Path("document")
 public class DocumentFacadeREST{
-    
+    private static final Logger LOGGER = Logger.getLogger("rest");
     private RatingId getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
@@ -53,97 +53,213 @@ public class DocumentFacadeREST{
         return key;
     }
     
+    /**
+     * Injection of the ejb
+     */
     @EJB
     private EJBDocumentRatingLocal ejb;
     
+    /**
+     * Method who use the ejb to create a Document 
+     * @param document the document will be created
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Document document) {
-        ejb.createDocument(document);
+    public void newDocument(Document document) {
+        ejb.newDocument(document);
     }
-
+    
+    /**
+     * Method who use the ejb to modify a document
+     * @param document the document will be modified
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(Document document) {
-        ejb.createDocument(document);
+    public void modifyDocument(Document document) {
+        try {
+            ejb.modifyDocument(document);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
     }
-
+    
+    /**
+     * Method who use the ejb to delete a document
+     * @param document the document will be deleted
+     */
     @DELETE
     @Path("{id}")
-    public void remove(Document document) {
-        ejb.removeDocument(document);
+    public void deleteDocument(Document document) {
+        try {
+            ejb.deleteDocument(document);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
     }
-
+    
+    /**
+     * Method who use the ejb to search all the documents
+     * @return All the documents list
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Document> findAllDocuments() {
+        List<Document> documents = null;
+        try {
+            documents = ejb.findAllDocuments();
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
+        
+    }
+    
+    /**
+     * Method who use the ejb to search a document by his id
+     * @param id the id to search by
+     * @return the document with the specified id
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Document findDocument(@PathParam("id") Long id) {
-        return ejb.findDocument(id);
+        Document document = null;
+        try {
+            document = ejb.findDocumentById(id);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return document;
     }
     
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Document> findAll() {
-        return ejb.findAll();
-    }
-    
-    /*
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Document> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-    */
-
+    /**
+     * Method who use the ejb to search a specific document by his name.
+     * @param name the name of the document
+     * @return The document with the specified name
+     */
     @GET
     @Path("DocumentByName")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByName(@PathParam("name") String name){
-        return ejb.findDocumentByName(name);
+    public List<String> findDocumentByName(@PathParam("name") String name){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByName(name);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
+    /**
+     * Method who use the ejb to search the names of documents by a name
+     * @param name the name to search by
+     * @return A documents names list who contains the send name.
+     */
+    @GET
+    @Path("DocumentByName")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<String> findDocumentNameByName(@PathParam("name") String name){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByName(name);
+        } catch (documentNotFoundException ex) {
+           LOGGER.severe(ex.getMessage());
+        }
+        return documents;
+    }
+    
+    /**
+     * Method who use the ejb to search the names of documents by a category
+     * @param category the category to search by
+     * @return A documents names list who contains the send category.
+     */
     @GET
     @Path("DocumentByCategory")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByCategory(@PathParam("category") String category){
-        return ejb.findDocumentByCategory(category);
+    public List<String> findDocumentNameByCategory(@PathParam("category") String category){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByCategory(category);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
+    /**
+     * Method who use the ejb to search the names of documents by a date
+     * @param uploadDate the date to search by
+     * @return A documents names list who contains the send date.
+     */
     @GET
     @Path("DocumentByDate")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByDate(@PathParam("uploadDate") Date uploadDate){
-        return ejb.findDocumentByDate(uploadDate);
+    public List<String> findDocumentNameByDate(@PathParam("uploadDate") Date uploadDate){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByDate(uploadDate);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
+    /**
+     * Method who use the ejb to search the names of documents by a name and category.
+     * @param name the name to search by
+     * @param category the category to search by
+     * @return A documents names list who contains the send name and category.
+     */
     @GET
     @Path("DocumentByNameAndCategory")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByNameAndCategory(@PathParam("name") String name, @PathParam("category") String category){
-        return ejb.findDocumentByNameAndCategory(name,category);
+    public List<String> findDocumentNameByNameAndCategory(@PathParam("name") String name, @PathParam("category") String category){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByNameAndCategory(name,category);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
+    /**
+     * Method who use the ejb to search the names of documents by a name and date.
+     * @param name the name to search by
+     * @param uploadDate the date to search by
+     * @return A documents names list who contains the send name and date.
+     */
     @GET
     @Path("DocumentByNameAndDate")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByNameAndDate(@PathParam("name") String name, @PathParam("uploadDate") Date uploadDate){
-        return ejb.findDocumentByNameAndDate(name,uploadDate);
+    public List<String> findDocumentNameByNameAndDate(@PathParam("name") String name, @PathParam("uploadDate") Date uploadDate){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByNameAndDate(name,uploadDate);
+        } catch (documentNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
+    /**
+     * Method who use the ejb to search the names of documents by a category and date.
+     * @param category category the category to search by
+     * @param uploadDate the date to search by
+     * @return A documents names list who contains the send category and date.
+     */
     @GET
     @Path("DocumentByCategoryAndDate")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentByCategoryAndDate(@PathParam("category") String category, @PathParam("uploadDate") Date uploadDate){
-        return ejb.findDocumentByCategoryAndDate(category,uploadDate);
+    public List<String> findDocumentNameByCategoryAndDate(@PathParam("category") String category, @PathParam("uploadDate") Date uploadDate){
+        List<String> documents = null;
+        try {
+            documents = ejb.findDocumentNameByCategoryAndDate(category,uploadDate);
+        } catch (documentNotFoundException ex) {
+           LOGGER.severe(ex.getMessage());
+        }
+        return documents;
     }
     
 }

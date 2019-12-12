@@ -23,28 +23,34 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
     @NamedQuery(
+        name="findAllDocuments",
+        query="SELECT d FROM Document d ORDER BY d.id ASC"),
+     @NamedQuery(
         name="findDocumentByName",
         query="SELECT d FROM Document d WHERE d.name = :name"),
     
     @NamedQuery(
-        name="findDocumentByCategory",
-        query="SELECT d FROM Document d WHERE d category = :category"),
+        name="findDocumentNameByName",
+        query="SELECT d.name FROM Document d WHERE d.name = :name"),
+    @NamedQuery(
+        name="findDocumentNameByCategory",
+        query="SELECT d.name FROM Document d WHERE d.category = :category"),
     
     @NamedQuery(
-        name="findDocumentByDate",
-        query="SELECT d FROM Document d WHERE d.uploadDate = :uploadDate"),
+        name="findDocumentNameByDate",
+        query="SELECT d.name FROM Document d WHERE d.uploadDate = :uploadDate"),
     
     @NamedQuery(
-        name="findDocumentByNameAndCategory",
-        query="SELECT d FROM Document d WHERE d.name = :name AND d.category = :category"),
+        name="findDocumentNameByNameAndCategory",
+        query="SELECT d.name FROM Document d WHERE d.name = :name AND d.category = :category"),
     
     @NamedQuery(
-        name="findDocumentByNameAndDate",
-        query="SELECT d FROM Document d WHERE d.name = :name AND d.uploadDate = :uploadDate"),
+        name="findDocumentNameByNameAndDate",
+        query="SELECT d.name FROM Document d WHERE d.name = :name AND d.uploadDate = :uploadDate"),
     
     @NamedQuery(
-        name="findDocumentByCategoryAndDate",
-        query="SELECT d FROM Document d WHERE d.category = :category AND d.uploadDate = :uploadDate"),
+        name="findDocumentNameByCategoryAndDate",
+        query="SELECT d.name FROM Document d WHERE d.category = :category AND d.uploadDate = :uploadDate"),
     
 })
 
@@ -86,7 +92,7 @@ public class Document implements Serializable{
      */
     @NotNull
     @Lob
-    private Blob file;
+    private Byte[] file;
     /**
      * The collection of rating the document has been given
      */
@@ -148,11 +154,11 @@ public class Document implements Serializable{
         this.ratingCount = ratingAccount;
     }
 
-    public Blob getFile() {
+    public Byte[] getFile() {
         return file;
     }
 
-    public void setFile(Blob file) {
+    public void setFile(Byte[] file) {
         this.file = file;
     }
 

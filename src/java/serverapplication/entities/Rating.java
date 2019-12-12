@@ -7,16 +7,21 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
+@NamedQueries({
+    @NamedQuery(
+        name="findAllRating",
+        query="SELECT r FROM Rating r ORDER BY r.id ASC"),
+})
 /**
  * Entity class for rating. 
  * @author Gaizka Andrés
@@ -30,8 +35,8 @@ public class Rating implements Serializable{
      * Id to indentificate the rating
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    @EmbeddedId
+    private RatingId id;
     /**
      * The rating given to the document
      */
@@ -57,11 +62,11 @@ public class Rating implements Serializable{
     @ManyToOne
     private User user;
 
-    public Long getId() {
+    public RatingId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(RatingId id) {
         this.id = id;
     }
 

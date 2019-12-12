@@ -10,6 +10,8 @@ import java.util.List;
 import javax.ejb.Local;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.exceptions.documentNotFoundException;
+import serverapplication.exceptions.ratingNotFoundException;
 
 /**
  *
@@ -20,43 +22,40 @@ public interface EJBDocumentRatingLocal {
     
     //----------------------Document-----------------------------
     
-    public void createDocument(Document document);
+    public void newDocument(Document document);
 
-    public void editDocument(Document document);
+    public void modifyDocument(Document document) throws documentNotFoundException;
     
-    public void removeDocument(Document document);
+    public void deleteDocument(Document document) throws documentNotFoundException;
     
-    public Document findDocument(Long id);
+    public Document findDocumentById(Long id) throws documentNotFoundException;
+    
+    public List<Document> findAllDocuments() throws documentNotFoundException;
+    
+    public Document findDocumentByName(String name) throws documentNotFoundException;
 
-    public List<Document> findAll();
-
-    /*public List<T> findRange(int[] range);
+    public List<String> findDocumentNameByName(String name) throws documentNotFoundException;
     
-    public int count();
-    */
-    public List<Document> findDocumentByName(String name);
+    public List<String> findDocumentNameByCategory(String category) throws documentNotFoundException;
     
-    public List<Document> findDocumentByCategory(String category);
+    public List<String> findDocumentNameByDate(Date uploadDate) throws documentNotFoundException;
     
-    public List<Document> findDocumentByDate(Date uploadDate);
+    public List<String> findDocumentNameByNameAndCategory(String name, String category) throws documentNotFoundException;
     
-    public List<Document> findDocumentByNameAndCategory(String name, String category);
+    public List<String> findDocumentNameByNameAndDate(String name, Date uploadDate) throws documentNotFoundException;
     
-    public List<Document> findDocumentByNameAndDate(String name, Date uploadDate);
-    
-    public List<Document> findDocumentByCategoryAndDate(String category, Date uploadDate);
+    public List<String> findDocumentNameByCategoryAndDate(String category, Date uploadDate) throws documentNotFoundException;
     
     //----------------------Rating-----------------------------
     
-    public void createRating(Rating Rating);
+    public void newDocumentRating(Rating Rating);
     
-    public void editRating(Rating Rating);
+    public List<Rating> findAllRatings() throws ratingNotFoundException;
     
-    public void removeRating(Rating rating); 
+    public void updateRating(Rating Rating) throws ratingNotFoundException;
     
-    List<Document> findRatingsOfDocument(String rating);
+    public void deleteRating(Rating rating) throws ratingNotFoundException; 
     
-    List<Document> findReviewsOfDocument(String review);
-    
-    
+    public List<Rating> findRatingsOfDocument(String rating) throws ratingNotFoundException;
+
 }
