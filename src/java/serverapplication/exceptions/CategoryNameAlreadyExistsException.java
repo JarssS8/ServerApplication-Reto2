@@ -9,22 +9,22 @@ package serverapplication.exceptions;
  *
  * @author Adrian
  */
-public class CategoryNotFound extends Exception {
+public class CategoryNameAlreadyExistsException extends Exception {
 
     /**
-     * Creates a new instance of <code>categoryNotFound</code> without detail
-     * message.
+     * Creates a new instance of <code>categoryNameAlreadyExists</code> without
+     * detail message.
      */
-    public CategoryNotFound() {
+    public CategoryNameAlreadyExistsException() {
     }
 
     /**
-     * Constructs an instance of <code>categoryNotFound</code> with the
+     * Constructs an instance of <code>categoryNameAlreadyExists</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public CategoryNotFound(String msg) {
+    public CategoryNameAlreadyExistsException(String msg) {
         super(msg);
     }
 }

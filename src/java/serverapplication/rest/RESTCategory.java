@@ -22,8 +22,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Category;
-import serverapplication.exceptions.CategoryNameAlreadyExists;
-import serverapplication.exceptions.CategoryNotFound;
+import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -33,6 +33,9 @@ import serverapplication.interfaces.CategoryEJBLocal;
 @Stateless
 @Path("category")
 public class RESTCategory {
+    
+     private static final Logger LOGGER = Logger.getLogger(
+            "serverapplication.rest.RESTCategory");
 
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
@@ -45,8 +48,10 @@ public class RESTCategory {
     public void create(Category category) {
         try {
             eJBLocal.createCategory(category);
-        } catch (CategoryNameAlreadyExists ex) {
-            Logger.getLogger(RESTCategory.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CategoryNameAlreadyExistsException ex) {
+            LOGGER.warning("REST Category: The name of the category alredy exists "+ex.getMessage());
+        } catch(Exception e){
+            LOGGER.warning("REST Category: Exception creating the category"+e.getMessage());
         }
     }
 
@@ -55,11 +60,15 @@ public class RESTCategory {
     public void modifyCategory(Category category) {
         try {
             eJBLocal.modifyCategory(category);
-        } catch (CategoryNameAlreadyExists ex) {
-            Logger.getLogger(RESTCategory.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CategoryNotFound ex) {
-            Logger.getLogger(RESTCategory.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CategoryNameAlreadyExistsException ex) {
+            LOGGER.warning("REST Category: The name of the category alredy exists on modifyCategory "+ex.getMessage());
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("REST Category: The category not found on modifyCategory "+ex.getMessage());
         }
+        catch(Exception e){
+            LOGGER.warning("REST Category: Exception modifying the category "+e.getMessage());
+        }
+
     }
 
     @DELETE
@@ -67,22 +76,38 @@ public class RESTCategory {
     public void deleteCategory(Category category) {
         try {
             eJBLocal.deleteCategory(category);
-        } catch (CategoryNotFound ex) {
-            Logger.getLogger(RESTCategory.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("REST Category: The category not found on deleteCategory "+ex.getMessage());
         }
+        catch(Exception e){
+            LOGGER.warning("REST Category: Exception deleting the category"+e.getMessage());
+        }
+
     }
 
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Category> findCategoryByName(@PathParam("name") String name) {
-       return eJBLocal.findCategoryByName(name);
+        Set<Category> categories= null;
+         try {
+            categories=eJBLocal.findCategoryByName(name);
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: Exception creating "+ex.getMessage());
+        }
+            return categories;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Set<Category> findAllCategories() {
-        return eJBLocal.findAllCategories();
+        Set<Category> categories= null;
+        try {
+            categories=eJBLocal.findAllCategories();
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: Exception creating "+ex.getMessage());
+        }
+            return categories;
     }
 
 }

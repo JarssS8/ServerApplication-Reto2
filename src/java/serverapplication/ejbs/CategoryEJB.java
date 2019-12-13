@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import serverapplication.entities.Category;
-import serverapplication.exceptions.CategoryNameAlreadyExists;
-import serverapplication.exceptions.CategoryNotFound;
+import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -25,27 +25,27 @@ public class CategoryEJB implements CategoryEJBLocal {
     private EntityManager em;
 
     @Override
-    public void createCategory(Category category) throws CategoryNameAlreadyExists {
+    public void createCategory(Category category) throws CategoryNameAlreadyExistsException,Exception {
         em.persist(category);
     }
 
     @Override
-    public void modifyCategory(Category category) throws CategoryNameAlreadyExists, CategoryNotFound {
+    public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException,Exception {
         em.merge(category);
     }
 
     @Override
-    public void deleteCategory(Category category) throws CategoryNotFound {
+    public void deleteCategory(Category category) throws CategoryNotFoundException,Exception {
         em.remove(em.merge(category));
     }
 
     @Override
-    public Set<Category> findCategoryByName(String catName) {
+    public Set<Category> findCategoryByName(String catName) throws Exception{
         return (Set<Category>) em.createNamedQuery("findCategoryByName").getResultList();
     }
 
     @Override
-    public Set<Category> findAllCategories() {
+    public Set<Category> findAllCategories() throws Exception{
         return (Set<Category>) em.createNamedQuery("findAllCategories").getResultList();
     }
 
