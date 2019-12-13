@@ -16,8 +16,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Extends of class User for users that access free to our platform
  * @author Adrian
  */
-@Entity
-@Table(name = "free", schema = "team6dbreto2")
+
+//@Table(name = "free", schema = "team6dbreto2")
 @XmlRootElement
 public class Free extends User implements Serializable{
     private static final long serialVersionUID = 1L;

@@ -19,8 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Adrian
  */
-@Entity
-@Table(name = "admin", schema = "team6dbreto2")
+
+//@Table(name = "admin", schema = "team6dbreto2")
 @XmlRootElement
 public class Admin extends User implements Serializable {
 

@@ -31,19 +31,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
         @NamedQuery(
             name="findIfLoginExists",
-            query="SELECT u FROM user u WHERE u.login = :login"
+            query="SELECT u FROM User u WHERE u.login = :login"
         ),
         @NamedQuery(
             name="findIfPasswordExists",
-            query="SELECT u FROM user u WHERE u.login = (SELECT u FROM user u WHERE u.login = :login) AND u.password = :password"
+            query="SELECT u FROM User u WHERE u.login = (SELECT u FROM User u WHERE u.login = :login) AND u.password = :password"
         ),
         @NamedQuery(
             name="findAllUsers",
-            query="SELECT u FROM user u ORDER BY u.id ASC"
+            query="SELECT u FROM User u ORDER BY u.id ASC"
         ),
         @NamedQuery(
             name="findUserByLogin",
-            query="SELECT u FROM user u WHERE u.login = :login"
+            query="SELECT u FROM User u WHERE u.login = :login"
         )
 })
 

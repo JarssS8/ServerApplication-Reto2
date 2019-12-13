@@ -84,8 +84,10 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public User logIn(User user) throws LoginNotFoundException, UserPasswordNotFoundException , ServerConnectionErrorException {
-        em.createNamedQuery("findIfLoginExists").setParameter("login", user.getLogin()).getSingleResult();
-        return user;
+        User auxUser = null;
+        auxUser = (User) em.createNamedQuery("findIfLoginExists").setParameter("login", user.getLogin()).getSingleResult();
+        
+        return auxUser;
     }
 
     @Override
