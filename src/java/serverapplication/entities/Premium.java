@@ -7,7 +7,6 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 

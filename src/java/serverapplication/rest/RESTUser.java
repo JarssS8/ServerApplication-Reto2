@@ -67,10 +67,10 @@ public class RESTUser {
     }
 
     @GET
-    @Path("{name}")
+    @Path("{login}")
     @Produces(MediaType.APPLICATION_XML)
-    public User findUserByLogin(String name) {
-        return ejb.findUserByLogin(name);
+    public User findUserByLogin(String login) {
+        return ejb.findUserByLogin(login);
     }
 
     @GET
