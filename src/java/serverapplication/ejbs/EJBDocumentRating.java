@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.exceptions.documentNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 
 /**
@@ -70,72 +71,23 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     public List<Document> findAllDocuments() {
         return em.createNamedQuery("findAllDocuments").getResultList();
     }
+   
+    @Override
+    public List<String> findDocumentNameByParameters(String name, String category, Date uploadDate) throws documentNotFoundException {
+        return (List<String>) em.createNamedQuery("findDocumentNameByParameters")
+                .setParameter("name","%" + name + "%")
+                .setParameter("user","%" + category + "%")
+                .setParameter("uploadDate", uploadDate ).getResultList();
+    }
     
     /**
-     * Method to search a specific document by his name.
-     * @param name the name of the document 
-     * @return The document with the specified name
+     * Method to search all the ratings of a specific document
+     * @param name the name of the document to search by
+     * @return A ratings list of the specified document
      */
     @Override
-    public Document findDocumentByName(String name){
-        return (Document) em.createNamedQuery("findDocumentByName").setParameter("name", name).getSingleResult();
-    }
-    /**
-     * Method to search the names of documents by a name
-     * @param name the name to search by
-     * @return A documents names list who contains the send name.
-     */
-    @Override
-    public List<String> findDocumentNameByName(String name) {
-       return em.createNamedQuery("findDocumentNameByName").setParameter("name", name).getResultList();
-    }
-    /**
-     * Method to search the names of documents by a category
-     * @param category the category to search by
-     * @return A documents names list who contains the send category.
-     */
-    @Override
-    public List<String> findDocumentNameByCategory(String category) {
-        return em.createNamedQuery("findDocumentNameByCategory").setParameter("category", category).getResultList();
-    }
-    /**
-     * Method to search the names of documents by a date
-     * @param uploadDate the date to search by
-     * @return A documents names list who contains the send date.
-     */
-    @Override
-    public List<String> findDocumentNameByDate(Date uploadDate) {
-        return em.createNamedQuery("findDocumentNameByDate").setParameter("uploadDate", uploadDate).getResultList();
-    }
-    /**
-     * Method to search the names of documents by a name and category.
-     * @param name the name to search by
-     * @param category the category to search by
-     * @return A documents names list who contains the send name and category.
-     */
-    @Override
-    public List<String> findDocumentNameByNameAndCategory(String name, String category) {
-        return em.createNamedQuery("findDocumentNameByNameAndCategory").setParameter("name", name).setParameter("category", category).getResultList();
-    }
-    /**
-     * Method to search the names of documents by a name and date.
-     * @param name the name to search by
-     * @param uploadDate the date to search by
-     * @return A documents names list who contains the send name and date.
-     */
-    @Override
-    public List<String> findDocumentNameByNameAndDate(String name, Date uploadDate) {
-       return em.createNamedQuery("findDocumentNameByNameAndDate").setParameter("name", name).setParameter("uploadDate", uploadDate).getResultList();
-    }
-    /**
-     * Method to search the names of documents by a category and date.
-     * @param category the category to search by
-     * @param uploadDate the date to search by
-     * @return A documents names list who contains the send category and date.
-     */
-    @Override
-    public List<String> findDocumentNameByCategoryAndDate(String category, Date uploadDate) {
-        return em.createNamedQuery("findDocumentNameByCategoryAndDate").setParameter("category", category).setParameter("uploadDate", uploadDate).getResultList();
+    public Document findRatingsOfDocument(Long id) {
+        return em.find(Document.class, id);
     }
     
     //--------------------------------Rating----------------------------------\\
@@ -148,6 +100,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     public void newDocumentRating(Rating Rating) {
         em.persist(Rating);
     }
+    
     /**
      * Method to modify a specific rating
      * @param Rating 
@@ -174,15 +127,6 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     @Override
     public void deleteRating(Rating rating) {
         em.remove(em.merge(rating));
-    }
-    /**
-     * Method to search all the ratings of a specific document
-     * @param name the name of the document to search by
-     * @return A ratings list of the specified document
-     */
-    @Override
-    public List<Rating> findRatingsOfDocument(String name) {
-        return (List<Rating>)em.find(Document.class, name).getRatings();
     }
 
 }

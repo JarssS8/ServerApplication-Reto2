@@ -6,17 +6,21 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -25,33 +29,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
         name="findAllDocuments",
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
-     @NamedQuery(
-        name="findDocumentByName",
-        query="SELECT d FROM Document d WHERE d.name = :name"),
-    
     @NamedQuery(
-        name="findDocumentNameByName",
-        query="SELECT d.name FROM Document d WHERE d.name = :name"),
+        name="findDocumentNameByParameters",
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND UPPER(d.category) LIKE UPPER(:category) AND UPPER(d.uploadDate) LIKE UPPER(:uploadDate)"),
     @NamedQuery(
-        name="findDocumentNameByCategory",
-        query="SELECT d.name FROM Document d WHERE d.category = :category"),
-    
-    @NamedQuery(
-        name="findDocumentNameByDate",
-        query="SELECT d.name FROM Document d WHERE d.uploadDate = :uploadDate"),
-    
-    @NamedQuery(
-        name="findDocumentNameByNameAndCategory",
-        query="SELECT d.name FROM Document d WHERE d.name = :name AND d.category = :category"),
-    
-    @NamedQuery(
-        name="findDocumentNameByNameAndDate",
-        query="SELECT d.name FROM Document d WHERE d.name = :name AND d.uploadDate = :uploadDate"),
-    
-    @NamedQuery(
-        name="findDocumentNameByCategoryAndDate",
-        query="SELECT d.name FROM Document d WHERE d.category = :category AND d.uploadDate = :uploadDate"),
-    
+        name="findRatingsOfDocument",
+        query="SELECT d FROM Document d WHERE d.id = :id"
+    )
 })
 
 /**
@@ -66,9 +50,9 @@ public class Document implements Serializable{
     /**
      * Id to identificate the document
      */
-    @EmbeddedId
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    private RatingId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     /**
      * The name of the document
      */
@@ -78,7 +62,8 @@ public class Document implements Serializable{
      * The date when the document has been upload
      */
     @NotNull
-    private Timestamp uploadDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date uploadDate;
     /**
      * The total rating of the document
      */
@@ -90,7 +75,7 @@ public class Document implements Serializable{
     /**
      * The file itself
      */
-    @NotNull
+    //@NotNull
     @Lob
     private Byte[] file;
     /**
@@ -114,11 +99,11 @@ public class Document implements Serializable{
     @ManyToOne
     private Group group;
     
-    public RatingId getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(RatingId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -130,11 +115,11 @@ public class Document implements Serializable{
         this.name = name;
     }
 
-    public Timestamp getUploadDate() {
+    public Date getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Timestamp uploadDate) {
+    public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
     }
 

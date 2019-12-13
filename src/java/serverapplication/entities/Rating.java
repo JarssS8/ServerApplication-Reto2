@@ -6,7 +6,7 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -50,7 +52,8 @@ public class Rating implements Serializable{
      * The date the review has been done
      */
     @NotNull
-    private Timestamp ratingDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date ratingDate;
     /**
      * The document were the rating has been done
      */
@@ -86,11 +89,11 @@ public class Rating implements Serializable{
         this.review = review;
     }
 
-    public Timestamp getRatingDate() {
+    public Date getRatingDate() {
         return ratingDate;
     }
 
-    public void setRatingDate(Timestamp ratingDate) {
+    public void setRatingDate(Date ratingDate) {
         this.ratingDate = ratingDate;
     }
 

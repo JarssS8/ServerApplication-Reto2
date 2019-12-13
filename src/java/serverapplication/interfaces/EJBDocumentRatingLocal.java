@@ -28,23 +28,13 @@ public interface EJBDocumentRatingLocal {
     
     public void deleteDocument(Document document) throws documentNotFoundException;
     
-    public Document findDocumentById(Long id) throws documentNotFoundException;
-    
     public List<Document> findAllDocuments() throws documentNotFoundException;
     
-    public Document findDocumentByName(String name) throws documentNotFoundException;
-
-    public List<String> findDocumentNameByName(String name) throws documentNotFoundException;
+    public Document findDocumentById(Long id) throws documentNotFoundException;
     
-    public List<String> findDocumentNameByCategory(String category) throws documentNotFoundException;
+    public List<String> findDocumentNameByParameters(String name,String category, Date uploadDate) throws documentNotFoundException;
     
-    public List<String> findDocumentNameByDate(Date uploadDate) throws documentNotFoundException;
-    
-    public List<String> findDocumentNameByNameAndCategory(String name, String category) throws documentNotFoundException;
-    
-    public List<String> findDocumentNameByNameAndDate(String name, Date uploadDate) throws documentNotFoundException;
-    
-    public List<String> findDocumentNameByCategoryAndDate(String category, Date uploadDate) throws documentNotFoundException;
+    public Document findRatingsOfDocument(Long id) throws ratingNotFoundException;
     
     //----------------------Rating-----------------------------
     
@@ -56,6 +46,6 @@ public interface EJBDocumentRatingLocal {
     
     public void deleteRating(Rating rating) throws ratingNotFoundException; 
     
-    public List<Rating> findRatingsOfDocument(String rating) throws ratingNotFoundException;
+   
 
 }

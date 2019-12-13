@@ -5,7 +5,7 @@
  */
 package serverapplication.rest;
 
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import javax.ejb.EJB;
@@ -16,9 +16,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
+import serverapplication.exceptions.documentNotFoundException;
 import serverapplication.exceptions.ratingNotFoundException;
 
 /**
@@ -42,7 +44,7 @@ public class RatingFacadeREST{
      * @param rating the rating will be created
      */
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_XML)
     public void newDocumentRating(Rating rating) {
         ejb.newDocumentRating(rating);
     }
@@ -50,14 +52,15 @@ public class RatingFacadeREST{
      * Method who use the ejb to search all the ratings
      */
     @GET
-    @Path("findAllRatings")
     @Produces(MediaType.APPLICATION_XML)
-    public void findAllRatings(){
+    public List<Rating> findAllRatings(){
+        List<Rating> ratings = null;
         try {
-            ejb.findAllRatings();
+            ratings = ejb.findAllRatings();
         } catch (ratingNotFoundException ex) {
            LOGGER.severe(ex.getMessage());
         }
+        return ratings;
     }
     
     /**
@@ -66,7 +69,7 @@ public class RatingFacadeREST{
      */
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_XML)
     public void updateRating(Rating rating) {
         try {
             ejb.updateRating(rating);
@@ -88,20 +91,5 @@ public class RatingFacadeREST{
             LOGGER.severe(ex.getMessage());
         }
     }
-    
-    /**
-     * Method who use the ejb to search Rating of a document
-     * @param name the name of the document
-     */
-    @GET
-    @Path("RatingsOfDocument")
-    @Produces(MediaType.APPLICATION_XML)
-    public void findRatingsOfDocument(String name){
-        try {
-            ejb.findRatingsOfDocument(name);
-        } catch (ratingNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
-        }
-    }
-    
+ 
 }
