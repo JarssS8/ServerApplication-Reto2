@@ -15,7 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import static javax.persistence.InheritanceType.JOINED;
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author aimar
  */
 @Entity
-@Inheritance(strategy=JOINED)
+@Inheritance(strategy=SINGLE_TABLE)
 @Table(name = "user", schema = "team6dbreto2")
 @XmlRootElement
 public class User implements Serializable {

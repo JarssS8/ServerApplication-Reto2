@@ -13,6 +13,9 @@ import serverapplication.entities.Admin;
 import serverapplication.entities.Free;
 import serverapplication.entities.Premium;
 import serverapplication.entities.User;
+import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
 
 /**
@@ -80,14 +83,8 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public User logIn(User user) throws loginNotFoundException, PasswordNotFoundException {
-        try {
-            em.createNamedQuery("findIfLoginExists").setParameter("login", user.getLogin()).getSingleResult();
-        } catch (loginNotFoundException e) {
-            
-        }
-        
-        
+    public User logIn(User user) throws LoginNotFoundException, UserPasswordNotFoundException , ServerConnectionErrorException {
+        em.createNamedQuery("findIfLoginExists").setParameter("login", user.getLogin()).getSingleResult();
         return user;
     }
 

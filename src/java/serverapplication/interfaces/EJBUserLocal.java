@@ -10,6 +10,9 @@ import serverapplication.entities.Admin;
 import serverapplication.entities.Free;
 import serverapplication.entities.Premium;
 import serverapplication.entities.User;
+import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.UserPasswordNotFoundException;
 
 /**
  *
@@ -26,7 +29,7 @@ public interface EJBUserLocal {
     public Premium modifyFreeToPremium(Free free);
     public Free modifyPremiumToFree(Premium premium);
     public Free modifyAdminToFree(Admin admin);
-    public User logIn(User user);
+    public User logIn(User user) throws LoginNotFoundException, UserPasswordNotFoundException, ServerConnectionErrorException;
     public User signUp(User user);
     public void logOut();
 
