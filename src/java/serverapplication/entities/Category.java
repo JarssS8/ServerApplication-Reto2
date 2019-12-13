@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
         name="findCategoryByName",
-        query="SELECT c FROM Category c WHERE c.name=:name"),
+        query="SELECT c FROM Category c WHERE UPPER(c.name) LIKE UPPER(:name)"),
     @NamedQuery(
         name="findAllCategories",
         query="SELECT c FROM Category c ORDER BY c.name")
@@ -50,7 +50,7 @@ public class Category implements Serializable {
      * A String with the name of the category
      */
     @NotNull
-    private String Name;
+    private String name;
     /**
      * A collection with the documents of this category
      */
@@ -66,11 +66,11 @@ public class Category implements Serializable {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String Name) {
-        this.Name = Name;
+        this.name = Name;
     }
 
     @XmlTransient

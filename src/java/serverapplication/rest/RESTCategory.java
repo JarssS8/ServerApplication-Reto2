@@ -33,25 +33,31 @@ import serverapplication.interfaces.CategoryEJBLocal;
 @Stateless
 @Path("category")
 public class RESTCategory {
-    
-     private static final Logger LOGGER = Logger.getLogger(
+
+    /**
+     * Logger for class methods.
+     */
+    private static final Logger LOGGER = Logger.getLogger(
             "serverapplication.rest.RESTCategory");
 
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
-    
+
+    /**
+     * EJB reference for business logic object.
+     */
     @EJB
     private CategoryEJBLocal eJBLocal;
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void create(Category category) {
         try {
             eJBLocal.createCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
-            LOGGER.warning("REST Category: The name of the category alredy exists "+ex.getMessage());
-        } catch(Exception e){
-            LOGGER.warning("REST Category: Exception creating the category"+e.getMessage());
+            LOGGER.warning("REST Category: The name of the category alredy exists " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception creating the category" + e.getMessage());
         }
     }
 
@@ -61,12 +67,11 @@ public class RESTCategory {
         try {
             eJBLocal.modifyCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
-            LOGGER.warning("REST Category: The name of the category alredy exists on modifyCategory "+ex.getMessage());
+            LOGGER.warning("REST Category: The name of the category alredy exists on modifyCategory " + ex.getMessage());
         } catch (CategoryNotFoundException ex) {
-            LOGGER.warning("REST Category: The category not found on modifyCategory "+ex.getMessage());
-        }
-        catch(Exception e){
-            LOGGER.warning("REST Category: Exception modifying the category "+e.getMessage());
+            LOGGER.warning("REST Category: The category not found on modifyCategory " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception modifying the category " + e.getMessage());
         }
 
     }
@@ -77,10 +82,9 @@ public class RESTCategory {
         try {
             eJBLocal.deleteCategory(category);
         } catch (CategoryNotFoundException ex) {
-            LOGGER.warning("REST Category: The category not found on deleteCategory "+ex.getMessage());
-        }
-        catch(Exception e){
-            LOGGER.warning("REST Category: Exception deleting the category"+e.getMessage());
+            LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception deleting the category" + e.getMessage());
         }
 
     }
@@ -89,25 +93,25 @@ public class RESTCategory {
     @Path("{name}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Category> findCategoryByName(@PathParam("name") String name) {
-        Set<Category> categories= null;
-         try {
-            categories=eJBLocal.findCategoryByName(name);
+        Set<Category> categories = null;
+        try {
+            categories = eJBLocal.findCategoryByName(name);
         } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating "+ex.getMessage());
+            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }
-            return categories;
+        return categories;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Set<Category> findAllCategories() {
-        Set<Category> categories= null;
+        Set<Category> categories = null;
         try {
-            categories=eJBLocal.findAllCategories();
+            categories = eJBLocal.findAllCategories();
         } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating "+ex.getMessage());
+            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }
-            return categories;
+        return categories;
     }
 
 }

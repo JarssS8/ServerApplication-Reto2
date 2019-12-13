@@ -20,7 +20,7 @@ public interface CategoryEJBLocal {
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException,Exception;
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException,CategoryNotFoundException,Exception;
     public void deleteCategory(Category category) throws CategoryNotFoundException,Exception;
-    public Set<Category> findCategoryByName(String catName)throws Exception;
+    public Set<Category> findCategoryByName(String name)throws Exception;
     public Set<Category> findAllCategories()throws Exception;
 
 }

@@ -5,6 +5,7 @@
  */
 package serverapplication.ejbs;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -40,13 +41,13 @@ public class CategoryEJB implements CategoryEJBLocal {
     }
 
     @Override
-    public Set<Category> findCategoryByName(String catName) throws Exception{
-        return (Set<Category>) em.createNamedQuery("findCategoryByName").getResultList();
+    public Set<Category> findCategoryByName(String name) throws Exception{
+        return new HashSet<>( em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getResultList());
     }
 
     @Override
     public Set<Category> findAllCategories() throws Exception{
-        return (Set<Category>) em.createNamedQuery("findAllCategories").getResultList();
+        return new HashSet<>( em.createNamedQuery("findAllCategories").getResultList());
     }
 
 }
