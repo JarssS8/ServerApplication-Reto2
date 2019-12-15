@@ -19,7 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.documentNotFoundException;
 import serverapplication.exceptions.ratingNotFoundException;
 
@@ -50,6 +52,7 @@ public class RatingFacadeREST{
     }
     /**
      * Method who use the ejb to search all the ratings
+     * @throws ratingNotFoundException exception if are no rating 
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -64,8 +67,28 @@ public class RatingFacadeREST{
     }
     
     /**
+     * Method who use the ejb to search a document by his id
+     * @param id the id to search by
+     * @return the document with the specified id
+     * @throws documentNotFoundException exception if are no document 
+     */
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Rating findRating(Long id) {
+        Rating rating = null;
+        try {
+            rating = ejb.findRatingById(id);
+        } catch (ratingNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return rating;
+    }
+    
+    /**
      * Method who use the ejb to mofify the Rating
      * @param rating the rating will be modified
+     * @throws ratingNotFoundException exception if are no rating 
      */
     @PUT
     @Path("{id}")
@@ -81,12 +104,13 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to delete a Rating
      * @param rating the rating will be deleted
+     * @throws ratingNotFoundException exception if are no rating 
      */
     @DELETE
     @Path("{id}")
-    public void deleteRating(Rating rating) {
+    public void deleteRating(Long id) {
         try {
-            ejb.deleteRating(rating);
+            ejb.deleteRating(ejb.findRatingById(id));
         } catch (ratingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }

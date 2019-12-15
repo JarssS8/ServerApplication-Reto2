@@ -8,6 +8,7 @@ package serverapplication.rest;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -73,6 +74,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to modify a document
      * @param document the document will be modified
+     * @throws documentNotFoundException exception if are no document 
      */
     @PUT
     @Path("{id}")
@@ -88,12 +90,14 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to delete a document
      * @param document the document will be deleted
+     * @throws documentNotFoundException exception if are no document 
      */
     @DELETE
     @Path("{id}")
-    public void deleteDocument(Document document) {
+    @Produces(MediaType.APPLICATION_XML)
+    public void deleteDocument(@PathParam("id") Long id) {
         try {
-            ejb.deleteDocument(document);
+            ejb.deleteDocument(ejb.findDocumentById(id));
         } catch (documentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
@@ -102,6 +106,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to search all the documents
      * @return All the documents list
+     * @throws documentNotFoundException exception if are no document 
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -120,6 +125,7 @@ public class DocumentFacadeREST{
      * Method who use the ejb to search a document by his id
      * @param id the id to search by
      * @return the document with the specified id
+     * @throws documentNotFoundException exception if are no document 
      */
     @GET
     @Path("{id}")
@@ -133,38 +139,45 @@ public class DocumentFacadeREST{
         }
         return document;
     }
-    
+    /**
+     * Method who use the ejb to search a document by various parameters
+     * @param name the name to search by
+     * @param category the category to search by
+     * @param uploadDate the date to search by
+     * @return A list of names of documents
+     */
     @GET
     @Path("{name}/{category}/{uploadDate}")
     @Produces(MediaType.APPLICATION_XML)
-    public Document findDocumentNameByParameters(@PathParam("name") String name
-        ,@PathParam("category") String category
-        ,@PathParam("uploadDate") Date uploadDate){
-        Document document = null;
+    public List<String> findDocumentNameByParameters(Document document){
+        List<String> documents = null;
         try {
-            document=(Document) ejb.findDocumentNameByParameters(name, category, uploadDate);
+            documents.addAll((List<String>) ejb.findDocumentNameByParameters(document));
         } catch (documentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
-        return document;
+        return documents;
     }
+    
     
     /**
      * Method who use the ejb to search Rating of a document
      * @param name the name of the document
+     * @throws documentNotFoundException exception if are no document 
      */
+    /*
     @GET
-    @Path("{id}1")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Document findRatingsOfDocument(@PathParam("id") Long id){
         Document document = null;
-        List<Rating> ratingsDocument = null;
+        Set<Rating> ratingsDocument = null;
         try {
             document = ejb.findRatingsOfDocument(id);
-            ratingsDocument = (List<Rating>) document.getRatings();
+            ratingsDocument.addAll((Set<Rating>) document.getRatings());
         } catch (ratingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
         return (Document) ratingsDocument;
-    }
+    }*/
 }

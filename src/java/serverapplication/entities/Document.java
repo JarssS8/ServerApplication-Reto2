@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,9 +30,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
         name="findAllDocuments",
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
-    @NamedQuery(
+    /*@NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND UPPER(d.category) LIKE UPPER(:category) AND UPPER(d.uploadDate) LIKE UPPER(:uploadDate)"),
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND UPPER(d.category) LIKE UPPER(:category) AND UPPER(d.uploadDate) LIKE UPPER(:uploadDate) "),*/
     @NamedQuery(
         name="findRatingsOfDocument",
         query="SELECT d FROM Document d WHERE d.id = :id"
@@ -81,22 +82,22 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy="document")
+    @OneToMany(mappedBy= "document" )
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private User user;
     /**
      * The category of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Category category;
     /**
      * The author group of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Group group;
     
     public Long getId() {

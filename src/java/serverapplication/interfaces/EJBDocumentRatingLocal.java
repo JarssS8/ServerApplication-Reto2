@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Local;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.documentNotFoundException;
 import serverapplication.exceptions.ratingNotFoundException;
 
@@ -32,15 +33,17 @@ public interface EJBDocumentRatingLocal {
     
     public Document findDocumentById(Long id) throws documentNotFoundException;
     
-    public List<String> findDocumentNameByParameters(String name,String category, Date uploadDate) throws documentNotFoundException;
+    public List<String> findDocumentNameByParameters(Document document) throws documentNotFoundException;
     
-    public Document findRatingsOfDocument(Long id) throws ratingNotFoundException;
+   // public Document findRatingsOfDocument(Long id) throws ratingNotFoundException;
     
     //----------------------Rating-----------------------------
     
     public void newDocumentRating(Rating Rating);
     
     public List<Rating> findAllRatings() throws ratingNotFoundException;
+    
+    public Rating findRatingById(Long id) throws ratingNotFoundException;
     
     public void updateRating(Rating Rating) throws ratingNotFoundException;
     
