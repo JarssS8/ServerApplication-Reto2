@@ -6,6 +6,9 @@
 package serverapplication.rest;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,73 +22,105 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Group;
+import serverapplication.entities.User;
+import serverapplication.interfaces.EJBGroupLocal;
+import serverapplication.exceptions.GroupNameAlreadyExistException;
+import serverapplication.exceptions.GroupPasswordNotFoundException;
+import serverapplication.exceptions.GroupNameNotFoundException;
+import serverapplication.exceptions.LoginNotFoundException;
+
+
 
 /**
  *
- * @author 2dam
+ * @author Diego Urraca
  */
-@Stateless
-@Path("serverapplication.entities.group")
-public class GroupFacadeREST extends AbstractFacade<Group> {
+@Path("group")
+public class GroupFacadeREST{
 
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
+    private static final Logger LOGGER = Logger.getLogger("serverapplication.rest.GroupFacadeREST");
 
-    public GroupFacadeREST() {
-        super(Group.class);
-    }
+    @EJB
+    private EJBGroupLocal ejb;
 
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Group entity) {
-        super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void createGroup(Group group){
+        try {
+            ejb.createGroup(group);
+        }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
+        
     }
 
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Group entity) {
-        super.edit(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void modifyGroup(Group group) {
+        try{
+            ejb.modifyGroup(group);
+        }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
     }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
-    }
-
-    @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Group find(@PathParam("id") Long id) {
-        return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Group> findAll() {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Group> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+ 
+    @PUT
+    @Consumes({MediaType.APPLICATION_XML})
+    public void joinGroup(String groupName,String password, User user){
+         try{
+            ejb.joinGroup(groupName, password, user);
+        }catch(GroupPasswordNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(GroupNameNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
     }
     
+    @PUT
+    @Consumes({MediaType.APPLICATION_XML})
+    public void leaveGroup(Group group,User user){
+        try{
+            ejb.leaveGroup(group, user);
+        }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(GroupNameNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Group> findGroups() {
+        List<Group> auxGroups = null;
+        try{
+            auxGroups = ejb.findGroups();
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
+        return auxGroups;
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Group> findAllGroups(String login) {
+        List<Group> groups = null;
+        try{
+            groups = ejb.findAllGroups(login);
+        }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+        }
+        return groups;
+    }
 }

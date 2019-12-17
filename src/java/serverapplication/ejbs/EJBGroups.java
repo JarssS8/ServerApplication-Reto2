@@ -6,94 +6,69 @@
 package serverapplication.ejbs;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import serverapplication.entities.Group;
-import serverapplication.ejbs.EJBUser;
 import serverapplication.entities.User;
+import serverapplication.exceptions.GroupNameAlreadyExistException;
+import serverapplication.exceptions.GroupNameNotFoundException;
+import serverapplication.exceptions.GroupPasswordNotFoundException;
+import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.interfaces.EJBGroupLocal;
 
 /**
  *
  * @author Diego Urraca
  */
 @Stateless
-public class EJBGroups<T> {
+public class EJBGroups implements EJBGroupLocal {
+
+    private static final Logger LOGGER = Logger.getLogger("serverapplication.ejbs.EJBGroups");
     
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
 
-    public void createGroup(Group group,String login) {
+    @Override
+    public void createGroup(Group group)throws GroupNameAlreadyExistException, LoginNotFoundException, Exception {
         em.persist(group);
     }
     
-    public void modifyGroup(Group group, String login){
-        
+    @Override
+    public void modifyGroup(Group group) throws LoginNotFoundException, Exception{
+        em.merge(group);
+        em.flush();
     }
     
-    public void deleteGroup(Group group, String login){
-        
+    @Override
+    public void joinGroup(String groupName,String password, User user) throws GroupPasswordNotFoundException, LoginNotFoundException, GroupNameNotFoundException, Exception{
+        Group auxGroup = null;
+        auxGroup = (Group) em.createNamedQuery("findGroupByNameAndPass").
+                setParameter("groupName", groupName).
+                setParameter("password", password).getSingleResult();
+        if(auxGroup!=null){
+            auxGroup.getUsers().add(user);
+            em.merge(auxGroup);
+            em.flush();
+        }else{
+            throw new GroupPasswordNotFoundException();
+        }
     }
     
-    public void joinGroup(String groupName,String pass, String login){
-        
+    @Override
+    public void leaveGroup(Group group,User user) throws LoginNotFoundException, GroupNameNotFoundException, Exception{
+        //TODO Modify group to delete a user from a group
     }
     
-    public void leaveGroup(String groupName,String login){
-        
+    @Override
+    public List<Group> findGroups() throws Exception{
+        return em.createNamedQuery("findGroups").getResultList();
     }
     
-    public Group findGroup(String groupName){
-        
-        return null;
+    @Override
+    public List<Group> findAllGroups(String login) throws LoginNotFoundException, Exception{
+       return em.createNamedQuery("findAllGroups").setParameter(
+                "login", login).getResultList();
     }
-    
-    public List<Group> finAllGroups(String login){
-        User user=findUserByLogin(login);
-        
-        
-        return groupsList;
-    }
-    
-    
-    
-    
-    
-    
-    
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
-    }
-
-    public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
-    }
-
-    public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
-    }
-
-    public List<T> findAll() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
-    }
-
-    public List<T> findRange(int[] range) {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0] + 1);
-        q.setFirstResult(range[0]);
-        return q.getResultList();
-    }
-
-    public int count() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
-        cq.select(getEntityManager().getCriteriaBuilder().count(rt));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        return ((Long) q.getSingleResult()).intValue();
-    }
-    
 }

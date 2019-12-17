@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,24 +23,16 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/*
-Nuevo grupo
-Editar grupo
-Eliminar grupo
-Verificar Contraseña
-Entrar a grupo
-Salir de grupo
-
-Find grupo
-*/
-
 @NamedQueries({
     @NamedQuery(
-    name="findGroup",
-    query="SELECT a FROM groups a WHERE a.name=:groupName"),
+    name="findGroups",
+    query="SELECT g FROM groups g"),
+    @NamedQuery(
+    name="findGroupByNameAndPass",
+    query="SELECT g FROM groups g WHERE g.name = :groupName AND g.password = :password"),
     @NamedQuery(
     name="finAllGroups",
-    query="SELECT a FROM groups a WHERE a.")
+    query="SELECT g FROM groups g WHERE g.users=(SELECT u FROM User u WHERE u.login = :login)")
 })
 
 /**
@@ -46,6 +40,7 @@ Find grupo
  * @author Diego Urraca
  */
 @Entity
+@Inheritance(strategy=SINGLE_TABLE)
 @Table(name="group",schema="team6dbreto2")
 @XmlRootElement
 public class Group implements Serializable{
@@ -116,9 +111,9 @@ public class Group implements Serializable{
     }
 
     /**
-     * @param adminId the adminId to set
+     * @param groupAdmin the adminId to set
      */
-    public void setAdminId(User groupAdmin) {
+    public void setGroupAdmin(User groupAdmin) {
         this.groupAdmin = groupAdmin;
     }
 
