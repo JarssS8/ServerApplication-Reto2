@@ -12,12 +12,19 @@ import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+@NamedQueries({
+    @NamedQuery(
+        name="findCategoryByName",
+        query="SELECT c FROM Category c WHERE UPPER(c.Name) LIKE UPPER(:Name)"),
+})
 /**
  * Class category, with the different categories for our application. Every document must have a category
  * @author Adrian

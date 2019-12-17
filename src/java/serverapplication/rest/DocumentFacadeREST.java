@@ -6,9 +6,8 @@
 package serverapplication.rest;
 
 import serverapplication.interfaces.EJBDocumentRatingLocal;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -22,10 +21,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import serverapplication.entities.Document;
-import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.documentNotFoundException;
-import serverapplication.exceptions.ratingNotFoundException;
+import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
  *
@@ -60,6 +58,9 @@ public class DocumentFacadeREST{
      */
     @EJB
     private EJBDocumentRatingLocal ejb;
+    
+    @EJB
+    private CategoryEJBLocal ejbCat;
     
     /**
      * Method who use the ejb to create a Document 
@@ -145,16 +146,19 @@ public class DocumentFacadeREST{
      * @param category the category to search by
      * @param uploadDate the date to search by
      * @return A list of names of documents
+     * /{uploadDate}
      */
     @GET
-    @Path("{name}/{category}/{uploadDate}")
+    @Path("{name}/{category}")
     @Produces(MediaType.APPLICATION_XML)
-    public List<String> findDocumentNameByParameters(Document document){
+    public List<String> findDocumentNameByParameters(@PathParam("name") String name, @PathParam("category") String category){
         List<String> documents = null;
         try {
-            documents.addAll((List<String>) ejb.findDocumentNameByParameters(document));
+            documents = ejb.findDocumentNameByParameters(name, ejbCat.findCategoryByName(category));
         } catch (documentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(DocumentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return documents;
     }

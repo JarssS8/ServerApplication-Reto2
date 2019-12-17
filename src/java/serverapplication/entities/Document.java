@@ -30,9 +30,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
         name="findAllDocuments",
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
-    /*@NamedQuery(
+    @NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND UPPER(d.category) LIKE UPPER(:category) AND UPPER(d.uploadDate) LIKE UPPER(:uploadDate) "),*/
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND d.category = :category "),
+    
     @NamedQuery(
         name="findRatingsOfDocument",
         query="SELECT d FROM Document d WHERE d.id = :id"

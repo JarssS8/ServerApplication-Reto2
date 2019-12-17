@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.exceptions.documentNotFoundException;
@@ -57,7 +58,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     public void deleteDocument(Document document) {
        Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
        q.setParameter("id", document.getId());
-       int delete = q.executeUpdate();
+       q.executeUpdate();
     }
     /**
      * Method to search a specific document by his id.
@@ -87,15 +88,8 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws documentNotFoundException exception if are no document 
      */
     @Override
-    public List<String> findDocumentNameByParameters(Document document) throws documentNotFoundException {
-        List<String> documents;
-        Query q = em.createQuery("SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND UPPER(d.category) LIKE UPPER(:category) AND UPPER(d.uploadDate) LIKE UPPER(:uploadDate)");
-        q.setParameter("name", document.getName());
-        q.setParameter("category", document.getCategory());
-        q.setParameter("uploadDate", document.getUploadDate());
-        documents = q.getResultList();
-
-        return documents;
+    public List<String> findDocumentNameByParameters(String name, Category category) throws documentNotFoundException {
+        return em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category", category).getResultList();
     }
     
     /**
@@ -156,9 +150,9 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      */
     @Override
     public void deleteRating(Rating rating) {
-        Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
+       Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
        q.setParameter("id", rating.getId());
-       int delete = q.executeUpdate();
+       q.executeUpdate();
     }
 
     

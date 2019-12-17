@@ -5,12 +5,11 @@
  */
 package serverapplication.interfaces;
 
-import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
-import serverapplication.entities.RatingId;
 import serverapplication.exceptions.documentNotFoundException;
 import serverapplication.exceptions.ratingNotFoundException;
 
@@ -33,7 +32,7 @@ public interface EJBDocumentRatingLocal {
     
     public Document findDocumentById(Long id) throws documentNotFoundException;
     
-    public List<String> findDocumentNameByParameters(Document document) throws documentNotFoundException;
+    public List<String> findDocumentNameByParameters(String name,Category category) throws documentNotFoundException;
     
    // public Document findRatingsOfDocument(Long id) throws ratingNotFoundException;
     
