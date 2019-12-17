@@ -22,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Category;
+import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
 import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
@@ -77,10 +78,10 @@ public class RESTCategory {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_XML)
-    public void deleteCategory(Category category) {
+    @Path("{id}")
+    public void deleteCategory(@PathParam("id") Long id) {
         try {
-            eJBLocal.deleteCategory(category);
+            eJBLocal.deleteCategory(id);
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
         } catch (Exception e) {
@@ -100,6 +101,20 @@ public class RESTCategory {
             LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }
         return categories;
+    }
+
+    @GET
+    @Path("{catName}/{docName}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Document findDocumentsByCategory(@PathParam("catName") String catName,@PathParam("docName") String docName) {
+        Document doc = null;
+        try {
+            doc=eJBLocal.findDocumentsByCategory(catName, docName);
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
+        }
+            return doc;
+        
     }
 
     @GET

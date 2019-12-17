@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import serverapplication.entities.Category;
+import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
 import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
@@ -36,15 +37,27 @@ public class CategoryEJB implements CategoryEJBLocal {
     }
 
     @Override
-    public void deleteCategory(Category category) throws CategoryNotFoundException,Exception {
-        em.remove(em.merge(category));
+    public void deleteCategory(Long id) throws CategoryNotFoundException,Exception {
+        em.remove(em.merge(id));
     }
 
     @Override
     public Set<Category> findCategoryByName(String name) throws Exception{
         return new HashSet<>( em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getResultList());
     }
-
+    
+    @Override
+    public Document findDocumentsByCategory(String catName, String docName){
+        Category category=null;
+        category=(Category) em.createNamedQuery("findDocumentsByCategory").setParameter("name", catName).getSingleResult();
+        for(Document aux : category.getDocuments()){
+            if(aux.getName().equalsIgnoreCase(docName)){               
+                return aux;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public Set<Category> findAllCategories() throws Exception{
         return new HashSet<>( em.createNamedQuery("findAllCategories").getResultList());

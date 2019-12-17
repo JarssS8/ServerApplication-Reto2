@@ -31,6 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
         name="findCategoryByName",
         query="SELECT c FROM Category c WHERE UPPER(c.name) LIKE UPPER(:name)"),
     @NamedQuery(
+        name="findDocumentsByCategory",
+        query="SELECT c FROM Category c WHERE UPPER(c.name) = UPPER(:name)"),
+    @NamedQuery(
         name="findAllCategories",
         query="SELECT c FROM Category c ORDER BY c.name")
 })
