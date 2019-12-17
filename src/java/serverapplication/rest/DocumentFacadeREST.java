@@ -20,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
+import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.documentNotFoundException;
@@ -154,7 +155,7 @@ public class DocumentFacadeREST{
     public List<String> findDocumentNameByParameters(@PathParam("name") String name, @PathParam("category") String category){
         List<String> documents = null;
         try {
-            documents = ejb.findDocumentNameByParameters(name, ejbCat.findCategoryByName(category));
+            documents = ejb.findDocumentNameByParameters(name, (Category) ejbCat.findCategoryByName(category));
         } catch (documentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         } catch (Exception ex) {

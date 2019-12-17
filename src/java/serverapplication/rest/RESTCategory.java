@@ -1,21 +1,3 @@
-                            /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package serverapplication.rest;
-
-import java.util.List;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -41,13 +23,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
+import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
  *
  * @author Adrian
  */
-@Stateless
 @Path("category")
 public class RESTCategory {
 
@@ -71,8 +54,10 @@ public class RESTCategory {
     public void create(Category category) {
         try {
             eJBLocal.createCategory(category);
-        } catch (Exception ex) {
+        } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception creating the category" + e.getMessage());
         }
     }
 
@@ -81,8 +66,12 @@ public class RESTCategory {
     public void modifyCategory(Category category) {
         try {
             eJBLocal.modifyCategory(category);
-        } catch (Exception ex) {
+        } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists on modifyCategory " + ex.getMessage());
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("REST Category: The category not found on modifyCategory " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception modifying the category " + e.getMessage());
         }
 
     }
@@ -92,8 +81,10 @@ public class RESTCategory {
     public void deleteCategory(@PathParam("id") Long id) {
         try {
             eJBLocal.deleteCategory(id);
-        } catch (Exception ex) {
+        } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
+        } catch (Exception e) {
+            LOGGER.warning("REST Category: Exception deleting the category" + e.getMessage());
         }
 
     }
