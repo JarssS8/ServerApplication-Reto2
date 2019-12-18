@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -57,7 +58,7 @@ public class Rating implements Serializable{
     /**
      * The document were the rating has been done
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Document document;
     /**
      * The user who rates the document
@@ -97,7 +98,7 @@ public class Rating implements Serializable{
         this.ratingDate = ratingDate;
     }
 
-    
+    @XmlTransient
     public Document getDocument() {
         return document;
     }
@@ -105,7 +106,7 @@ public class Rating implements Serializable{
     public void setDocument(Document document) {
         this.document = document;
     }
-   
+    @XmlTransient
     public User getUser() {
         return user;
     }

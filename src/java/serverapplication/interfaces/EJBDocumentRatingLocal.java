@@ -6,12 +6,13 @@
 package serverapplication.interfaces;
 
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
-import serverapplication.exceptions.documentNotFoundException;
-import serverapplication.exceptions.ratingNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.RatingNotFoundException;
 
 /**
  *
@@ -24,29 +25,29 @@ public interface EJBDocumentRatingLocal {
     
     public void newDocument(Document document);
 
-    public void modifyDocument(Document document) throws documentNotFoundException;
+    public void modifyDocument(Document document) throws DocumentNotFoundException;
     
-    public void deleteDocument(Document document) throws documentNotFoundException;
+    public void deleteDocument(Document document) throws DocumentNotFoundException;
     
-    public List<Document> findAllDocuments() throws documentNotFoundException;
+    public List<Document> findAllDocuments() throws DocumentNotFoundException;
     
-    public Document findDocumentById(Long id) throws documentNotFoundException;
+    public Document findDocumentById(Long id) throws DocumentNotFoundException;
     
-    public List<String> findDocumentNameByParameters(String name,Category category) throws documentNotFoundException;
+    public List<String> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException;
     
-   // public Document findRatingsOfDocument(Long id) throws ratingNotFoundException;
+    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException;
     
     //----------------------Rating-----------------------------
     
     public void newDocumentRating(Rating Rating);
     
-    public List<Rating> findAllRatings() throws ratingNotFoundException;
+    public List<Rating> findAllRatings() throws RatingNotFoundException;
     
-    public Rating findRatingById(Long id) throws ratingNotFoundException;
+    public Rating findRatingById(Long id) throws RatingNotFoundException;
     
-    public void updateRating(Rating Rating) throws ratingNotFoundException;
+    public void updateRating(Rating Rating) throws RatingNotFoundException;
     
-    public void deleteRating(Rating rating) throws ratingNotFoundException; 
+    public void deleteRating(Rating rating) throws RatingNotFoundException; 
     
    
 

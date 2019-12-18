@@ -16,14 +16,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
-import serverapplication.entities.RatingId;
-import serverapplication.exceptions.documentNotFoundException;
-import serverapplication.exceptions.ratingNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.RatingNotFoundException;
 
 /**
  *
@@ -52,7 +49,7 @@ public class RatingFacadeREST{
     }
     /**
      * Method who use the ejb to search all the ratings
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -60,7 +57,7 @@ public class RatingFacadeREST{
         List<Rating> ratings = null;
         try {
             ratings = ejb.findAllRatings();
-        } catch (ratingNotFoundException ex) {
+        } catch (RatingNotFoundException ex) {
            LOGGER.severe(ex.getMessage());
         }
         return ratings;
@@ -70,8 +67,10 @@ public class RatingFacadeREST{
      * Method who use the ejb to search a document by his id
      * @param id the id to search by
      * @return the document with the specified id
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
+    
+    /*
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_XML)
@@ -79,16 +78,17 @@ public class RatingFacadeREST{
         Rating rating = null;
         try {
             rating = ejb.findRatingById(id);
-        } catch (ratingNotFoundException ex) {
+        } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
         return rating;
     }
+    */
     
     /**
      * Method who use the ejb to mofify the Rating
      * @param rating the rating will be modified
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @PUT
     @Path("{id}")
@@ -96,7 +96,7 @@ public class RatingFacadeREST{
     public void updateRating(Rating rating) {
         try {
             ejb.updateRating(rating);
-        } catch (ratingNotFoundException ex) {
+        } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
     }
@@ -104,14 +104,14 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to delete a Rating
      * @param rating the rating will be deleted
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @DELETE
     @Path("{id}")
     public void deleteRating(Long id) {
         try {
             ejb.deleteRating(ejb.findRatingById(id));
-        } catch (ratingNotFoundException ex) {
+        } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
     }

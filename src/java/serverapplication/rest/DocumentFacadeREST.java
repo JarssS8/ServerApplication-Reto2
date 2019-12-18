@@ -7,6 +7,7 @@ package serverapplication.rest;
 
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -22,8 +23,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
+import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
-import serverapplication.exceptions.documentNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -76,7 +79,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to modify a document
      * @param document the document will be modified
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @PUT
     @Path("{id}")
@@ -84,7 +87,7 @@ public class DocumentFacadeREST{
     public void modifyDocument(Document document) {
         try {
             ejb.modifyDocument(document);
-        } catch (documentNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
     }
@@ -92,7 +95,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to delete a document
      * @param document the document will be deleted
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @DELETE
     @Path("{id}")
@@ -100,7 +103,7 @@ public class DocumentFacadeREST{
     public void deleteDocument(@PathParam("id") Long id) {
         try {
             ejb.deleteDocument(ejb.findDocumentById(id));
-        } catch (documentNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
     }
@@ -108,7 +111,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to search all the documents
      * @return All the documents list
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -116,7 +119,7 @@ public class DocumentFacadeREST{
         List<Document> documents = null;
         try {
             documents = ejb.findAllDocuments();
-        } catch (documentNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
         return documents;
@@ -127,7 +130,7 @@ public class DocumentFacadeREST{
      * Method who use the ejb to search a document by his id
      * @param id the id to search by
      * @return the document with the specified id
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @GET
     @Path("{id}")
@@ -136,7 +139,7 @@ public class DocumentFacadeREST{
         Document document = null;
         try {
             document = ejb.findDocumentById(id);
-        } catch (documentNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
         return document;
@@ -156,7 +159,7 @@ public class DocumentFacadeREST{
         List<String> documents = null;
         try {
             documents = ejb.findDocumentNameByParameters(name, (Category) ejbCat.findCategoryByName(category));
-        } catch (documentNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         } catch (Exception ex) {
             Logger.getLogger(DocumentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
@@ -170,19 +173,18 @@ public class DocumentFacadeREST{
      * @param name the name of the document
      * @throws documentNotFoundException exception if are no document 
      */
-    /*
+    
     @GET
-    @Path("{id}")
+    @Path("/ratings/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Document findRatingsOfDocument(@PathParam("id") Long id){
-        Document document = null;
+    public Set<Rating> findRatingsOfDocument(@PathParam("id") Long id){
+        
         Set<Rating> ratingsDocument = null;
         try {
-            document = ejb.findRatingsOfDocument(id);
-            ratingsDocument.addAll((Set<Rating>) document.getRatings());
-        } catch (ratingNotFoundException ex) {
+            ratingsDocument =  (Set<Rating>) ejb.findRatingsOfDocument(id);
+        } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         }
-        return (Document) ratingsDocument;
-    }*/
+        return ratingsDocument;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
     @NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND d.category = :category "),
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) OR d.category = :category"),
     
     @NamedQuery(
         name="findRatingsOfDocument",
@@ -83,7 +84,7 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy= "document" )
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER)
     private Set<Rating> ratings;
     /**
      * The author of the document
@@ -149,7 +150,6 @@ public class Document implements Serializable{
         this.file = file;
     }
 
-    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -166,7 +166,7 @@ public class Document implements Serializable{
        public User getUser() {
         return user;
     }
-
+    
     public Category getCategory() {
         return category;
     }

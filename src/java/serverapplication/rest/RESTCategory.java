@@ -92,14 +92,14 @@ public class RESTCategory {
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Category> findCategoryByName(@PathParam("name") String name) {
-        Set<Category> categories = null;
+    public Category findCategoryByName(@PathParam("name") String name) {
+        Category categori = null;
         try {
-            categories = eJBLocal.findCategoryByName(name);
+            categori = eJBLocal.findCategoryByName(name);
         } catch (Exception ex) {
             LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }
-        return categories;
+        return categori;
     }
 
     @GET

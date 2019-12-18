@@ -9,22 +9,22 @@ package serverapplication.exceptions;
  *
  * @author Gaizka Andres
  */
-public class categoryNameNotFound extends Exception {
+public class WrongPasswordUser extends Exception {
 
     /**
-     * Creates a new instance of <code>categoryNameNotFound</code> without
-     * detail message.
+     * Creates a new instance of <code>wrongPasswordUser</code> without detail
+     * message.
      */
-    public categoryNameNotFound() {
+    public WrongPasswordUser() {
     }
 
     /**
-     * Constructs an instance of <code>categoryNameNotFound</code> with the
+     * Constructs an instance of <code>wrongPasswordUser</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public categoryNameNotFound(String msg) {
+    public WrongPasswordUser(String msg) {
         super(msg);
     }
 }

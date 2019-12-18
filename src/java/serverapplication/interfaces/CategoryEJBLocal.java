@@ -18,10 +18,11 @@ import serverapplication.exceptions.CategoryNotFoundException;
  */
 @Local
 public interface CategoryEJBLocal {
+    
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException,Exception;
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException,CategoryNotFoundException,Exception;
     public void deleteCategory(Long id) throws CategoryNotFoundException,Exception;
-    public Set<Category> findCategoryByName(String name)throws Exception;
+    public Category findCategoryByName(String name)throws Exception;
     public Document findDocumentsByCategory(String catName, String docName)throws Exception;
     public Set<Category> findAllCategories()throws Exception;
 

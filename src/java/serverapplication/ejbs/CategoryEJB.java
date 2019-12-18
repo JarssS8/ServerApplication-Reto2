@@ -24,7 +24,7 @@ import serverapplication.interfaces.CategoryEJBLocal;
 public class CategoryEJB implements CategoryEJBLocal {
 
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
+    private EntityManager em; 
 
     @Override
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException,Exception {
@@ -42,8 +42,8 @@ public class CategoryEJB implements CategoryEJBLocal {
     }
 
     @Override
-    public Set<Category> findCategoryByName(String name) throws Exception{
-        return new HashSet<>( em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getResultList());
+    public Category findCategoryByName(String name) throws Exception{
+        return (Category) em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getSingleResult();
     }
     
     @Override

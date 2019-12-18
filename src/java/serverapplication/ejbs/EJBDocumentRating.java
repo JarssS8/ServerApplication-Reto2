@@ -6,7 +6,11 @@
 package serverapplication.ejbs;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,9 +18,10 @@ import javax.persistence.Query;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
-import serverapplication.exceptions.documentNotFoundException;
-import serverapplication.exceptions.ratingNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
+import serverapplication.rest.DocumentFacadeREST;
 
 /**
  *
@@ -41,7 +46,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
     * Method to modify a specific document
     * @param document the document will be modificated.
-    * @throws documentNotFoundException exception if are no document 
+    * @throws DocumentNotFoundException exception if are no document 
     */
     @Override
     public void modifyDocument(Document document) {
@@ -52,7 +57,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
      * Method to remove a specific document
      * @param document the object will be removed.
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
     public void deleteDocument(Document document) {
@@ -73,7 +78,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
      * Method who give all the documents
      * @return All the documents list
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
     public List<Document> findAllDocuments() {
@@ -85,11 +90,17 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @param category the category of the document
      * @param uploadDate the date of the upload date
      * @return A list of documents 
-     * @throws documentNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
-    public List<String> findDocumentNameByParameters(String name, Category category) throws documentNotFoundException {
-        return em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category", category).getResultList();
+    public List<String> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
+        List<String> docNames = null;
+        try{
+            docNames = em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category", category).getResultList();
+        } catch (Exception ex) {
+            
+        }
+        return docNames;
     }
     
     /**
@@ -98,18 +109,19 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @return A ratings list of the specified document
      * @throws documentNotFoundException exception if are no document 
      */
-    /*
+    
     @Override
-    public Document findRatingsOfDocument(Long id) {
-        return em.find(Document.class, id);
+    public Set<Rating> findRatingsOfDocument(Long id) {
+        Document document = (Document) em.createNamedQuery("findRatingsOfDocument").setParameter("id", id).getSingleResult();
+        return new HashSet<> (document.getRatings());
     }
-    */
+    
     //--------------------------------Rating----------------------------------\\
     
     /**
      * Method to create a new Rating
      * @param Rating the rating will be created
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
     public void newDocumentRating(Rating Rating) {
@@ -117,7 +129,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     }
     
     @Override
-    public Rating findRatingById(Long id) throws ratingNotFoundException {
+    public Rating findRatingById(Long id) throws RatingNotFoundException {
         return em.find(Rating.class, id);
     }
 
@@ -125,7 +137,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
      * Method to modify a specific rating
      * @param Rating 
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
     public void updateRating(Rating Rating) {
@@ -136,7 +148,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
      * Method to search all the ratings
      * @return all ratings list
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
     public List<Rating> findAllRatings(){
@@ -146,7 +158,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     /**
      * Method to remove a specific rating
      * @param rating
-     * @throws ratingNotFoundException exception if are no rating 
+     * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
     public void deleteRating(Rating rating) {
