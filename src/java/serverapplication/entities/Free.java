@@ -6,6 +6,8 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -14,8 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Extends of class User for users that access free to our platform
  * @author Adrian
  */
-
+@Entity
 //@Table(name = "free", schema = "team6dbreto2")
+@DiscriminatorColumn(columnDefinition = "Free")
 @XmlRootElement
 public class Free extends User implements Serializable{
     private static final long serialVersionUID = 1L;
