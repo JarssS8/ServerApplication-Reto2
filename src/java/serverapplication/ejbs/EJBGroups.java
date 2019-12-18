@@ -73,7 +73,7 @@ public class EJBGroups implements EJBGroupLocal {
                         auxGroup.setGroupAdmin(userList.get(0));
                     }
                     if(auxGroup.getUsers().size()==0){
-                        Query query = em.createQuery("DELETE FROM groups g WHERE g.groupName = :groupName");
+                        Query query = em.createQuery("DELETE FROM Group g WHERE g.groupName = :groupName");
                         query.setParameter("groupName", auxGroup.getName());
                         query.executeUpdate();
                     }else

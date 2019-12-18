@@ -26,16 +26,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
     name="findGroups",
-    query="SELECT g FROM groups g"),
+    query="SELECT g FROM Group g"),
     @NamedQuery(
     name="findGroupByNameAndPass",
-    query="SELECT g FROM groups g WHERE g.name = :groupName AND g.password = :password"),
+    query="SELECT g FROM Group g WHERE g.name = :groupName AND g.password = :password"),
     @NamedQuery(
     name="findGroupByName",
-    query="SELECT g FROM groups g WHERE g.name = :groupName"),
+    query="SELECT g FROM Group g WHERE g.name = :groupName"),
     @NamedQuery(
-    name="finAllGroups",
-    query="SELECT g FROM groups g WHERE g.users=(SELECT u FROM User u WHERE u.login = :login)")
+    name="findAllGroups",
+    query="SELECT g FROM Group g WHERE g.users=(SELECT u FROM User u WHERE u.login = :login)")
 })
 
 /**
@@ -43,7 +43,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Diego Urraca
  */
 @Entity
-@Inheritance(strategy=SINGLE_TABLE)
 @Table(name="group",schema="team6dbreto2")
 @XmlRootElement
 public class Group implements Serializable{
