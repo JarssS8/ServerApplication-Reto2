@@ -6,14 +6,9 @@
 package serverapplication.rest;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -24,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.interfaces.EJBGroupLocal;
-import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.exceptions.GroupPasswordNotFoundException;
 import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.LoginNotFoundException;
@@ -111,8 +105,9 @@ public class GroupFacadeREST{
     }
 
     @GET
+    @Path("{user}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Group> findAllGroups(String login) {
+    public List<Group> findAllGroups(@PathParam("user") String login) {
         List<Group> groups = null;
         try{
             groups = ejb.findAllGroups(login);
