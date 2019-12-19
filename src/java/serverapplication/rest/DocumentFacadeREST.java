@@ -5,6 +5,7 @@
  */
 package serverapplication.rest;
 
+import java.sql.Date;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
 import java.util.Set;
@@ -151,18 +152,27 @@ public class DocumentFacadeREST{
      * @param category the category to search by
      * @param uploadDate the date to search by
      * @return A list of names of documents
-     * /{uploadDate}
      */
     @GET
-    @Path("{name}/{category}")
+    @Path("{name}/{category}/{uploadDate}")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentNameByParameters(@PathParam("name") String name, @PathParam("category") String category){
+    public List<Document> findDocumentNameByParameters(
+        @PathParam("name") String name, 
+        @PathParam("category") String category,
+        @PathParam("uploadDate") Date uploadDate){
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents=null;
         try {
-            documents = ejb.findDocumentNameByParameters(name, (Category) ejbCat.findCategoryByName(category));
+            documents = ejb.findDocumentNameByParameters(name, 
+                (Category) ejbCat.findCategoryByName(category), uploadDate);
             for(Document auxDocu: documents){
-                documentNoFile.add( new Document(auxDocu.getId(),auxDocu.getName(),auxDocu.getUser().getLogin(),auxDocu.getUploadDate(),auxDocu.getTotalRating(),auxDocu.getRatingCount()));
+                documentNoFile.add( new Document(
+                    auxDocu.getId(),
+                    auxDocu.getName(),
+                    auxDocu.getUser().getLogin(),
+                    auxDocu.getUploadDate(),
+                    auxDocu.getTotalRating(),
+                    auxDocu.getRatingCount()));
             }
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());

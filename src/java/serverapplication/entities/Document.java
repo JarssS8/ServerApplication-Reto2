@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
     @NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) OR d.category = :category"),
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) OR d.category = :category OR d.uploadDate = :uploadDate"),
     
     @NamedQuery(
         name="findRatingsOfDocument",
@@ -65,7 +65,7 @@ public class Document implements Serializable{
      * The date when the document has been upload
      */
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date uploadDate;
     /**
      * The total rating of the document

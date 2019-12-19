@@ -5,7 +5,7 @@
  */
 package serverapplication.ejbs;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
@@ -93,10 +94,13 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
-    public List<Document> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
+    public List<Document> findDocumentNameByParameters(String name, Category category, Date uploadDate) throws DocumentNotFoundException {
         List<Document> docNames = null;
         try{
-            docNames = em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category",category).getResultList();
+            docNames = em.createNamedQuery("findDocumentNameByParameters").
+                setParameter("name", "%" + name + "%").
+                setParameter("category",category).
+                setParameter("uploadDate",uploadDate,TemporalType.DATE).getResultList();
         } catch (Exception ex) {
             
         }

@@ -5,6 +5,7 @@
  */
 package serverapplication.interfaces;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
@@ -33,7 +34,7 @@ public interface EJBDocumentRatingLocal {
     
     public Document findDocumentById(Long id) throws DocumentNotFoundException;
     
-    public List<Document> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException;
+    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumentNotFoundException;
     
     public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException;
     
