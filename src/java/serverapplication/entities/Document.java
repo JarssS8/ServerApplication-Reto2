@@ -183,6 +183,18 @@ public class Document implements Serializable{
     public void setGroup(Group group) {
         this.group = group;
     }
+    public Document(){
+    }
+    public Document(Long id,String name, String author, Date uploadDate, int totalRating, int ratingCount){
+        this.id=id;
+        this.name=name;
+        this.user = new User();
+        this.user.setLogin(author);
+        this.uploadDate=uploadDate;
+        this.totalRating=totalRating;
+        this.ratingCount=ratingCount;
+        
+    }
     
     /**
      * Return an int calculated from id for the User

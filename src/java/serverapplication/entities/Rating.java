@@ -58,7 +58,7 @@ public class Rating implements Serializable{
     /**
      * The document were the rating has been done
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Document document;
     /**
      * The user who rates the document

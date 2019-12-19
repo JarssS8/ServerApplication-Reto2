@@ -8,6 +8,7 @@ package serverapplication.rest;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -155,16 +156,20 @@ public class DocumentFacadeREST{
     @GET
     @Path("{name}/{category}")
     @Produces(MediaType.APPLICATION_XML)
-    public List<String> findDocumentNameByParameters(@PathParam("name") String name, @PathParam("category") String category){
-        List<String> documents = null;
+    public List<Document> findDocumentNameByParameters(@PathParam("name") String name, @PathParam("category") String category){
+        List<Document> documentNoFile = new Vector<Document>();
+        List<Document> documents=null;
         try {
             documents = ejb.findDocumentNameByParameters(name, (Category) ejbCat.findCategoryByName(category));
+            for(Document auxDocu: documents){
+                documentNoFile.add( new Document(auxDocu.getId(),auxDocu.getName(),auxDocu.getUser().getLogin(),auxDocu.getUploadDate(),auxDocu.getTotalRating(),auxDocu.getRatingCount()));
+            }
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
         } catch (Exception ex) {
             Logger.getLogger(DocumentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return documents;
+        return documentNoFile;
     }
     
     

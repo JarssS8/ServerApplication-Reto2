@@ -33,7 +33,7 @@ public interface EJBDocumentRatingLocal {
     
     public Document findDocumentById(Long id) throws DocumentNotFoundException;
     
-    public List<String> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException;
+    public List<Document> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException;
     
     public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException;
     

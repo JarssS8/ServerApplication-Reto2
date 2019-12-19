@@ -93,10 +93,10 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
-    public List<String> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
-        List<String> docNames = null;
+    public List<Document> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
+        List<Document> docNames = null;
         try{
-            docNames = em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category", category).getResultList();
+            docNames = em.createNamedQuery("findDocumentNameByParameters").setParameter("name", "%" + name + "%").setParameter("category",category).getResultList();
         } catch (Exception ex) {
             
         }
