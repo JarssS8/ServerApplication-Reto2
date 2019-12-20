@@ -16,6 +16,8 @@ import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -29,6 +31,7 @@ import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -60,11 +63,13 @@ public class DocumentFacadeREST{
     }
     
     /**
-     * Injection of the ejb
+     * Injection of the Docuement & Rating ejb
      */
     @EJB
     private EJBDocumentRatingLocal ejb;
-    
+    /**
+     * Injection of the Category ejb
+     */
     @EJB
     private CategoryEJBLocal ejbCat;
     
@@ -91,6 +96,10 @@ public class DocumentFacadeREST{
             ejb.modifyDocument(document);
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+           LOGGER.severe(ex.getMessage());
+           throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -107,6 +116,10 @@ public class DocumentFacadeREST{
             ejb.deleteDocument(ejb.findDocumentById(id));
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -123,6 +136,10 @@ public class DocumentFacadeREST{
             documents = ejb.findAllDocuments();
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+           LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return documents;
         
@@ -143,6 +160,10 @@ public class DocumentFacadeREST{
             document = ejb.findDocumentById(id);
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return document;
     }
@@ -176,6 +197,10 @@ public class DocumentFacadeREST{
             }
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             Logger.getLogger(DocumentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -199,6 +224,10 @@ public class DocumentFacadeREST{
             ratingsDocument =  (Set<Rating>) ejb.findRatingsOfDocument(id);
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return ratingsDocument;
     }

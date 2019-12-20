@@ -30,7 +30,7 @@ import serverapplication.rest.DocumentFacadeREST;
  */
 @Stateless
 public class EJBDocumentRating implements EJBDocumentRatingLocal{
-
+    private static final Logger LOGGER = Logger.getLogger("rest");
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
     
@@ -50,9 +50,14 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     * @throws DocumentNotFoundException exception if are no document 
     */
     @Override
-    public void modifyDocument(Document document) {
-        em.merge(document);
-        em.flush();
+    public void modifyDocument(Document document) throws DocumentNotFoundException{
+        try{
+            em.merge(document);
+            em.flush(); 
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        
     }
  
     /**
@@ -62,9 +67,13 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      */
     @Override
     public void deleteDocument(Document document) {
+       try{
        Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
        q.setParameter("id", document.getId());
        q.executeUpdate();
+       }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+       }
     }
     /**
      * Method to search a specific document by his id.
@@ -72,8 +81,15 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @return The document with the specified id
      */
    @Override
-    public Document findDocumentById(Long id) {
-        return em.find(Document.class, id);
+    public Document findDocumentById(Long id) throws DocumentNotFoundException{
+        Document document= null;
+        try{
+            document = em.find(Document.class, id);
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        
+        return document;
     }
     
     /**
@@ -82,8 +98,18 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
-    public List<Document> findAllDocuments() {
-        return em.createNamedQuery("findAllDocuments").getResultList();
+    public List<Document> findAllDocuments() throws DocumentNotFoundException{
+        List<Document> allDocs = null;
+        try{
+            allDocs = em.createNamedQuery("findAllDocuments").getResultList();
+            if(allDocs == null){
+                LOGGER.severe("EJBDocumentandRating: Document Not Found");
+                throw new DocumentNotFoundException();
+            }
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+         return allDocs;
     }
     /**
      * Method who search by various parameters
@@ -97,12 +123,16 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     public List<Document> findDocumentNameByParameters(String name, Category category, Date uploadDate) throws DocumentNotFoundException {
         List<Document> docNames = null;
         try{
-            docNames = em.createNamedQuery("findDocumentNameByParameters").
+                docNames = em.createNamedQuery("findDocumentNameByParameters").
                 setParameter("name", "%" + name + "%").
                 setParameter("category",category).
                 setParameter("uploadDate",uploadDate,TemporalType.DATE).getResultList();
-        } catch (Exception ex) {
-            
+                if(docNames==null){
+                    LOGGER.severe("EJBDocumentandRating: Document Not Found");
+                    throw new DocumentNotFoundException();
+                }
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
         }
         return docNames;
     }
@@ -115,8 +145,18 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      */
     
     @Override
-    public Set<Rating> findRatingsOfDocument(Long id) {
-        Document document = (Document) em.createNamedQuery("findRatingsOfDocument").setParameter("id", id).getSingleResult();
+    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException{
+        Document document = null;
+        try{
+            document = (Document) em.createNamedQuery("findRatingsOfDocument").setParameter("id", id).getSingleResult();
+            if(document == null){
+                LOGGER.severe("EJBDocumentandRating: Document Not Found");
+                throw new DocumentNotFoundException();
+            }
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        
         return new HashSet<> (document.getRatings());
     }
     
@@ -128,13 +168,19 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public void newDocumentRating(Rating Rating) {
+    public void newDocumentRating(Rating Rating) throws DocumentNotFoundException {
         em.persist(Rating);
     }
     
     @Override
     public Rating findRatingById(Long id) throws RatingNotFoundException {
-        return em.find(Rating.class, id);
+        Rating rating= null;
+        try{
+           rating =  em.find(Rating.class, id);
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return rating;
     }
 
     
@@ -144,9 +190,13 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public void updateRating(Rating Rating) {
-       em.merge(Rating);
-       em.flush();
+    public void updateRating(Rating Rating) throws RatingNotFoundException{
+       try{
+            em.merge(Rating);
+            em.flush();
+       }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+       }
     }
     
     /**
@@ -155,8 +205,18 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public List<Rating> findAllRatings(){
-        return em.createNamedQuery("findAllRating").getResultList();
+    public List<Rating> findAllRatings()throws RatingNotFoundException{
+        List<Rating> ratings = null;
+        try{
+           ratings =em.createNamedQuery("findAllRating").getResultList();
+           if(ratings == null){
+               throw new RatingNotFoundException();
+           }
+        }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+
+        return ratings;
     }
     
     /**
@@ -165,10 +225,15 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public void deleteRating(Rating rating) {
-       Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
-       q.setParameter("id", rating.getId());
-       q.executeUpdate();
+    public void deleteRating(Rating rating) throws RatingNotFoundException{
+       try{
+            Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
+            q.setParameter("id", rating.getId());
+            q.executeUpdate(); 
+       }catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+       }
+       
     }
 
     

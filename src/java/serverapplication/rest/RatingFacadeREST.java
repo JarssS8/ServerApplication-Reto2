@@ -6,6 +6,7 @@
 package serverapplication.rest;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import javax.ejb.EJB;
@@ -13,14 +14,16 @@ import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
-import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
 
 /**
  *
@@ -44,7 +47,7 @@ public class RatingFacadeREST{
      */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    public void newDocumentRating(Rating rating) {
+    public void newDocumentRating(Rating rating){
         ejb.newDocumentRating(rating);
     }
     /**
@@ -59,31 +62,13 @@ public class RatingFacadeREST{
             ratings = ejb.findAllRatings();
         } catch (RatingNotFoundException ex) {
            LOGGER.severe(ex.getMessage());
+           throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return ratings;
     }
-    
-    /**
-     * Method who use the ejb to search a document by his id
-     * @param id the id to search by
-     * @return the document with the specified id
-     * @throws DocumentNotFoundException exception if are no document 
-     */
-    
-    /*
-    @GET
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public Rating findRating(Long id) {
-        Rating rating = null;
-        try {
-            rating = ejb.findRatingById(id);
-        } catch (RatingNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
-        }
-        return rating;
-    }
-    */
     
     /**
      * Method who use the ejb to mofify the Rating
@@ -98,6 +83,10 @@ public class RatingFacadeREST{
             ejb.updateRating(rating);
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -113,6 +102,10 @@ public class RatingFacadeREST{
             ejb.deleteRating(ejb.findRatingById(id));
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
  

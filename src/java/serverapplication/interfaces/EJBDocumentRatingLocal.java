@@ -14,6 +14,7 @@ import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
 
 /**
  *
@@ -26,29 +27,29 @@ public interface EJBDocumentRatingLocal {
     
     public void newDocument(Document document);
 
-    public void modifyDocument(Document document) throws DocumentNotFoundException;
+    public void modifyDocument(Document document) throws DocumentNotFoundException,ServerConnectionErrorException;
     
-    public void deleteDocument(Document document) throws DocumentNotFoundException;
+    public void deleteDocument(Document document);
     
-    public List<Document> findAllDocuments() throws DocumentNotFoundException;
+    public List<Document> findAllDocuments() throws DocumentNotFoundException,ServerConnectionErrorException;
     
-    public Document findDocumentById(Long id) throws DocumentNotFoundException;
+    public Document findDocumentById(Long id) throws DocumentNotFoundException,ServerConnectionErrorException;
     
-    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumentNotFoundException;
+    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumentNotFoundException,ServerConnectionErrorException;
     
-    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException;
+    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
     
     //----------------------Rating-----------------------------
     
     public void newDocumentRating(Rating Rating);
     
-    public List<Rating> findAllRatings() throws RatingNotFoundException;
+    public List<Rating> findAllRatings() throws RatingNotFoundException,ServerConnectionErrorException;
     
-    public Rating findRatingById(Long id) throws RatingNotFoundException;
+    public Rating findRatingById(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
     
-    public void updateRating(Rating Rating) throws RatingNotFoundException;
+    public void updateRating(Rating Rating) throws RatingNotFoundException,ServerConnectionErrorException;
     
-    public void deleteRating(Rating rating) throws RatingNotFoundException; 
+    public void deleteRating(Rating rating) throws RatingNotFoundException,ServerConnectionErrorException; 
     
    
 
