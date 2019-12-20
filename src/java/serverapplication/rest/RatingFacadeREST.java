@@ -6,7 +6,6 @@
 package serverapplication.rest;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import javax.ejb.EJB;
@@ -53,6 +52,8 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to search all the ratings
      * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -74,6 +75,8 @@ public class RatingFacadeREST{
      * Method who use the ejb to mofify the Rating
      * @param rating the rating will be modified
      * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @PUT
     @Path("{id}")
@@ -94,6 +97,8 @@ public class RatingFacadeREST{
      * Method who use the ejb to delete a Rating
      * @param rating the rating will be deleted
      * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @DELETE
     @Path("{id}")

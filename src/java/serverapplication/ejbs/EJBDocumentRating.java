@@ -9,7 +9,6 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,7 +21,6 @@ import serverapplication.entities.Rating;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
-import serverapplication.rest.DocumentFacadeREST;
 
 /**
  *
@@ -168,7 +166,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public void newDocumentRating(Rating Rating) throws DocumentNotFoundException {
+    public void newDocumentRating(Rating Rating) {
         em.persist(Rating);
     }
     

@@ -67,6 +67,7 @@ public class DocumentFacadeREST{
      */
     @EJB
     private EJBDocumentRatingLocal ejb;
+    
     /**
      * Injection of the Category ejb
      */
@@ -87,6 +88,8 @@ public class DocumentFacadeREST{
      * Method who use the ejb to modify a document
      * @param document the document will be modified
      * @throws DocumentNotFoundException exception if are no document 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @PUT
     @Path("{id}")
@@ -107,6 +110,8 @@ public class DocumentFacadeREST{
      * Method who use the ejb to delete a document
      * @param document the document will be deleted
      * @throws DocumentNotFoundException exception if are no document 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @DELETE
     @Path("{id}")
@@ -127,6 +132,8 @@ public class DocumentFacadeREST{
      * Method who use the ejb to search all the documents
      * @return All the documents list
      * @throws DocumentNotFoundException exception if are no document 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -150,6 +157,8 @@ public class DocumentFacadeREST{
      * @param id the id to search by
      * @return the document with the specified id
      * @throws DocumentNotFoundException exception if are no document 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     @GET
     @Path("{id}")
@@ -212,6 +221,8 @@ public class DocumentFacadeREST{
      * Method who use the ejb to search Rating of a document
      * @param name the name of the document
      * @throws documentNotFoundException exception if are no document 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
      */
     
     @GET
