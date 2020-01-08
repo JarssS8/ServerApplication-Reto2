@@ -6,9 +6,7 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 //@Table(name = "premium", schema = "team6dbreto2")
-@DiscriminatorColumn(columnDefinition = "Premium")
 @XmlRootElement
 public class Premium extends User implements Serializable {
 
@@ -70,7 +67,7 @@ public class Premium extends User implements Serializable {
         return beginSub;
     }
 
-    public void setBeginSub(Timestamp beginSub) {
+    public void setBeginSub(Date beginSub) {
         this.beginSub = beginSub;
     }
 
@@ -94,7 +91,7 @@ public class Premium extends User implements Serializable {
         return endSub;
     }
 
-    public void setEndSub(Timestamp endSub) {
+    public void setEndSub(Date endSub) {
         this.endSub = endSub;
     }
 

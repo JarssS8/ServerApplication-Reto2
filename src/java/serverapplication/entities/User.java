@@ -8,6 +8,8 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -52,8 +54,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author aimar
  */
 @Entity
-@Inheritance(strategy=SINGLE_TABLE)
 @Table(name = "user", schema = "team6dbreto2")
+@Inheritance(strategy=SINGLE_TABLE)
+@DiscriminatorColumn(name = "privilege", discriminatorType=DiscriminatorType.STRING)
 @XmlRootElement
 public class User implements Serializable {
 
@@ -86,10 +89,10 @@ public class User implements Serializable {
     private Status status;
     /**
      * The privilege for the user.
-     */
+     
     @NotNull
-    @Enumerated(EnumType.ORDINAL)
-    private Privilege privilege;
+    @Enumerated(EnumType.STRING)
+    private Privilege privilege;*/
     /**
      * The password value for the user.
      */
@@ -178,14 +181,14 @@ public class User implements Serializable {
     public void setProfilePicture(Byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
-    
+    /*
     public Privilege getPrivilege() {
         return privilege;
     }
 
     public void setPrivilege(Privilege privilege) {
         this.privilege = privilege;
-    }
+    }*/
 
     public String getPassword() {
         return password;

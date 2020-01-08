@@ -5,7 +5,7 @@
  */
 package serverapplication.interfaces;
 
-import java.util.List;
+import java.util.Set;
 import serverapplication.entities.Admin;
 import serverapplication.entities.Free;
 import serverapplication.entities.Premium;
@@ -23,20 +23,43 @@ public interface EJBUserLocal {
 
     public void createUser(User user) throws LoginAlreadyExistsException, 
             ServerConnectionErrorException;
-    public void modifyUserData(User user) throws LoginAlreadyExistsException, 
-            ServerConnectionErrorException;
-    public void deleteUser(User user) throws ServerConnectionErrorException;
-    public User findUserById (Long id);
-    public User findUserByLogin(String login) throws ServerConnectionErrorException;
-    public List<User> findAllUsers() throws ServerConnectionErrorException;
+    
+    public void modifyUserData(Free free) throws ServerConnectionErrorException;
+    
+    public void modifyUserData(Premium premium) throws ServerConnectionErrorException;
+    
+    public void modifyUserData(Admin admin) throws ServerConnectionErrorException;
+    
+    //public void deleteUser(User user) throws ServerConnectionErrorException;
+    
+    public void deleteFree(Free free) throws ServerConnectionErrorException;
+    
+    public void deletePremium(Premium premium) throws ServerConnectionErrorException;
+    
+    public void deleteAdmin(Admin admin) throws ServerConnectionErrorException;
+    
+    public Object findUserById(Long id) throws ServerConnectionErrorException;
+    
+    public Object findUserByLogin(String login) throws ServerConnectionErrorException;
+    
+    public Set<User> findAllUsers() throws ServerConnectionErrorException;
+    
     public void banUser(User user);
-    public void modifyFreeToPremium(User user) throws LoginNotFoundException, 
+    
+    public void modifyUserToFree(Free free) throws LoginNotFoundException, 
             ServerConnectionErrorException;
-    public Free modifyPremiumToFree(Premium premium);
-    public Free modifyAdminToFree(Admin admin);
+    
+    public void modifyUserToPremium(Premium premium) throws LoginNotFoundException, 
+            ServerConnectionErrorException;
+    
+    public void modifyUserToAdmin(Admin admin) throws LoginNotFoundException, 
+            ServerConnectionErrorException;
+    
     public User logIn(User user) throws LoginNotFoundException, 
             UserPasswordNotFoundException, ServerConnectionErrorException;
+    
     public User signUp(User user);
+    
     public void logOut();
 
 }

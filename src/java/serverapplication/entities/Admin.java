@@ -7,7 +7,6 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 //@Table(name = "admin", schema = "team6dbreto2")
-@DiscriminatorColumn(columnDefinition = "Admin")
 @XmlRootElement
 public class Admin extends User implements Serializable {
 

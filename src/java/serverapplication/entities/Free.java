@@ -6,7 +6,6 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,9 +17,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 //@Table(name = "free", schema = "team6dbreto2")
-@DiscriminatorColumn(columnDefinition = "Free")
 @XmlRootElement
 public class Free extends User implements Serializable{
+    
+    public Free() {
+        super();
+    }
+    
+    public Free(User user) {
+        super();
+        this.setLogin(user.getLogin());
+        this.setEmail(user.getEmail());
+        this.setFullName(user.getFullName());
+        this.setStatus(Status.ENABLED);
+        this.setPassword(user.getPassword());
+    }
+    
     private static final long serialVersionUID = 1L;
     /**
      * A int with the count of how many time was the user on our platform
