@@ -21,7 +21,7 @@ import serverapplication.entities.Premium;
 import serverapplication.entities.User;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
-import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
 
@@ -45,12 +45,11 @@ public class EJBUser implements EJBUserLocal {
      * @param user The user object.
      * @throws LoginAlreadyExistsException When login is already taken by
      * another user.
-     * @throws ServerConnectionErrorException When there's an error at the
-     * server.
+     * @throws GenericServerErrorException When there's an error at the server.
      */
     @Override
     public void createUser(User user) throws LoginAlreadyExistsException,
-            ServerConnectionErrorException {
+            GenericServerErrorException {
         // El metodo recibe un user de inicio y nosotros le cargamos los datos de free que necesitemos.
         Free free = null;
         try {
@@ -75,7 +74,7 @@ public class EJBUser implements EJBUserLocal {
             LOGGER.warning("New user created successfully...");
         } catch (EntityExistsException | IllegalArgumentException | TransactionRequiredException ex) {
             LOGGER.warning(ex.getMessage());
-            throw new ServerConnectionErrorException(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -84,9 +83,8 @@ public class EJBUser implements EJBUserLocal {
     // NECESITAMOS UN METODO @PUT EN RESTFUL PARA CADA TIPO DE USUARIO. EL METODO RECIBIRA EL TIPO DE USER QUE VAYA A SER.
     // public void mod(Free free), public void mod(Premium premium), public void mod(Admin admin).
     @Override
-    public void modifyUserData(Free free) throws ServerConnectionErrorException {
+    public void modifyUserData(Free free) throws GenericServerErrorException {
         try {
-            // FALTA METODO PARA CAMBIAR LA CONTRASEÑA
             em.merge(free);
             em.flush();
 
@@ -97,9 +95,8 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void modifyUserData(Premium premium) throws ServerConnectionErrorException {
+    public void modifyUserData(Premium premium) throws GenericServerErrorException {
         try {
-            // FALTA METODO PARA CAMBIAR LA CONTRASEÑA
             em.merge(premium);
             em.flush();
         } catch (Exception ex) {
@@ -108,9 +105,8 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void modifyUserData(Admin admin) throws ServerConnectionErrorException {
+    public void modifyUserData(Admin admin) throws GenericServerErrorException {
         try {
-            // FALTA METODO PARA CAMBIAR LA CONTRASEÑA
             em.merge(admin);
             em.flush();
         } catch (Exception ex) {
@@ -119,23 +115,30 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void deleteFree(Free free) {
-        Query query = em.createQuery("DELETE FROM User U WHERE U.login = :login");
-        query.setParameter("login", free.getLogin() );
+    public void deleteUserById(Long id) {
+        Query query = em.createQuery("DELETE FROM User U WHERE U.id = :id");
+        query.setParameter("id", id);
         query.executeUpdate();
     }
-    
+
+    @Override
+    public void deleteFree(Free free) {
+        Query query = em.createQuery("DELETE FROM User U WHERE U.login = :login");
+        query.setParameter("login", free.getLogin());
+        query.executeUpdate();
+    }
+
     @Override
     public void deletePremium(Premium premium) {
         Query query = em.createQuery("DELETE FROM User U WHERE U.login = :login");
-        query.setParameter("login", premium.getLogin() );
+        query.setParameter("login", premium.getLogin());
         query.executeUpdate();
     }
-    
+
     @Override
     public void deleteAdmin(Admin admin) {
         Query query = em.createQuery("DELETE FROM User U WHERE U.login = :login");
-        query.setParameter("login", admin.getLogin() );
+        query.setParameter("login", admin.getLogin());
         query.executeUpdate();
     }
 
@@ -193,33 +196,88 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void modifyUserToFree(Free free)
-            throws LoginNotFoundException, ServerConnectionErrorException {
+    public void modifyPrivilege(Premium premium, String privilege)
+            throws LoginNotFoundException, GenericServerErrorException {
+        try {
+            switch (privilege) {
+                case "free": {
+                    Query query = em.createNamedQuery("modifyPrivilege")
+                            .setParameter("privilege", privilege)
+                            .setParameter("autorenovation", null)
+                            .setParameter("beginSub", null)
+                            .setParameter("cardNumber", null)
+                            .setParameter("cvc", null)
+                            .setParameter("endSub", null)
+                            .setParameter("expirationMonth", null)
+                            .setParameter("expirationYear", null)
+                            .setParameter("adminDate", null)
+                            .setParameter("timeOnline", 0);
+                    query.executeUpdate();
+                    break;
+                }
+                case "premium": {
+                    Query query = em.createNamedQuery("modifyPrivilege")
+                            .setParameter("privilege", privilege)
+                            .setParameter("autorenovation", premium.isAutorenovation())
+                            .setParameter("beginSub", premium.getBeginSub())
+                            .setParameter("cardNumber", premium.getCardNumber())
+                            .setParameter("cvc", premium.getCvc())
+                            .setParameter("endSub", premium.getEndSub())
+                            .setParameter("expirationMonth", premium.getExpirationMonth())
+                            .setParameter("expirationYear", premium.getExpirationYear())
+                            .setParameter("adminDate", null)
+                            .setParameter("timeOnline", null);
+                    query.executeUpdate();
+                    break;
+                }
+                case "admin": {
+                    Query query = em.createNamedQuery("modifyPrivilege")
+                            .setParameter("privilege", privilege)
+                            .setParameter("autorenovation", null)
+                            .setParameter("beginSub", null)
+                            .setParameter("cardNumber", null)
+                            .setParameter("cvc", null)
+                            .setParameter("endSub", null)
+                            .setParameter("expirationMonth", null)
+                            .setParameter("expirationYear", null)
+                            .setParameter("adminDate", System.currentTimeMillis())
+                            .setParameter("timeOnline", null);
+                    query.executeUpdate();
+                    break;
+                }
+            }
+            em.merge(premium);
+            em.flush();
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
 
-        em.merge(free);
-        em.flush();
     }
-    
+
+    /*
     @Override
-    public void modifyUserToPremium(Premium premium) 
-            throws LoginNotFoundException, ServerConnectionErrorException {
-        
-        em.merge(premium);
-        em.flush();
+    public void modifyUserToPremium(Premium premium)
+            throws LoginNotFoundException, GenericServerErrorException {
+        try {
+            em.merge(premium);
+            em.flush();
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
     }
 
     @Override
-    public void modifyUserToAdmin(Admin admin)
-            throws LoginNotFoundException, ServerConnectionErrorException {
+    public void modifyUserToAdmin(User user)
+            throws LoginNotFoundException, GenericServerErrorException {
 
-        em.merge(admin);
+        em.merge(user);
         em.flush();
     }
-
+     */
     @Override
     public User logIn(User user) throws LoginNotFoundException,
             UserPasswordNotFoundException,
-            ServerConnectionErrorException {
+            GenericServerErrorException {
         User auxUser = null;
         try {
             auxUser = (User) em.createNamedQuery(
@@ -247,12 +305,6 @@ public class EJBUser implements EJBUserLocal {
             throw new UserPasswordNotFoundException();
         }
         return auxUser;
-    }
-
-    @Override
-    public User signUp(User user) {
-
-        return user;
     }
 
     @Override

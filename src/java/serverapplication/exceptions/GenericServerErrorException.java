@@ -9,13 +9,13 @@ package serverapplication.exceptions;
  *
  * @author aimar
  */
-public class ServerConnectionErrorException extends Exception {
+public class GenericServerErrorException extends Exception {
 
     /**
      * Creates a new instance of <code>ServerConnectionErrorException</code>
      * without detail message.
      */
-    public ServerConnectionErrorException() {
+    public GenericServerErrorException() {
     }
 
     /**
@@ -24,7 +24,7 @@ public class ServerConnectionErrorException extends Exception {
      *
      * @param msg the detail message.
      */
-    public ServerConnectionErrorException(String msg) {
+    public GenericServerErrorException(String msg) {
         super(msg);
     }
 }

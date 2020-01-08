@@ -30,6 +30,11 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * This class is an entity.
+ *
+ * @author aimar
+ */
 @NamedQueries({
         @NamedQuery(
             name="findPasswordByLogin",
@@ -44,15 +49,16 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
             name="findUserByLogin",
             query="SELECT u FROM User u WHERE u.login = :login"
-        )       
+        ),
+        @NamedQuery(
+            name="modifyPrivilege",
+            query="UPDATE User u SET u.privilege = :privilege, "
+                    + "u.autorenovation = :autorenovation, u.beginSub = :beginSub, "
+                    + "u.cardNumber = :cardNumber, u.cvc = :cvc, u.endSub = :endSub, "
+                    + "u.expirationMonth = :expirationMonth, u.expirationYear = :expirationYear, "
+                    + "u.adminDate = :adminDate, u.timeOnline = :timeOnline WHERE u.id = :id"
+        )
 })
-
-
-/**
- * This class is an entity.
- *
- * @author aimar
- */
 @Entity
 @Table(name = "user", schema = "team6dbreto2")
 @Inheritance(strategy=SINGLE_TABLE)

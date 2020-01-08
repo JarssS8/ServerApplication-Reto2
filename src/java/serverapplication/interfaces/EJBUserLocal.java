@@ -12,7 +12,7 @@ import serverapplication.entities.Premium;
 import serverapplication.entities.User;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
-import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 
 /**
@@ -22,43 +22,43 @@ import serverapplication.exceptions.UserPasswordNotFoundException;
 public interface EJBUserLocal {
 
     public void createUser(User user) throws LoginAlreadyExistsException, 
-            ServerConnectionErrorException;
+            GenericServerErrorException;
     
-    public void modifyUserData(Free free) throws ServerConnectionErrorException;
+    public void modifyUserData(Free free) throws GenericServerErrorException;
     
-    public void modifyUserData(Premium premium) throws ServerConnectionErrorException;
+    public void modifyUserData(Premium premium) throws GenericServerErrorException;
     
-    public void modifyUserData(Admin admin) throws ServerConnectionErrorException;
+    public void modifyUserData(Admin admin) throws GenericServerErrorException;
     
-    //public void deleteUser(User user) throws ServerConnectionErrorException;
+    public void deleteUserById(Long id) throws GenericServerErrorException;
     
-    public void deleteFree(Free free) throws ServerConnectionErrorException;
+    public void deleteFree(Free free) throws GenericServerErrorException;
     
-    public void deletePremium(Premium premium) throws ServerConnectionErrorException;
+    public void deletePremium(Premium premium) throws GenericServerErrorException;
     
-    public void deleteAdmin(Admin admin) throws ServerConnectionErrorException;
+    public void deleteAdmin(Admin admin) throws GenericServerErrorException;
     
-    public Object findUserById(Long id) throws ServerConnectionErrorException;
+    public Object findUserById(Long id) throws GenericServerErrorException;
     
-    public Object findUserByLogin(String login) throws ServerConnectionErrorException;
+    public Object findUserByLogin(String login) throws GenericServerErrorException;
     
-    public Set<User> findAllUsers() throws ServerConnectionErrorException;
+    public Set<User> findAllUsers() throws GenericServerErrorException;
     
     public void banUser(User user);
     
-    public void modifyUserToFree(Free free) throws LoginNotFoundException, 
-            ServerConnectionErrorException;
+    public void modifyPrivilege(Premium premium, String privilege) throws LoginNotFoundException, 
+            GenericServerErrorException;
     
+    /*
     public void modifyUserToPremium(Premium premium) throws LoginNotFoundException, 
-            ServerConnectionErrorException;
+            GenericServerErrorException;
     
-    public void modifyUserToAdmin(Admin admin) throws LoginNotFoundException, 
-            ServerConnectionErrorException;
+    public void modifyUserToAdmin(User user) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    */
     
     public User logIn(User user) throws LoginNotFoundException, 
-            UserPasswordNotFoundException, ServerConnectionErrorException;
-    
-    public User signUp(User user);
+            UserPasswordNotFoundException, GenericServerErrorException;
     
     public void logOut();
 

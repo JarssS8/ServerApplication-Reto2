@@ -6,8 +6,10 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,19 +23,33 @@ import javax.xml.bind.annotation.XmlRootElement;
 //@Table(name = "admin", schema = "team6dbreto2")
 @XmlRootElement
 public class Admin extends User implements Serializable {
+    
+    public Admin() {
+        super();
+    }
+    
+    public Admin(User user) {
+        super();
+        this.setLogin(user.getLogin());
+        this.setEmail(user.getEmail());
+        this.setFullName(user.getFullName());
+        this.setStatus(Status.ENABLED);
+        this.setPassword(user.getPassword());
+    }
 
     private static final long serialVersionUID = 1L;
     /**
      * A timestamp with the date of one user become admin
      */
     @NotNull
-    private Timestamp adminDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date adminDate;
 
-    public Timestamp getAdminDate() {
+    public Date getAdminDate() {
         return adminDate;
     }
 
-    public void setAdminDate(Timestamp adminDate) {
+    public void setAdminDate(Date adminDate) {
         this.adminDate = adminDate;
     }
 

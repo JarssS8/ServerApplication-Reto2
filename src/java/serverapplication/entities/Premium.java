@@ -21,6 +21,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 //@Table(name = "premium", schema = "team6dbreto2")
 @XmlRootElement
 public class Premium extends User implements Serializable {
+    
+    public Premium() {
+        super();
+    }
+    
+    public Premium(User user) {
+        super();
+        this.setLogin(user.getLogin());
+        this.setEmail(user.getEmail());
+        this.setFullName(user.getFullName());
+        this.setStatus(Status.ENABLED);
+        this.setPassword(user.getPassword());
+    }
 
     private static final long serialVersionUID = 1L;
     /**
