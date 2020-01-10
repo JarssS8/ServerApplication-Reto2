@@ -32,6 +32,8 @@ public interface EJBGroupLocal {
     
     public List<Group> findGroups() throws Exception;
     
+    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception; 
+    
     public List<Group> findAllGroups(String login) throws LoginNotFoundException, Exception;
     
     public void deleteGroup(Long id) throws GroupIdNotFoundException, Exception;

@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.exceptions.GroupIdNotFoundException;
+import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.interfaces.EJBGroupLocal;
 import serverapplication.exceptions.GroupPasswordNotFoundException;
 import serverapplication.exceptions.GroupNameNotFoundException;
@@ -31,7 +32,7 @@ import serverapplication.exceptions.LoginNotFoundException;
 /**
  *
  * @author Diego Urraca
- */
+ */ 
 @Path("group")
 public class GroupFacadeREST{
 
@@ -46,6 +47,8 @@ public class GroupFacadeREST{
         try {
             ejb.createGroup(group);
         }catch(LoginNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+        }catch(GroupNameAlreadyExistException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
@@ -108,7 +111,21 @@ public class GroupFacadeREST{
         }
         return auxGroups;
     }
-
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML})
+    public Group findGroupByName(String groupName){
+        Group group = null;
+        try{
+            group = ejb.findGroupByName(groupName);
+        }catch(GroupNameNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+        }
+        return group;
+    }
+    
     @GET
     @Path("user")
     @Produces({MediaType.APPLICATION_XML})
@@ -132,7 +149,7 @@ public class GroupFacadeREST{
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch (Exception ex) {
-            Logger.getLogger(GroupFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
         }
     }
 }

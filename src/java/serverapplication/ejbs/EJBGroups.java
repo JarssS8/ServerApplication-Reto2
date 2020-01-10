@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.exceptions.GroupIdNotFoundException;
@@ -92,6 +91,10 @@ public class EJBGroups implements EJBGroupLocal {
     @Override
     public List<Group> findGroups() throws Exception {
         return em.createNamedQuery("findGroups").getResultList();
+    }
+    
+    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception{
+        return (Group) em.createNamedQuery("findGroupByName").getSingleResult();
     }
 
     @Override
