@@ -7,6 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Adrian
  */
 @Entity
-//@Table(name = "free", schema = "team6dbreto2")
+@Table(name = "free", schema = "team6dbreto2")
 @XmlRootElement
 public class Free extends User implements Serializable{
     
@@ -26,10 +27,14 @@ public class Free extends User implements Serializable{
     
     public Free(User user) {
         super();
+        this.setId(user.getId());
         this.setLogin(user.getLogin());
         this.setEmail(user.getEmail());
         this.setFullName(user.getFullName());
         this.setStatus(Status.ENABLED);
+        this.setPrivilege(user.getPrivilege());
+        this.setLastAccess(user.getLastAccess());
+        this.setLastPasswordChange(user.getLastPasswordChange());
         this.setPassword(user.getPassword());
     }
     

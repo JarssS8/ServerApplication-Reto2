@@ -12,9 +12,9 @@ import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -22,13 +22,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import serverapplication.entities.Admin;
-import serverapplication.entities.Free;
 import serverapplication.entities.Premium;
 import serverapplication.entities.User;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
 import serverapplication.exceptions.GenericServerErrorException;
+import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 
 /**
@@ -56,88 +55,28 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage()+"aaa");
+            LOGGER.warning(ex.getMessage() + "aaa");
         }
     }
 
     @PUT
-    @Path("/modifyFree/")
     @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserData(Free free) {
+    public void modifyUserData(User user) {
         try {
-            ejb.modifyUserData(free);
-        }catch (GenericServerErrorException ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        // AQUI HACE FALTA UNA EXCEPCION RESTful
-        
-    }
-    
-    @PUT
-    @Path("/modifyPremium/")
-    @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserData(Premium premium) {
-        try {
-            ejb.modifyUserData(premium);
-        }catch (GenericServerErrorException ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        // AQUI HACE FALTA UNA EXCEPCION RESTful
-        
-    }
-    
-    @PUT
-    @Path("/modifyAdmin/")
-    @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserData(Admin admin) {
-        try {
-            ejb.modifyUserData(admin);
-        }catch (GenericServerErrorException ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        // AQUI HACE FALTA UNA EXCEPCION RESTful
-        
-    }
-
-    @DELETE
-    @Path("/deleteByLogin/{login}")
-    public void deleteUserByLogin(@PathParam("login") String login) {
-        try {
-            Object auxUser = ejb.findUserByLogin(login);
-            if (auxUser instanceof Free) {
-                ejb.deleteFree((Free) ejb.findUserByLogin(login));
-            }
-            if (auxUser instanceof Premium) {
-                ejb.deletePremium((Premium) ejb.findUserByLogin(login));
-            }
-            if (auxUser instanceof Admin) {
-                ejb.deleteAdmin((Admin) ejb.findUserByLogin(login));
-            }
+            ejb.modifyUserData(user);
         } catch (GenericServerErrorException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
-        } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
         }
+        // AQUI HACE FALTA UNA EXCEPCION RESTful
+
     }
-    
+
     @DELETE
-    @Path("/deleteById/{id}")
-    public void deleteUserById(@PathParam("id") Long id) {
+    @Path("id/{id}")
+    public void deleteUser(@PathParam("id") Long id) {
         try {
-            Object auxUser = ejb.findUserById(id);
-            if (auxUser instanceof Free) {
-                ejb.deleteFree((Free) ejb.findUserById(id));
-            }
-            if (auxUser instanceof Premium) {
-                ejb.deletePremium((Premium) ejb.findUserById(id));
-            }
-            if (auxUser instanceof Admin) {
-                ejb.deleteAdmin((Admin) ejb.findUserById(id));
-            }
+            ejb.deleteUser((User) ejb.findUserById(id));
         } catch (GenericServerErrorException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -147,36 +86,45 @@ public class RESTUser {
     }
 
     @GET
-    @Path("/logIn")
-    public User logIn(User user) {
-        User auxUser = null;
+    @Path("/logIn/{login}/{password}")
+    public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
+        User user = null;
+        User auxUser = new User();
+        auxUser.setLogin(login);
+        auxUser.setPassword(password);
         try {
-            auxUser = ejb.logIn(user);
+            user = ejb.logIn(auxUser);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         } catch (UserPasswordNotFoundException ex) {
             LOGGER.warning(ex.getMessage());
+            throw new NotAuthorizedException(ex.getMessage());
         } catch (GenericServerErrorException ex) {
             LOGGER.warning(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
-        return auxUser;
+        return user;
     }
 
     @GET
     @Path("id/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Object findUserById(@PathParam("id") Long id)
+    public User findUserById(@PathParam("id") Long id)
             throws GenericServerErrorException {
-        Object user = null;
+        User user = null;
         try {
-            user = ejb.findUserById(id);
+            user = (User) ejb.findUserById(id);
             if (user == null) {
-                LOGGER.warning("RESTUser: Login not found...");
+                LOGGER.warning("RESTUser: User not found...");
                 throw new NotFoundException();
             }
         } catch (GenericServerErrorException ex) {
             LOGGER.warning(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        } catch (UserNotFoundException ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }
         return user;
     }
@@ -214,20 +162,29 @@ public class RESTUser {
         return users;
     }
 
-    // ESTO ES UNA PRUEBA, BORRAR
     @PUT
-    @Path("f/{par1}/{par2}")
-    public void f(@FormParam("par1") Free par1, @PathParam("par2") int par2) {
-        LOGGER.info("Hola mundo");
+    @Path("/FreeToPremium/")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void modifyFreeToPremium(Premium premium) {
+        try {
+            ejb.modifyFreeToPremium(premium);
+        } catch (LoginNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+        }
     }
 
     @PUT
-    @Path("/goFree/")
+    @Path("/FreeToAdmin/")
     @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserToFree(User user) {
+    public void modifyFreeToAdmin(User user) {
         try {
-            Premium premium = new Premium(user);
-            ejb.modifyPrivilege(premium, "free");
+            ejb.modifyFreeToAdmin(user);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
@@ -238,13 +195,13 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
         }
     }
-    
+
     @PUT
-    @Path("/goPremium/")
+    @Path("/PremiumToFree/")
     @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserToPremium(Premium premium) {
+    public void modifyPremiumToFree(User user) {
         try {
-            ejb.modifyPrivilege(premium, "premium");
+            ejb.modifyPremiumToFree(user);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
@@ -255,20 +212,38 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
         }
     }
-    
+
     @PUT
-    @Path("/goAdmin/")
+    @Path("/PremiumToAdmin/")
     @Consumes(MediaType.APPLICATION_XML)
-    public void modifyUserToAdmin(User user) {
+    public void modifyPremiumToAdmin(User user) {
         try {
-            Premium premium = new Premium(user);
-            ejb.modifyPrivilege(premium, "admin");
+            ejb.modifyPremiumToAdmin(user);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (GenericServerErrorException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("/AdminToFree/")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void modifyAdminToFree(User user) {
+        try {
+            ejb.modifyAdminToFree(user);
+        } catch (LoginNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
         }
     }
 

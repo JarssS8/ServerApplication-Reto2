@@ -8,16 +8,12 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import static javax.persistence.InheritanceType.JOINED;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
@@ -35,11 +31,14 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author aimar
  */
+@Entity
+@Table(name = "user", schema = "team6dbreto2")
+@Inheritance(strategy=JOINED)
 @NamedQueries({
         @NamedQuery(
             name="findPasswordByLogin",
             query="SELECT u.password FROM User u WHERE u.login = ("
-                    + "SELECT u FROM User u WHERE u.login = :login) "
+                    + "SELECT u.login FROM User u WHERE u.login = :login) "
                     + "AND u.password = :password"
         ),
         @NamedQuery(
@@ -51,18 +50,15 @@ import javax.xml.bind.annotation.XmlTransient;
             query="SELECT u FROM User u WHERE u.login = :login"
         ),
         @NamedQuery(
-            name="modifyPrivilege",
-            query="UPDATE User u SET u.privilege = :privilege, "
-                    + "u.autorenovation = :autorenovation, u.beginSub = :beginSub, "
-                    + "u.cardNumber = :cardNumber, u.cvc = :cvc, u.endSub = :endSub, "
-                    + "u.expirationMonth = :expirationMonth, u.expirationYear = :expirationYear, "
-                    + "u.adminDate = :adminDate, u.timeOnline = :timeOnline WHERE u.id = :id"
+            name="modifyUserData",
+            query="UPDATE User u SET u.email = :email, u.fullName = :fullName "
+                    + "WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findGroupsTuledByUser",
+            query="SELECT g FROM User u WHERE u.login = :login"
         )
 })
-@Entity
-@Table(name = "user", schema = "team6dbreto2")
-@Inheritance(strategy=SINGLE_TABLE)
-@DiscriminatorColumn(name = "privilege", discriminatorType=DiscriminatorType.STRING)
 @XmlRootElement
 public class User implements Serializable {
 
@@ -71,7 +67,7 @@ public class User implements Serializable {
      * The Id for the user.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     /**
      * The login value for the user.
@@ -94,12 +90,12 @@ public class User implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
-     * The privilege for the user.
-     
+    The privilege for the user.
+    */
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Privilege privilege;*/
-    /**
+    private Privilege privilege;
+    /** 
      * The password value for the user.
      */
     @NotNull
@@ -187,14 +183,14 @@ public class User implements Serializable {
     public void setProfilePicture(Byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
-    /*
+    
     public Privilege getPrivilege() {
         return privilege;
     }
 
     public void setPrivilege(Privilege privilege) {
         this.privilege = privilege;
-    }*/
+    }
 
     public String getPassword() {
         return password;

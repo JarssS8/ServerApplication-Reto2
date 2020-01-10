@@ -8,6 +8,7 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Adrian
  */
 @Entity
-//@Table(name = "premium", schema = "team6dbreto2")
+@Table(name = "premium", schema = "team6dbreto2")
 @XmlRootElement
 public class Premium extends User implements Serializable {
     
@@ -28,10 +29,14 @@ public class Premium extends User implements Serializable {
     
     public Premium(User user) {
         super();
+        this.setId(user.getId());
         this.setLogin(user.getLogin());
         this.setEmail(user.getEmail());
         this.setFullName(user.getFullName());
         this.setStatus(Status.ENABLED);
+        this.setPrivilege(user.getPrivilege());
+        this.setLastAccess(user.getLastAccess());
+        this.setLastPasswordChange(user.getLastPasswordChange());
         this.setPassword(user.getPassword());
     }
 
