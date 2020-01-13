@@ -55,8 +55,16 @@ import javax.xml.bind.annotation.XmlTransient;
                     + "WHERE u.id = :id"
         ),
         @NamedQuery(
-            name="findGroupsTuledByUser",
-            query="SELECT g FROM User u WHERE u.login = :login"
+            name="findRatingsOfUser",
+            query="SELECT u FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findDocumentsOfUser",
+            query="SELECT u FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findGroupsOfUser",
+            query="SELECT u FROM User u WHERE u.id = :id"
         )
 })
 @XmlRootElement

@@ -44,6 +44,7 @@ public class EJBUser implements EJBUserLocal {
 
     //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
+    
     private EntityManager em;
 
     /**
@@ -278,8 +279,13 @@ public class EJBUser implements EJBUserLocal {
     }
     
     @Override
-    public Set<Rating> findRatingsOfUser(User user) {
-        
+    public Set<Rating> findRatingsOfUser(Long id) {
+        User user = null;
+        try {
+            user = em.find(User.class, id);
+        } catch (Exception ex) {
+            
+        }
         return new HashSet<> (user.getRatings());
     }
     

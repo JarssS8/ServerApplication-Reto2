@@ -23,42 +23,137 @@ import serverapplication.exceptions.UserPasswordNotFoundException;
  */
 public interface EJBUserLocal {
 
+    /**
+     * This method creates a new user and stores it in the database.
+     * @param user A User object.
+     * @throws LoginAlreadyExistsException If the login already exists.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
     public void createUser(User user) throws LoginAlreadyExistsException, 
             GenericServerErrorException;
-    
+    /**
+     * This method modifies an existing user's email and full name and stores 
+     * them in the database.
+     * @param user A User object.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
     public void modifyUserData(User user) throws GenericServerErrorException;
-    
-    public void deleteUser(User user) throws UserNotFoundException, GenericServerErrorException;
-    
-    public Object findUserById(Long id) throws UserNotFoundException, GenericServerErrorException;
-    
+    /**
+     * This method deletes an existing user from the database.
+     * @param user A User object.
+     * @throws UserNotFoundException If the user searched doesn't exist.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void deleteUser(User user) throws UserNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * This method searches a user in the database by its Id.
+     * @param id A Long that contains the id to search by.
+     * @return An Object object with the user.
+     * @throws UserNotFoundException If the user searched doesn't exist.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public Object findUserById(Long id) throws UserNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param login
+     * @return
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
     public Object findUserByLogin(String login) throws GenericServerErrorException;
-    
+    /**
+     * 
+     * @return
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
     public Set<User> findAllUsers() throws GenericServerErrorException;
-    
-    public void modifyFreeToPremium(Premium premium) throws LoginNotFoundException, GenericServerErrorException;
-    
-    public void modifyFreeToAdmin(User user) throws LoginNotFoundException, GenericServerErrorException;
-    
-    public void modifyPremiumToFree(User user) throws LoginNotFoundException, GenericServerErrorException;
-    
-    public void modifyPremiumToAdmin(User user) throws LoginNotFoundException, GenericServerErrorException;
-    
-    public void modifyAdminToFree(User user) throws LoginNotFoundException, GenericServerErrorException;
-    
-    public Set<Rating> findRatingsOfUser(User user);
-    
+    /**
+     * 
+     * @param premium
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void modifyFreeToPremium(Premium premium) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param user A User object.
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void modifyFreeToAdmin(User user) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param user A User object.
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void modifyPremiumToFree(User user) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param user A User object.
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void modifyPremiumToAdmin(User user) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param user A User object.
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void modifyAdminToFree(User user) throws LoginNotFoundException, 
+            GenericServerErrorException;
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public Set<Rating> findRatingsOfUser(Long id);
+    /**
+     * 
+     * @param user
+     * @return 
+     */
     public Set<Document> findDocumentsOfUser(User user);
-    
+    /**
+     * 
+     * @param user A User object.
+     * @return 
+     */
     public Set<Group> findGroupsOfUser(User user);
-    
+    /**
+     * 
+     * @param user A User object.
+     * @return 
+     */
     public Set<Group> findGroupsRuledByUser(User user);
-    
+    /**
+     * 
+     * @param user A User object.
+     * @return
+     * @throws LoginNotFoundException
+     * @throws UserPasswordNotFoundException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
     public User logIn(User user) throws LoginNotFoundException, 
             UserPasswordNotFoundException, GenericServerErrorException;
-    
-    public User signUp(User user) throws LoginAlreadyExistsException, GenericServerErrorException;
-    
+    /**
+     * 
+     * @param user A User object.
+     * @return
+     * @throws LoginAlreadyExistsException
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public User signUp(User user) throws LoginAlreadyExistsException, 
+            GenericServerErrorException;
+    /**
+     * 
+     */
     public void logOut();
 
 }

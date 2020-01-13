@@ -22,7 +22,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import serverapplication.entities.Document;
+import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
+import serverapplication.entities.Rating;
 import serverapplication.entities.User;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
@@ -247,4 +250,45 @@ public class RESTUser {
         }
     }
 
+    @GET
+    @Path("/findRatingsOfUser/")
+    @Produces(MediaType.APPLICATION_XML)
+    public Set<Rating> findRatingsOfUser(@PathParam("id") Long id) {
+        Set<Rating> ratings = null;
+        try {
+            ratings = ejb.findRatingsOfUser(id);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return ratings;
+    }
+
+    @GET
+    @Path("/findDocumentsOfUser/")
+    @Consumes(MediaType.APPLICATION_XML)
+    public Set<Document> findDocumentsOfUser(User user) {
+        Set<Document> documents = null;
+        try {
+            documents = ejb.findDocumentsOfUser(user);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return documents;
+    }
+
+    @GET
+    @Path("/findGroupsOfUser/")
+    @Consumes(MediaType.APPLICATION_XML)
+    public Set<Group> findGroupOfUser(User user) {
+        Set<Group> groups = null;
+        try {
+            groups = ejb.findGroupsOfUser(user);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return groups;
+    }
 }
