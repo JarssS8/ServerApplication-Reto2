@@ -30,11 +30,11 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(serverapplication.rest.AdminFacadeREST.class);
-        resources.add(serverapplication.rest.CategoryFacadeREST.class);
         resources.add(serverapplication.rest.DocumentFacadeREST.class);
         resources.add(serverapplication.rest.FreeFacadeREST.class);
         resources.add(serverapplication.rest.GroupFacadeREST.class);
         resources.add(serverapplication.rest.PremiumFacadeREST.class);
+        resources.add(serverapplication.rest.RESTCategory.class);
         resources.add(serverapplication.rest.RatingFacadeREST.class);
         resources.add(serverapplication.rest.UserFacadeREST.class);
     }

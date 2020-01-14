@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,23 +6,42 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Timestamp;
-
+import java.util.Date;
 import java.util.Set;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+@NamedQueries({
+    @NamedQuery(
+        name="findAllDocuments",
+        query="SELECT d FROM Document d ORDER BY d.id ASC"),
+    @NamedQuery(
+        name="findDocumentNameByParameters",
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) OR d.category = :category OR d.uploadDate = :uploadDate"),
+    
+    @NamedQuery(
+        name="findRatingsOfDocument",
+        query="SELECT d FROM Document d WHERE d.id = :id"
+    )
+})
 
 /**
  * Entity class for Document.
@@ -36,8 +55,9 @@ public class Document implements Serializable{
     /**
      * Id to identificate the document
      */
-    @EmbeddedId
-    private RatingId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     /**
      * The name of the document
      */
@@ -47,7 +67,8 @@ public class Document implements Serializable{
      * The date when the document has been upload
      */
     @NotNull
-    private Timestamp uploadDate;
+    @Temporal(TemporalType.DATE)
+    private Date uploadDate;
     /**
      * The total rating of the document
      */
@@ -59,35 +80,50 @@ public class Document implements Serializable{
     /**
      * The file itself
      */
-    @NotNull
+    //@NotNull
     @Lob
-    private Blob file;
+    @Basic(fetch=EAGER)
+    private byte[] file;
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy="document")
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER)
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private User user;
     /**
      * The category of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Category category;
     /**
      * The author group of the document
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Group group;
     
-    public RatingId getId() {
+    public Document(){
+    }
+    
+    public Document(Long id,String name, String author, Date uploadDate, int totalRating, int ratingCount){
+        this.id=id;
+        this.name=name;
+        this.user = new User();
+        this.user.setLogin(author);
+        this.uploadDate=uploadDate;
+        this.totalRating=totalRating;
+        this.ratingCount=ratingCount;
+        
+    }
+    
+    public Long getId() {
         return id;
     }
 
-    public void setId(RatingId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -99,11 +135,11 @@ public class Document implements Serializable{
         this.name = name;
     }
 
-    public Timestamp getUploadDate() {
+    public Date getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Timestamp uploadDate) {
+    public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
     }
 
@@ -123,15 +159,14 @@ public class Document implements Serializable{
         this.ratingCount = ratingAccount;
     }
 
-    public Blob getFile() {
+    public byte[] getFile() {
         return file;
     }
 
-    public void setFile(Blob file) {
+    public void setFile(byte[] file) {
         this.file = file;
     }
 
-    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -148,7 +183,7 @@ public class Document implements Serializable{
        public User getUser() {
         return user;
     }
-
+    
     public Category getCategory() {
         return category;
     }

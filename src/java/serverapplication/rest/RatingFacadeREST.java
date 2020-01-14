@@ -6,86 +6,112 @@
 package serverapplication.rest;
 
 import java.util.List;
+import java.util.logging.Logger;
+import serverapplication.interfaces.EJBDocumentRatingLocal;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
+import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.ServerConnectionErrorException;
 
 /**
  *
- * @author Adrian
+ * @author Gaizka Andrés
  */
 @Stateless
-@Path("serverapplication.entities.rating")
-public class RatingFacadeREST extends AbstractFacade<Rating> {
-
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
-
-    public RatingFacadeREST() {
-        super(Rating.class);
-    }
-
+@Path("rating")
+public class RatingFacadeREST{
+    
+    private static final Logger LOGGER = Logger.getLogger("rest");
+    
+    /**
+     * Injection of the ejb
+     */
+    @EJB
+    private EJBDocumentRatingLocal ejb;
+    
+    /**
+     * Method who use the ejb to create a Rating
+     * @param rating the rating will be created
+     */
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Rating entity) {
-        super.create(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void newDocumentRating(Rating rating){
+        ejb.newDocumentRating(rating);
     }
-
-    @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Rating entity) {
-        super.edit(entity);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
-    }
-
+    /**
+     * Method who use the ejb to search all the ratings
+     * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
+     */
     @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Rating find(@PathParam("id") Long id) {
-        return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Rating> findAll() {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Rating> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Rating> findAllRatings(){
+        List<Rating> ratings = null;
+        try {
+            ratings = ejb.findAllRatings();
+        } catch (RatingNotFoundException ex) {
+           LOGGER.severe(ex.getMessage());
+           throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return ratings;
     }
     
+    /**
+     * Method who use the ejb to mofify the Rating
+     * @param rating the rating will be modified
+     * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
+     */
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void updateRating(Rating rating) {
+        try {
+            ejb.updateRating(rating);
+        } catch (RatingNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    /**
+     * Method who use the ejb to delete a Rating
+     * @param rating the rating will be deleted
+     * @throws RatingNotFoundException exception if are no rating 
+     * @throws ServerConnectionErrorException exception if are a problem with 
+     * the server
+     */
+    @DELETE
+    @Path("{id}")
+    public void deleteRating(Long id) {
+        try {
+            ejb.deleteRating(ejb.findRatingById(id));
+        } catch (RatingNotFoundException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (ServerConnectionErrorException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+ 
 }
