@@ -25,6 +25,7 @@ import serverapplication.interfaces.EJBGroupLocal;
 import serverapplication.exceptions.GroupPasswordNotFoundException;
 import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.exceptions.UserNotFoundException;
 
 
 
@@ -85,6 +86,8 @@ public class GroupFacadeREST{
     public void joinGroup(@PathParam("groupName") String groupName,@PathParam("password") String password, @PathParam("usr_id") Long usr_id){
          try{
             ejb.joinGroup(groupName, password, usr_id);
+        }catch(UserNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(GroupPasswordNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(GroupNameNotFoundException ex){

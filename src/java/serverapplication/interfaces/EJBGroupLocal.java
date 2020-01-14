@@ -14,6 +14,7 @@ import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.GroupPasswordNotFoundException;
 import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.exceptions.UserNotFoundException;
 
 /**
  *
@@ -26,7 +27,7 @@ public interface EJBGroupLocal {
     
     public void modifyGroup(Group group) throws GroupNameNotFoundException, Exception;
 
-    public void joinGroup(String groupName,String password, Long usr_id) throws GroupPasswordNotFoundException, LoginNotFoundException, GroupNameNotFoundException, Exception;
+    public void joinGroup(String groupName,String password, Long usr_id) throws UserNotFoundException, GroupPasswordNotFoundException, LoginNotFoundException, GroupNameNotFoundException, Exception;
     
     public void leaveGroup(Long id,Long usr_id) throws GroupIdNotFoundException, Exception;
     

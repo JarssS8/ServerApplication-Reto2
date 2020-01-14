@@ -19,6 +19,7 @@ import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.GroupPasswordNotFoundException;
 import serverapplication.exceptions.LoginNotFoundException;
+import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBGroupLocal;
 
 /**
@@ -67,13 +68,18 @@ public class EJBGroups implements EJBGroupLocal {
      * @throws Exception 
      */
     @Override
-    public void joinGroup(String groupName, String password, Long usr_id) throws GroupPasswordNotFoundException, GroupNameNotFoundException, Exception {
+    public void joinGroup(String groupName, String password, Long usr_id) throws UserNotFoundException,GroupPasswordNotFoundException, GroupNameNotFoundException, Exception {
         Group group = null;
+        User user = null;
         group = (Group) em.createNamedQuery("findGroupByNameAndPass").
                 setParameter("groupName", groupName).
                 setParameter("password", password).getSingleResult();
         if (null != group) {
-            //group.setUsers(user); //TODO llamar entity manager usuarios para buscar el del usr_id y pasarle un usuario entero
+            ArrayList <User> userList= null;
+            user = em.find(User.class, usr_id);
+            userList = (ArrayList<User>) em.createNamedQuery("findUsersOfGroup").setParameter("id", group.getId());
+            userList.add(user);
+            group.setUsers((Set<User>) userList);
             em.merge(group);
             em.flush();
         } else {
