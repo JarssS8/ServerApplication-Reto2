@@ -29,8 +29,8 @@ import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
-import serverapplication.exceptions.DocumenttNotFoundException;
-import serverapplication.exceptions.RatinggNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
@@ -87,7 +87,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to modify a document
      * @param document the document will be modified
-     * @throws DocumenttNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -97,7 +97,7 @@ public class DocumentFacadeREST{
     public void modifyDocument(Document document) {
         try {
             ejb.modifyDocument(document);
-        } catch (DocumenttNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -109,7 +109,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to delete a document
      * @param document the document will be deleted
-     * @throws DocumenttNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -119,7 +119,7 @@ public class DocumentFacadeREST{
     public void deleteDocument(@PathParam("id") Long id) {
         try {
             ejb.deleteDocument(ejb.findDocumentById(id));
-        } catch (DocumenttNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -131,7 +131,7 @@ public class DocumentFacadeREST{
     /**
      * Method who use the ejb to search all the documents
      * @return All the documents list
-     * @throws DocumenttNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -141,7 +141,7 @@ public class DocumentFacadeREST{
         List<Document> documents = null;
         try {
             documents = ejb.findAllDocuments();
-        } catch (DocumenttNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -156,7 +156,7 @@ public class DocumentFacadeREST{
      * Method who use the ejb to search a document by his id
      * @param id the id to search by
      * @return the document with the specified id
-     * @throws DocumenttNotFoundException exception if are no document 
+     * @throws DocumentNotFoundException exception if are no document 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -167,7 +167,7 @@ public class DocumentFacadeREST{
         Document document = null;
         try {
             document = ejb.findDocumentById(id);
-        } catch (DocumenttNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -204,7 +204,7 @@ public class DocumentFacadeREST{
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));
             }
-        } catch (DocumenttNotFoundException ex) {
+        } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -233,7 +233,7 @@ public class DocumentFacadeREST{
         Set<Rating> ratingsDocument = null;
         try {
             ratingsDocument =  (Set<Rating>) ejb.findRatingsOfDocument(id);
-        } catch (RatinggNotFoundException ex) {
+        } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {

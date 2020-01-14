@@ -11,7 +11,7 @@ import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
 import serverapplication.exceptions.CategoryNotFoundException;
-import serverapplication.exceptions.DocumenttNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
 
 /**
  *
@@ -53,11 +53,11 @@ public interface CategoryEJBLocal {
      * into {@link Category} object that match with catName
      * @throws serverapplication.exceptions.CategoryNotFoundException Throw this
      * exception when can't find the id of the {@link Category}
-     * @throws serverapplication.exceptions.DocumenttNotFoundException Throw this
+     * @throws serverapplication.exceptions.DocumentNotFoundException Throw this
      * exception when can't find the id of the {@link Document}
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Document findDocumentsByCategory(String catName, String docName)throws CategoryNotFoundException,DocumenttNotFoundException,Exception;
+    public Document findDocumentsByCategory(String catName, String docName)throws CategoryNotFoundException,DocumentNotFoundException,Exception;
     
         /**
      * Find all the {@link Category} that are in the data base

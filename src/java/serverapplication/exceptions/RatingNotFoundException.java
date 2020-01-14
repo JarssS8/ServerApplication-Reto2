@@ -9,13 +9,13 @@ package serverapplication.exceptions;
  *
  * @author aimar
  */
-public class RatinggNotFoundException extends Exception {
+public class RatingNotFoundException extends Exception {
 
     /**
      * Creates a new instance of <code>RatingNotFoundException</code> without
      * detail message.
      */
-    public RatinggNotFoundException() {
+    public RatingNotFoundException() {
     }
 
     /**
@@ -24,7 +24,7 @@ public class RatinggNotFoundException extends Exception {
      *
      * @param msg the detail message.
      */
-    public RatinggNotFoundException(String msg) {
+    public RatingNotFoundException(String msg) {
         super(msg);
     }
 }
