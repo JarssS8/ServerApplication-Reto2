@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
 /**
  * Class category, with the different categories for our application. Every
  * document must have a category
@@ -57,7 +56,7 @@ public class Category implements Serializable {
     /**
      * A collection with the documents of this category
      */
-    @OneToMany(mappedBy = "category", fetch = EAGER)
+    @OneToMany(mappedBy = "category")
     private Set<Document> documents;
 
     public Long getId() {
@@ -75,7 +74,7 @@ public class Category implements Serializable {
     public void setName(String Name) {
         this.name = Name;
     }
-
+    
     @XmlTransient
     public Set<Document> getDocuments() {
         return documents;

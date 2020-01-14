@@ -26,64 +26,65 @@ import serverapplication.entities.User;
  */
 @Stateless
 @Path("serverapplication.entities.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+public class UserFacadeREST {
 
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
 
-    public UserFacadeREST() {
-        super(User.class);
-    }
+    
 
     @POST
-    @Override
+    
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(User entity) {
-        super.create(entity);
+        
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, User entity) {
-        super.edit(entity);
+        
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
+        
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User find(@PathParam("id") Long id) {
-        return super.find(id);
+        return null;
     }
 
     @GET
-    @Override
+   
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findAll() {
-        return super.findAll();
+        return null;
+
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        return null;
+        
     }
 
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
-        return String.valueOf(super.count());
+        return null;
+        
     }
 
-    @Override
+    
     protected EntityManager getEntityManager() {
         return em;
     }

@@ -35,7 +35,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * Entity manager object.
      */
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
+    private EntityManager em; 
 
     /**
      * Finds a {@link Category} using a parameter id

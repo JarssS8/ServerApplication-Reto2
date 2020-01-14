@@ -101,6 +101,5 @@ public interface CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     public void deleteCategory(Long id) throws CategoryNotFoundException,Exception;
-   
 
 }
