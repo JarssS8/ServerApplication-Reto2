@@ -21,7 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
-import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.RatinggNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
 
 /**
@@ -51,7 +51,7 @@ public class RatingFacadeREST{
     }
     /**
      * Method who use the ejb to search all the ratings
-     * @throws RatingNotFoundException exception if are no rating 
+     * @throws RatinggNotFoundException exception if are no rating 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -61,7 +61,7 @@ public class RatingFacadeREST{
         List<Rating> ratings = null;
         try {
             ratings = ejb.findAllRatings();
-        } catch (RatingNotFoundException ex) {
+        } catch (RatinggNotFoundException ex) {
            LOGGER.severe(ex.getMessage());
            throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -74,7 +74,7 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to mofify the Rating
      * @param rating the rating will be modified
-     * @throws RatingNotFoundException exception if are no rating 
+     * @throws RatinggNotFoundException exception if are no rating 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -84,7 +84,7 @@ public class RatingFacadeREST{
     public void updateRating(Rating rating) {
         try {
             ejb.updateRating(rating);
-        } catch (RatingNotFoundException ex) {
+        } catch (RatinggNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
@@ -96,7 +96,7 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to delete a Rating
      * @param rating the rating will be deleted
-     * @throws RatingNotFoundException exception if are no rating 
+     * @throws RatinggNotFoundException exception if are no rating 
      * @throws ServerConnectionErrorException exception if are a problem with 
      * the server
      */
@@ -105,7 +105,7 @@ public class RatingFacadeREST{
     public void deleteRating(Long id) {
         try {
             ejb.deleteRating(ejb.findRatingById(id));
-        } catch (RatingNotFoundException ex) {
+        } catch (RatinggNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {

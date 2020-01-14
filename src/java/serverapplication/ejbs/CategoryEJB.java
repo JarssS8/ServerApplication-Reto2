@@ -16,7 +16,7 @@ import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
 import serverapplication.exceptions.CategoryNotFoundException;
-import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.DocumenttNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -85,12 +85,12 @@ public class CategoryEJB implements CategoryEJBLocal {
      * into {@link Category} object that match with catName
      * @throws serverapplication.exceptions.CategoryNotFoundException Throw this
      * exception when can't find the id of the {@link Category}
-     * @throws serverapplication.exceptions.DocumentNotFoundException Throw this
+     * @throws serverapplication.exceptions.DocumenttNotFoundException Throw this
      * exception when can't find the id of the {@link Document}
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Document findDocumentsByCategory(String catName, String docName) throws CategoryNotFoundException, DocumentNotFoundException, Exception {
+    public Document findDocumentsByCategory(String catName, String docName) throws CategoryNotFoundException, DocumenttNotFoundException, Exception {
         Category category = null;
         category = (Category) em.createNamedQuery("findDocumentsByCategory").setParameter("name", catName).getSingleResult();
         if (category != null) {
@@ -99,7 +99,7 @@ public class CategoryEJB implements CategoryEJBLocal {
                     return aux;
                 }
             }
-            throw new DocumentNotFoundException();
+            throw new DocumenttNotFoundException();
         } else {
             throw new CategoryNotFoundException();
         }

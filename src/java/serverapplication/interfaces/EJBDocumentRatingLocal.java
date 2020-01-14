@@ -12,8 +12,8 @@ import javax.ejb.Local;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
-import serverapplication.exceptions.DocumentNotFoundException;
-import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.DocumenttNotFoundException;
+import serverapplication.exceptions.RatinggNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
 
 /**
@@ -27,29 +27,29 @@ public interface EJBDocumentRatingLocal {
     
     public void newDocument(Document document);
 
-    public void modifyDocument(Document document) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public void modifyDocument(Document document) throws DocumenttNotFoundException,ServerConnectionErrorException;
     
     public void deleteDocument(Document document);
     
-    public List<Document> findAllDocuments() throws DocumentNotFoundException,ServerConnectionErrorException;
+    public List<Document> findAllDocuments() throws DocumenttNotFoundException,ServerConnectionErrorException;
     
-    public Document findDocumentById(Long id) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public Document findDocumentById(Long id) throws DocumenttNotFoundException,ServerConnectionErrorException;
     
-    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumenttNotFoundException,ServerConnectionErrorException;
     
-    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
+    public Set<Rating> findRatingsOfDocument(Long id) throws RatinggNotFoundException,ServerConnectionErrorException;
     
     //----------------------Rating-----------------------------
     
     public void newDocumentRating(Rating Rating);
     
-    public List<Rating> findAllRatings() throws RatingNotFoundException,ServerConnectionErrorException;
+    public List<Rating> findAllRatings() throws RatinggNotFoundException,ServerConnectionErrorException;
     
-    public Rating findRatingById(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
+    public Rating findRatingById(Long id) throws RatinggNotFoundException,ServerConnectionErrorException;
     
-    public void updateRating(Rating Rating) throws RatingNotFoundException,ServerConnectionErrorException;
+    public void updateRating(Rating Rating) throws RatinggNotFoundException,ServerConnectionErrorException;
     
-    public void deleteRating(Rating rating) throws RatingNotFoundException,ServerConnectionErrorException; 
+    public void deleteRating(Rating rating) throws RatinggNotFoundException,ServerConnectionErrorException; 
     
    
 
