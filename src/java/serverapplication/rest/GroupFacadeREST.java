@@ -6,7 +6,6 @@
 package serverapplication.rest;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -35,12 +34,15 @@ import serverapplication.exceptions.LoginNotFoundException;
  */ 
 @Path("group")
 public class GroupFacadeREST{
-
     private static final Logger LOGGER = Logger.getLogger("serverapplication.rest.GroupFacadeREST");
 
     @EJB
     private EJBGroupLocal ejb;
 
+    /**
+     * Method that creates a group
+     * @param group 
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void createGroup(Group group){//The admin comes inside the group
@@ -51,33 +53,40 @@ public class GroupFacadeREST{
         }catch(GroupNameAlreadyExistException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(Exception ex){
-            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            LOGGER.warning("GroupFacadeREST: "+ ex.getMessage());
         }
-        
     }
 
+    /**
+     * Method that modify the group
+     * @param group 
+     */
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
     public void modifyGroup(Group group) {
         try{
             ejb.modifyGroup(group);
-        }catch(LoginNotFoundException ex){
+        }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
         }
     }
  
+    /**
+     * Method that joins a user to a group
+     * @param groupName
+     * @param password
+     * @param usr_id 
+     */
     @PUT
-    @Path("groupName/{groupName}/password/{password}")
+    @Path("join/{groupName}/{password}/{usr_id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void joinGroup(@PathParam("groupName") String groupName,@PathParam("password") String password, User user){
+    public void joinGroup(@PathParam("groupName") String groupName,@PathParam("password") String password, @PathParam("usr_id") Long usr_id){
          try{
-            ejb.joinGroup(groupName, password, user);
+            ejb.joinGroup(groupName, password, usr_id);
         }catch(GroupPasswordNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
-        }catch(LoginNotFoundException ex){
-            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(Exception ex){
@@ -85,21 +94,28 @@ public class GroupFacadeREST{
         }
     }
     
+    /**
+     * Method that kicks a user out of a group
+     * @param id
+     * @param usr_id 
+     */
     @PUT
-    @Path("id/{id}")
+    @Path("leave/{id}/{usr_id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void leaveGroup(@PathParam("id") Long id,User user){
+    public void leaveGroup(@PathParam("id") Long id,@PathParam("usr_id") Long usr_id){
         try{
-            ejb.leaveGroup(id, user);
-        }catch(LoginNotFoundException ex){
-            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
-        }catch(GroupNameNotFoundException ex){
+            ejb.leaveGroup(id, usr_id);
+        }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
         }
     }
     
+    /**
+     * Method that gets all the groups
+     * @return list of groups
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Group> findGroups() {
@@ -112,9 +128,15 @@ public class GroupFacadeREST{
         return auxGroups;
     }
     
+    /**
+     * Method that gets a group by name
+     * @param groupName
+     * @return list of groups
+     */
     @GET
+    @Path("{groupName}")
     @Produces({MediaType.APPLICATION_XML})
-    public Group findGroupByName(String groupName){
+    public Group findGroupByName(@PathParam("groupName") String groupName){
         Group group = null;
         try{
             group = ejb.findGroupByName(groupName);
@@ -126,26 +148,56 @@ public class GroupFacadeREST{
         return group;
     }
     
+    
+    /**
+     * Method that gets the users of a group
+     * @param gid group id
+     * @return list of users
+     */
     @GET
-    @Path("user")
+    @Path("gid/{gid}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Group> findAllGroups(String login) {
-        List<Group> groups = null;
+    public List<User> findUsersOfGroup(Long gid) {
+        List<User> users = null;
         try{
-            groups = ejb.findAllGroups(login);
-        }catch(LoginNotFoundException ex){
-            LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            users = ejb.findUsersOfGroup(gid);
+        }catch(GroupIdNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST:" + ex.getMessage());
         }catch(Exception ex){
-            LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            LOGGER.warning("GroupFacadeREST: "+ ex.getMessage());
         }
-        return groups;
+        return users;
     }
     
+    /**
+     * Method that gets a group by id
+     * @param id
+     * @return list of groups
+     */
+    @GET
+    @Path("id/{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Group findGroupById(@PathParam("id") Long id){
+        Group group = null;
+        try{
+            group = ejb.findGroupById(id);
+        }catch(GroupIdNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+        }
+        return group;
+    }
+    
+    /**
+     * Method that deletes a group
+     * @param id 
+     */
     @DELETE
-    @Consumes({MediaType.APPLICATION_XML})
-    public void deleteGroup (Long id){
+    @Path("id/{id}")
+    public void deleteGroup (@PathParam("id") Long id){
         try {
-            ejb.deleteGroup(id);
+            ejb.deleteGroup(ejb.findGroupById(id));
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
         }catch (Exception ex) {

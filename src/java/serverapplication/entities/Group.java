@@ -23,9 +23,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
     @NamedQuery(
-    name="deleteGroup",
-    query="DELETE FROM Group g WHERE g.name = :groupName"),
-    @NamedQuery(
     name="findGroups",
     query="SELECT g FROM Group g"),
     @NamedQuery(
@@ -38,9 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     name="findGroupById",
     query="SELECT g FROM Group g WHERE g.id = :id"),
     @NamedQuery(
-    name="findAllGroups",
-    query="SELECT g FROM Group g" /*WHERE g.users.login = :login"*/)
-        //Corregir, aimar tiene que hacer esta query en su codigo de usuarios
+    name="findUsersOfGroup",
+    query="SELECT g FROM Group g WHERE g.id = :id")
 })
 
 /**

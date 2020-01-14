@@ -24,17 +24,19 @@ public interface EJBGroupLocal {
     
     public void createGroup(Group group) throws GroupNameAlreadyExistException, LoginNotFoundException, Exception;
     
-    public void modifyGroup(Group group) throws LoginNotFoundException, Exception;
+    public void modifyGroup(Group group) throws GroupNameNotFoundException, Exception;
 
-    public void joinGroup(String groupName,String password, User user) throws GroupPasswordNotFoundException, LoginNotFoundException, GroupNameNotFoundException, Exception;
+    public void joinGroup(String groupName,String password, Long usr_id) throws GroupPasswordNotFoundException, LoginNotFoundException, GroupNameNotFoundException, Exception;
     
-    public void leaveGroup(Long id,User user) throws LoginNotFoundException, GroupNameNotFoundException, Exception;
+    public void leaveGroup(Long id,Long usr_id) throws GroupIdNotFoundException, Exception;
     
     public List<Group> findGroups() throws Exception;
     
     public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception; 
     
-    public List<Group> findAllGroups(String login) throws LoginNotFoundException, Exception;
+    public List<User> findUsersOfGroup(Long id) throws GroupIdNotFoundException, Exception;
     
-    public void deleteGroup(Long id) throws GroupIdNotFoundException, Exception;
+    public Group findGroupById(Long id) throws GroupIdNotFoundException, Exception; 
+    
+    public void deleteGroup(Group group) throws GroupIdNotFoundException, Exception;
 }
