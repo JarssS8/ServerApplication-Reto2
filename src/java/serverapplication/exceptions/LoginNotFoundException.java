@@ -7,7 +7,7 @@ package serverapplication.exceptions;
 
 /**
  *
- * @author 2dam
+ * @author aimar
  */
 public class LoginNotFoundException extends Exception {
 

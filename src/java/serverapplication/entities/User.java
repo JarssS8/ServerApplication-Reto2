@@ -6,19 +6,18 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import static javax.persistence.InheritanceType.JOINED;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -33,8 +32,41 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author aimar
  */
 @Entity
-@Inheritance(strategy=JOINED)
 @Table(name = "user", schema = "team6dbreto2")
+@Inheritance(strategy=JOINED)
+@NamedQueries({
+        @NamedQuery(
+            name="findPasswordByLogin",
+            query="SELECT u.password FROM User u WHERE u.login = ("
+                    + "SELECT u.login FROM User u WHERE u.login = :login) "
+                    + "AND u.password = :password"
+        ),
+        @NamedQuery(
+            name="findAllUsers",
+            query="SELECT u FROM User u ORDER BY u.id ASC"
+        ),
+        @NamedQuery(
+            name="findUserByLogin",
+            query="SELECT u FROM User u WHERE u.login = :login"
+        ),
+        @NamedQuery(
+            name="modifyUserData",
+            query="UPDATE User u SET u.email = :email, u.fullName = :fullName "
+                    + "WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findRatingsOfUser",
+            query="SELECT u.ratings FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findDocumentsOfUser",
+            query="SELECT u.documents FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findGroupsOfUser",
+            query="SELECT u.groups FROM User u WHERE u.id = :id"
+        )
+})
 @XmlRootElement
 public class User implements Serializable {
 
@@ -43,7 +75,7 @@ public class User implements Serializable {
      * The Id for the user.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     /**
      * The login value for the user.
@@ -66,16 +98,20 @@ public class User implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
     /**
-     * The privilege for the user.
-     */
+    The privilege for the user.
+    */
     @NotNull
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Privilege privilege;
-    /**
+    /** 
      * The password value for the user.
      */
     @NotNull
     private String password;
+    /**
+     * The profile picture for the user.
+     */
+    private Byte[] profilePicture;
     /**
      * The date when the user last acceded to the applicacion.
      */
@@ -147,7 +183,15 @@ public class User implements Serializable {
     public void setStatus(Status status) {
         this.status = status;
     }
+ 
+    public Byte[] getProfilePicture() {
+        return profilePicture;
+    }
 
+    public void setProfilePicture(Byte[] profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+    
     public Privilege getPrivilege() {
         return privilege;
     }

@@ -20,6 +20,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "free", schema = "team6dbreto2")
 @XmlRootElement
 public class Free extends User implements Serializable{
+    
+    public Free() {
+        super();
+    }
+    
+    public Free(User user) {
+        super();
+        this.setId(user.getId());
+        this.setLogin(user.getLogin());
+        this.setEmail(user.getEmail());
+        this.setFullName(user.getFullName());
+        this.setStatus(Status.ENABLED);
+        this.setPrivilege(user.getPrivilege());
+        this.setLastAccess(user.getLastAccess());
+        this.setLastPasswordChange(user.getLastPasswordChange());
+        this.setPassword(user.getPassword());
+    }
+    
     private static final long serialVersionUID = 1L;
     /**
      * A int with the count of how many time was the user on our platform

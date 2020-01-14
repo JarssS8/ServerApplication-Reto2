@@ -9,22 +9,22 @@ package serverapplication.exceptions;
  *
  * @author aimar
  */
-public class UserNotFoundException extends Exception {
+public class LoginAlreadyExistsException extends Exception {
 
     /**
-     * Creates a new instance of <code>UserNotFoundException</code> without
-     * detail message.
+     * Creates a new instance of <code>LoginAlreadyExistsException</code>
+     * without detail message.
      */
-    public UserNotFoundException() {
+    public LoginAlreadyExistsException() {
     }
 
     /**
-     * Constructs an instance of <code>UserNotFoundException</code> with the
-     * specified detail message.
+     * Constructs an instance of <code>LoginAlreadyExistsException</code> with
+     * the specified detail message.
      *
      * @param msg the detail message.
      */
-    public UserNotFoundException(String msg) {
+    public LoginAlreadyExistsException(String msg) {
         super(msg);
     }
 }
