@@ -5,6 +5,7 @@
  */
 package serverapplication.rest;
 
+import java.util.HashSet;
 import serverapplication.interfaces.EJBUserLocal;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -113,8 +114,7 @@ public class RESTUser {
     @GET
     @Path("id/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public User findUserById(@PathParam("id") Long id)
-            throws GenericServerErrorException {
+    public User findUserById(@PathParam("id") Long id) {
         User user = null;
         try {
             user = (User) ejb.findUserById(id);
@@ -251,7 +251,7 @@ public class RESTUser {
     }
 
     @GET
-    @Path("/findRatingsOfUser/")
+    @Path("/findRatingsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Rating> findRatingsOfUser(@PathParam("id") Long id) {
         Set<Rating> ratings = null;
@@ -265,12 +265,12 @@ public class RESTUser {
     }
 
     @GET
-    @Path("/findDocumentsOfUser/")
-    @Consumes(MediaType.APPLICATION_XML)
-    public Set<Document> findDocumentsOfUser(User user) {
+    @Path("/findDocumentsOfUser/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
         Set<Document> documents = null;
         try {
-            documents = ejb.findDocumentsOfUser(user);
+            documents = ejb.findDocumentsOfUser(id);
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -279,12 +279,12 @@ public class RESTUser {
     }
 
     @GET
-    @Path("/findGroupsOfUser/")
-    @Consumes(MediaType.APPLICATION_XML)
-    public Set<Group> findGroupOfUser(User user) {
+    @Path("/findGroupsOfUser/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Set<Group> findGroupOfUser(@PathParam("id") Long id) {
         Set<Group> groups = null;
         try {
-            groups = ejb.findGroupsOfUser(user);
+            groups = ejb.findGroupsOfUser(id);
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());

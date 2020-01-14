@@ -56,15 +56,15 @@ import javax.xml.bind.annotation.XmlTransient;
         ),
         @NamedQuery(
             name="findRatingsOfUser",
-            query="SELECT u FROM User u WHERE u.id = :id"
+            query="SELECT u.ratings FROM User u WHERE u.id = :id"
         ),
         @NamedQuery(
             name="findDocumentsOfUser",
-            query="SELECT u FROM User u WHERE u.id = :id"
+            query="SELECT u.documents FROM User u WHERE u.id = :id"
         ),
         @NamedQuery(
             name="findGroupsOfUser",
-            query="SELECT u FROM User u WHERE u.id = :id"
+            query="SELECT u.groups FROM User u WHERE u.id = :id"
         )
 })
 @XmlRootElement

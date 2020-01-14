@@ -280,30 +280,45 @@ public class EJBUser implements EJBUserLocal {
     
     @Override
     public Set<Rating> findRatingsOfUser(Long id) {
+        Set<Rating> ratings = null;
+        try {
+            ratings = new HashSet<Rating>(em.createQuery("findRatingsOfUser").setParameter("id", id).getResultList());
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        return ratings;
+    }
+    
+    @Override
+    public Set<Document> findDocumentsOfUser(Long id) {
+        Set<Document> documents = null;
+        try {
+            documents = new HashSet<Document>(em.createQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        return documents;
+    }
+    
+    @Override
+    public Set<Group> findGroupsOfUser(Long id) {
+        Set<Group> groups = null;
+        try {
+            groups = new HashSet<Group>(em.createQuery("findGroupsOfUser").setParameter("id", id).getResultList());
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        return groups;
+    }
+    
+    @Override
+    public Set<Group> findGroupsRuledByUser(Long id) {
         User user = null;
         try {
             user = em.find(User.class, id);
         } catch (Exception ex) {
-            
+            LOGGER.warning(ex.getMessage());
         }
-        return new HashSet<> (user.getRatings());
-    }
-    
-    @Override
-    public Set<Document> findDocumentsOfUser(User user) {
-        
-        return new HashSet<> (user.getDocuments());
-    }
-    
-    @Override
-    public Set<Group> findGroupsOfUser(User user) {
-        
-        return new HashSet<> (user.getGroups());
-    }
-    
-    @Override
-    public Set<Group> findGroupsRuledByUser(User user) {
-        
         return new HashSet<> (user.getGroups());
     }
 

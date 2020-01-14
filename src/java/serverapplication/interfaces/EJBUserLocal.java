@@ -56,52 +56,57 @@ public interface EJBUserLocal {
     public Object findUserById(Long id) throws UserNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
-     * @param login
-     * @return
+     * This method finds an User by its login.
+     * @param login A string that contains the users login.
+     * @return An Object object with the user. 
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public Object findUserByLogin(String login) throws GenericServerErrorException;
     /**
-     * 
-     * @return
+     * This method finds all the users in the database.
+     * @return a Set with all the users.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public Set<User> findAllUsers() throws GenericServerErrorException;
     /**
-     * 
-     * @param premium
-     * @throws LoginNotFoundException
+     * This method deletes a Free from the persistency context and adds a new 
+     * entry as Premium with its unique attributes.
+     * @param premium A Premium object with all the new data.
+     * @throws LoginNotFoundException If the login does not exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyFreeToPremium(Premium premium) throws LoginNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
+     * This method deletes a Free from the persistency context and adds a new 
+     * entry as Admin with its unique attributes.
      * @param user A User object.
-     * @throws LoginNotFoundException
+     * @throws LoginNotFoundException If the login does not exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyFreeToAdmin(User user) throws LoginNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
+     * This method deletes a Premium from the persistency context and adds a new 
+     * entry as Free with its unique attributes.
      * @param user A User object.
-     * @throws LoginNotFoundException
+     * @throws LoginNotFoundException If the login does not exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyPremiumToFree(User user) throws LoginNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
+     * This method deletes a Premium from the persistency context and adds a new 
+     * entry as Admin with its unique attributes.
      * @param user A User object.
-     * @throws LoginNotFoundException
+     * @throws LoginNotFoundException If the login does not exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyPremiumToAdmin(User user) throws LoginNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
+     * This method deletes a Premium from the persistency context and adds a new 
+     * entry as Admin with its unique attributes.
      * @param user A User object.
      * @throws LoginNotFoundException
      * @throws GenericServerErrorException If there's an error in the server.
@@ -119,19 +124,19 @@ public interface EJBUserLocal {
      * @param user
      * @return 
      */
-    public Set<Document> findDocumentsOfUser(User user);
+    public Set<Document> findDocumentsOfUser(Long id);
     /**
      * 
      * @param user A User object.
      * @return 
      */
-    public Set<Group> findGroupsOfUser(User user);
+    public Set<Group> findGroupsOfUser(Long id);
     /**
      * 
      * @param user A User object.
      * @return 
      */
-    public Set<Group> findGroupsRuledByUser(User user);
+    public Set<Group> findGroupsRuledByUser(Long id);
     /**
      * 
      * @param user A User object.
