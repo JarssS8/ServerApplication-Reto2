@@ -40,6 +40,10 @@ public class Admin extends User implements Serializable {
         this.setLastAccess(user.getLastAccess());
         this.setLastPasswordChange(user.getLastPasswordChange());
         this.setPassword(user.getPassword());
+        this.setGroups(user.getGroups());
+        this.setDocuments(user.getDocuments());
+        this.setRatings(user.getRatings());
+        this.setAdminGroups(user.getAdminGroups());
     }
 
     private static final long serialVersionUID = 1L;

@@ -49,19 +49,19 @@ public interface EJBUserLocal {
     /**
      * This method searches a user in the database by its Id.
      * @param id A Long that contains the id to search by.
-     * @return An Object object with the user.
+     * @return An User object with the user.
      * @throws UserNotFoundException If the user searched doesn't exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public Object findUserById(Long id) throws UserNotFoundException, 
+    public User findUserById(Long id) throws UserNotFoundException, 
             GenericServerErrorException;
     /**
      * This method finds an User by its login.
      * @param login A string that contains the users login.
-     * @return An Object object with the user. 
+     * @return An User object with the user. 
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public Object findUserByLogin(String login) throws GenericServerErrorException;
+    public User findUserByLogin(String login) throws GenericServerErrorException;
     /**
      * This method finds all the users in the database.
      * @return a Set with all the users.

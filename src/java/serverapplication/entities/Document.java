@@ -183,7 +183,8 @@ public class Document implements Serializable{
        public User getUser() {
         return user;
     }
-    
+       
+    @XmlTransient
     public Category getCategory() {
         return category;
     }
@@ -192,7 +193,7 @@ public class Document implements Serializable{
         this.category = category;
     }
  
- 
+    @XmlTransient
     public Group getGroup() {
         return group;
     }

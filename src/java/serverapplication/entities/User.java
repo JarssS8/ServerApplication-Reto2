@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import static javax.persistence.InheritanceType.JOINED;
@@ -37,8 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
         @NamedQuery(
             name="findPasswordByLogin",
-            query="SELECT u.password FROM User u WHERE u.login = ("
-                    + "SELECT u.login FROM User u WHERE u.login = :login) "
+            query="SELECT u FROM User u WHERE u.login = :login "
                     + "AND u.password = :password"
         ),
         @NamedQuery(
@@ -125,17 +125,17 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
      */
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
     private Set<Document> documents;
     /**
      * A collection with all the groups for the user.
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_group", schema = "team6dbreto2")
     private Set<Group> groups;
     /**
@@ -224,7 +224,6 @@ public class User implements Serializable {
         this.lastPasswordChange = lastPasswordChange;
     }
 
-    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -233,7 +232,6 @@ public class User implements Serializable {
         this.ratings = ratings;
     }
 
-    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
@@ -242,7 +240,6 @@ public class User implements Serializable {
         this.documents = documents;
     }
 
-    @XmlTransient
     public Set<Group> getGroups() {
         return groups;
     }
