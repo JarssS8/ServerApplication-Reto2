@@ -288,18 +288,7 @@ public class EJBUser implements EJBUserLocal {
         }
         return ratings;
     }
-    
-    @Override
-    public Set<Document> findDocumentsOfUser(Long id) {
-        Set<Document> documents = null;
-        try {
-            documents = new HashSet<Document>(em.createQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
-        } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
-        }
-        return documents;
-    }
-    
+
     @Override
     public Set<Group> findGroupsOfUser(Long id) {
         Set<Group> groups = null;

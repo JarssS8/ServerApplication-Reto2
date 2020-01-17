@@ -40,7 +40,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
         name="findRatingsOfDocument",
         query="SELECT d FROM Document d WHERE d.id = :id"
-    )
+    ),
+    @NamedQuery(
+            name="findDocumentsOfUser",
+            query="SELECT d FROM Document d WHERE d.user = :user"
+    ),
 })
 
 /**

@@ -59,10 +59,6 @@ import javax.xml.bind.annotation.XmlTransient;
             query="SELECT u.ratings FROM User u WHERE u.id = :id"
         ),
         @NamedQuery(
-            name="findDocumentsOfUser",
-            query="SELECT u.documents FROM User u WHERE u.id = :id"
-        ),
-        @NamedQuery(
             name="findGroupsOfUser",
             query="SELECT u.groups FROM User u WHERE u.id = :id"
         )

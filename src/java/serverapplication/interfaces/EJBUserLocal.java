@@ -119,12 +119,7 @@ public interface EJBUserLocal {
      * @return 
      */
     public Set<Rating> findRatingsOfUser(Long id);
-    /**
-     * 
-     * @param user
-     * @return 
-     */
-    public Set<Document> findDocumentsOfUser(Long id);
+    
     /**
      * 
      * @param user A User object.

@@ -81,10 +81,11 @@ public class DocumentFacadeREST{
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void newDocument(Document document) {
+        document.setId(null);
         ejb.newDocument(document);
     }
     
-    /**
+    /**<<
      * Method who use the ejb to modify a document
      * @param document the document will be modified
      * @throws DocumentNotFoundException exception if are no document 
@@ -161,7 +162,7 @@ public class DocumentFacadeREST{
      * the server
      */
     @GET
-    @Path("{id}")
+    @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Document findDocument(@PathParam("id") Long id) {
         Document document = null;
@@ -184,7 +185,7 @@ public class DocumentFacadeREST{
      * @return A list of names of documents
      */
     @GET
-    @Path("{name}/{category}/{uploadDate}")
+    @Path("/parameters/{name}/{category}/{uploadDate}")
     @Produces(MediaType.APPLICATION_XML)
     public List<Document> findDocumentNameByParameters(
         @PathParam("name") String name, 
@@ -242,4 +243,19 @@ public class DocumentFacadeREST{
         }
         return ratingsDocument;
     }
+    
+    @GET
+    @Path("/findDocumentsOfUser/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
+        Set<Document> documents = null;
+        try {
+            documents = ejb.findDocumentsOfUser(id);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return documents;
+    }
+    
 }

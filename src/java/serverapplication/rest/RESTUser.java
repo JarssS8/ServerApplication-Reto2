@@ -265,20 +265,6 @@ public class RESTUser {
     }
 
     @GET
-    @Path("/findDocumentsOfUser/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
-        Set<Document> documents = null;
-        try {
-            documents = ejb.findDocumentsOfUser(id);
-        } catch (Exception ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        return documents;
-    }
-
-    @GET
     @Path("/findGroupsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Group> findGroupOfUser(@PathParam("id") Long id) {
