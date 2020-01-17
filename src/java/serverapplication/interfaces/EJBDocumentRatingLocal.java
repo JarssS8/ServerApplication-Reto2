@@ -39,8 +39,7 @@ public interface EJBDocumentRatingLocal {
     
     public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
     
-    public Set<Document> findDocumentsOfUser(Long id);
-    
+ 
     //----------------------Rating-----------------------------
     
     public void newDocumentRating(Rating Rating);

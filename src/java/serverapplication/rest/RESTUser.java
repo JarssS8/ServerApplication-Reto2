@@ -5,7 +5,6 @@
  */
 package serverapplication.rest;
 
-import java.util.HashSet;
 import serverapplication.interfaces.EJBUserLocal;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -91,6 +90,7 @@ public class RESTUser {
 
     @GET
     @Path("/logIn/{login}/{password}")
+    @Produces(MediaType.APPLICATION_XML)
     public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
         User user = null;
         User auxUser = new User();
@@ -135,8 +135,8 @@ public class RESTUser {
     @GET
     @Path("{login}")
     @Produces(MediaType.APPLICATION_XML)
-    public Object findUserByLogin(@PathParam("login") String login) {
-        Object user = null;
+    public User findUserByLogin(@PathParam("login") String login) {
+        User user = null;
         try {
             user = ejb.findUserByLogin(login);
             if (user == null) {
@@ -264,6 +264,20 @@ public class RESTUser {
         return ratings;
     }
 
+     @GET
+    @Path("/findDocumentsOfUser/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
+        Set<Document> documents = null;
+        try {
+            documents = ejb.findDocumentsOfUser(id);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return documents;
+    }
+    
     @GET
     @Path("/findGroupsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
