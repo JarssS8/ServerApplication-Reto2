@@ -157,17 +157,6 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
         
         return new HashSet<> (document.getRatings());
     }
-    
-    @Override
-    public Set<Document> findDocumentsOfUser(Long id) {
-        Set<Document> documents = null;
-        try {
-            documents = new HashSet<Document>(em.createQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
-        } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
-        }
-        return documents;
-    }
     //--------------------------------Rating----------------------------------\\
     
     /**
