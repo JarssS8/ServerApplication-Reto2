@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -37,9 +38,14 @@ public class Rating implements Serializable{
     /**
      * Id to indentificate the rating
      */
-    @Id
     @EmbeddedId
     private RatingId id;
+    @MapsId("idDocument")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Document document;
+    @MapsId("idUser")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
     /**
      * The rating given to the document
      */
@@ -55,16 +61,6 @@ public class Rating implements Serializable{
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date ratingDate;
-    /**
-     * The document were the rating has been done
-     */
-    @ManyToOne
-    private Document document;
-    /**
-     * The user who rates the document
-     */
-    @ManyToOne
-    private User user;
 
     public RatingId getId() {
         return id;

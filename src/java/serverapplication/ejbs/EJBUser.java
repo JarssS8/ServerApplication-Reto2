@@ -44,7 +44,7 @@ public class EJBUser implements EJBUserLocal {
 
     //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    
+
     private EntityManager em;
 
     /**
@@ -155,35 +155,22 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public Object findUserByLogin(String login
-    ) {
-        Object user = null;
-        Object auxUser = null;
+    public User findUserByLogin(String login) {
+        User user = null;
         try {
-            user = em.createNamedQuery("findUserByLogin").setParameter(
+            user = (User) em.createNamedQuery("findUserByLogin").setParameter(
                     "login", login).getSingleResult();
-            if (user instanceof Premium) {
-                auxUser = (Premium) user;
-            }
-
-            if (user instanceof Free) {
-                auxUser = (Free) user;
-            }
-
-            if (user instanceof Admin) {
-                auxUser = (Admin) user;
-            }
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
-        return auxUser;
+        return user;
     }
 
     @Override
     public Set<User> findAllUsers() {
         return new HashSet<>(em.createNamedQuery("findAllUsers").getResultList());
     }
-    
+
     @Override
     public void modifyFreeToPremium(Premium premium)
             throws LoginNotFoundException, GenericServerErrorException {
@@ -277,7 +264,7 @@ public class EJBUser implements EJBUserLocal {
         }
 
     }
-    
+
     @Override
     public Set<Rating> findRatingsOfUser(Long id) {
         Set<Rating> ratings = null;
@@ -288,7 +275,7 @@ public class EJBUser implements EJBUserLocal {
         }
         return ratings;
     }
-    
+
     @Override
     public Set<Document> findDocumentsOfUser(Long id) {
         Set<Document> documents = null;
@@ -299,7 +286,7 @@ public class EJBUser implements EJBUserLocal {
         }
         return documents;
     }
-    
+
     @Override
     public Set<Group> findGroupsOfUser(Long id) {
         Set<Group> groups = null;
@@ -310,7 +297,7 @@ public class EJBUser implements EJBUserLocal {
         }
         return groups;
     }
-    
+
     @Override
     public Set<Group> findGroupsRuledByUser(Long id) {
         User user = null;
@@ -319,7 +306,7 @@ public class EJBUser implements EJBUserLocal {
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
-        return new HashSet<> (user.getGroups());
+        return new HashSet<>(user.getGroups());
     }
 
     @Override
@@ -331,12 +318,12 @@ public class EJBUser implements EJBUserLocal {
                     "findUserByLogin").setParameter("login", user.getLogin())
                     .getSingleResult();
             if (auxUser != null) {
-                String passw = (String) em.createNamedQuery(
+                auxUser = (User) em.createNamedQuery(
                         "findPasswordByLogin").setParameter(
                                 "login", user.getLogin()).setParameter(
                         "password", user.getPassword())
                         .getSingleResult();
-                if (!user.getPassword().equals(passw)) {
+                if (auxUser == null) {
                     LOGGER.warning("EJBUser: Password does not match...");
                     throw new UserPasswordNotFoundException();
                 } else {
@@ -357,12 +344,12 @@ public class EJBUser implements EJBUserLocal {
         }
         return auxUser;
     }
-    
+
     @Override
-    public User signUp(User user) throws LoginAlreadyExistsException, 
+    public User signUp(User user) throws LoginAlreadyExistsException,
             GenericServerErrorException {
         return user;
-        
+
     }
 
     @Override

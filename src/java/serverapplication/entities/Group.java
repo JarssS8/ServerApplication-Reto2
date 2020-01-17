@@ -8,6 +8,7 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,10 +59,10 @@ public class Group implements Serializable{
     @ManyToOne
     private User groupAdmin;
     //List of users that are in the group
-    @ManyToMany(mappedBy="groups")
+    @ManyToMany(mappedBy="groups", fetch = FetchType.EAGER)
     private Set<User> users;
     //List of documents that are uploaded by the group
-    @OneToMany(mappedBy="group")
+    @OneToMany(mappedBy="group", fetch = FetchType.EAGER)
     private Set<Document> documents;
 
     /**
@@ -139,7 +140,6 @@ public class Group implements Serializable{
     /**
      * @return the documents
      */
-    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }

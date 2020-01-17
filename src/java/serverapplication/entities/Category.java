@@ -8,6 +8,7 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,7 +57,7 @@ public class Category implements Serializable {
     /**
      * A collection with the documents of this category
      */
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private Set<Document> documents;
 
     public Long getId() {
@@ -75,7 +76,6 @@ public class Category implements Serializable {
         this.name = Name;
     }
     
-    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
