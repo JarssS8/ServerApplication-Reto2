@@ -145,7 +145,7 @@ public interface EJBUserLocal {
      * @throws UserPasswordNotFoundException
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public User logIn(User user) throws LoginNotFoundException, 
+    public User logIn(String login, String password) throws LoginNotFoundException, 
             UserPasswordNotFoundException, GenericServerErrorException;
     /**
      * 

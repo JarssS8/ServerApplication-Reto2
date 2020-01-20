@@ -310,20 +310,20 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public User logIn(User user) throws LoginNotFoundException,
+    public User logIn(String login, String password) throws LoginNotFoundException,
             UserPasswordNotFoundException, GenericServerErrorException {
-        User auxUser = null;
+        User user = null;
         try {
-            auxUser = (User) em.createNamedQuery(
-                    "findUserByLogin").setParameter("login", user.getLogin())
+            user = (User) em.createNamedQuery(
+                    "findUserByLogin").setParameter("login", login)
                     .getSingleResult();
-            if (auxUser != null) {
-                auxUser = (User) em.createNamedQuery(
+            if (user != null) {
+                user = (User) em.createNamedQuery(
                         "findPasswordByLogin").setParameter(
-                                "login", user.getLogin()).setParameter(
-                        "password", user.getPassword())
+                                "login", login).setParameter(
+                        "password", password)
                         .getSingleResult();
-                if (auxUser == null) {
+                if (user == null) {
                     LOGGER.warning("EJBUser: Password does not match...");
                     throw new UserPasswordNotFoundException();
                 } else {
@@ -342,7 +342,7 @@ public class EJBUser implements EJBUserLocal {
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
-        return auxUser;
+        return user;
     }
 
     @Override
