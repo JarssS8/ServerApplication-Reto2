@@ -92,12 +92,11 @@ public class RESTUser {
     @Path("/logIn/{login}/{password}")
     @Produces(MediaType.APPLICATION_XML)
     public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
-        User user = null;
-        User auxUser = new User();
-        auxUser.setLogin(login);
-        auxUser.setPassword(password);
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(password);
         try {
-            user = ejb.logIn(auxUser);
+            user = ejb.logIn(login,password);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
