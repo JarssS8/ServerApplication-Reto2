@@ -5,7 +5,7 @@
  */
 package serverapplication.rest;
 
-import java.sql.Date;
+import java.util.Date;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
 import java.util.Set;
@@ -177,6 +177,15 @@ public class DocumentFacadeREST{
         }
         return document;
     }
+    @GET
+    @Path("name/{name}")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentNamebyName( @PathParam("name") String name){
+        List<Document> documentNoFile = new Vector<Document>();
+        List<Document> documents=null;
+        
+        return documentNoFile;
+    }
     /**
      * Method who use the ejb to search a document by various parameters
      * @param name the name to search by
@@ -191,6 +200,7 @@ public class DocumentFacadeREST{
         @PathParam("name") String name, 
         @PathParam("category") String category,
         @PathParam("uploadDate") Date uploadDate){
+        
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents=null;
         try {

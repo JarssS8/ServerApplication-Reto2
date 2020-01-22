@@ -5,7 +5,7 @@
  */
 package serverapplication.ejbs;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,6 +110,19 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
          return allDocs;
     }
     /**
+     * Method who search by document name
+     * @param name document name
+     * @return list of document with that name
+     */
+    public List<Document> findDocumentNameByName(String name){
+        List<Document> documents = null;
+        
+        documents = em.createNamedQuery("findDocumentNamebyName")
+            .setParameter("name", name).getResultList();
+        
+        return documents;
+    }
+    /**
      * Method who search by various parameters
      * @param name the name of the document
      * @param category the category of the document
@@ -124,7 +137,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
                 docNames = em.createNamedQuery("findDocumentNameByParameters").
                 setParameter("name", "%" + name + "%").
                 setParameter("category",category).
-                setParameter("uploadDate",uploadDate,TemporalType.DATE).getResultList();
+                setParameter("uploadDate",uploadDate).getResultList();
                 if(docNames==null){
                     LOGGER.severe("EJBDocumentandRating: Document Not Found");
                     throw new DocumentNotFoundException();

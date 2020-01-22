@@ -269,7 +269,7 @@ public class EJBUser implements EJBUserLocal {
     public Set<Rating> findRatingsOfUser(Long id) {
         Set<Rating> ratings = null;
         try {
-            ratings = new HashSet<Rating>(em.createQuery("findRatingsOfUser").setParameter("id", id).getResultList());
+            ratings = new HashSet<Rating>(em.createNamedQuery("findRatingsOfUser").setParameter("id", id).getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -280,7 +280,7 @@ public class EJBUser implements EJBUserLocal {
     public Set<Document> findDocumentsOfUser(Long id) {
         Set<Document> documents = null;
         try {
-            documents = new HashSet<Document>(em.createQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
+            documents = new HashSet<Document>(em.createNamedQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -291,7 +291,7 @@ public class EJBUser implements EJBUserLocal {
     public Set<Group> findGroupsOfUser(Long id) {
         Set<Group> groups = null;
         try {
-            groups = new HashSet<Group>(em.createQuery("findGroupsOfUser").setParameter("id", id).getResultList());
+            groups = new HashSet<Group>(em.createNamedQuery("findGroupsOfUser").setParameter("id", id).getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }

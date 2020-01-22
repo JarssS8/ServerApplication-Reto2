@@ -6,7 +6,6 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -42,8 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
         query="SELECT d FROM Document d WHERE d.id = :id"
     ),
     @NamedQuery(
-            name="findDocumentsOfUser",
-            query="SELECT d FROM Document d WHERE d.user = :user"
+            name="findDocumentNamebyName",
+            query="SELECT d FROM Document d WHERE d.name = :name"
     ),
 })
 
@@ -188,7 +187,7 @@ public class Document implements Serializable{
         return user;
     }
        
-    @XmlTransient
+    
     public Category getCategory() {
         return category;
     }

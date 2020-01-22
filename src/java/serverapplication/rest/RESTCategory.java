@@ -58,6 +58,7 @@ public class RESTCategory {
     @Consumes(MediaType.APPLICATION_XML)
     public void create(Category category) {
         try {
+            category.setId(null);
             eJBLocal.createCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists " + ex.getMessage());
