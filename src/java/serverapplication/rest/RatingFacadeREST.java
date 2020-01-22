@@ -6,6 +6,7 @@
 package serverapplication.rest;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import javax.ejb.EJB;
@@ -18,6 +19,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
@@ -47,6 +49,7 @@ public class RatingFacadeREST{
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void newDocumentRating(Rating rating){
+        rating.setId(null);
         ejb.newDocumentRating(rating);
     }
     /**
@@ -112,6 +115,14 @@ public class RatingFacadeREST{
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+    }
+    @GET
+    @Path("/documentRatings/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Rating> DocumentsRating(@PathParam("id") Long id){
+        List<Rating> ratings;
+        ratings = ejb.DocumentsRating(id);
+        return ratings;
     }
  
 }

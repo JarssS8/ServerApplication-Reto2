@@ -94,7 +94,7 @@ public class Rating implements Serializable{
         this.ratingDate = ratingDate;
     }
 
-    @XmlTransient
+    
     public Document getDocument() {
         return document;
     }
@@ -102,7 +102,7 @@ public class Rating implements Serializable{
     public void setDocument(Document document) {
         this.document = document;
     }
-    @XmlTransient
+    
     public User getUser() {
         return user;
     }

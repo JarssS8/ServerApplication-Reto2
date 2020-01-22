@@ -5,6 +5,7 @@
  */
 package serverapplication.ejbs;
 
+import static java.lang.reflect.Array.set;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -244,6 +245,14 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
             LOGGER.severe(ex.getMessage());
        }
        
+    }
+    @Override
+    public List<Rating> DocumentsRating(Long id){
+        List<Rating> ratings;
+        Query q = em.createQuery("SELECT r FROM Rating r WHERE r.document.id = :id");
+        q.setParameter("id", id);
+        ratings = (List<Rating>) q.getResultList();
+        return ratings; 
     }
 
     

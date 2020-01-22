@@ -54,6 +54,6 @@ public interface EJBDocumentRatingLocal {
     
     public void deleteRating(Rating rating) throws RatingNotFoundException,ServerConnectionErrorException; 
     
-   
+    public List<Rating> DocumentsRating(Long id);
 
 }

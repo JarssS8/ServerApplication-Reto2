@@ -169,7 +169,7 @@ public class Document implements Serializable{
     public void setFile(byte[] file) {
         this.file = file;
     }
-
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
