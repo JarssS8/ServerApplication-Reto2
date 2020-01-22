@@ -92,11 +92,10 @@ public class RESTUser {
     @Path("/logIn/{login}/{password}")
     @Produces(MediaType.APPLICATION_XML)
     public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword(password);
+        User user = null;
         try {
-            user = ejb.logIn(login,password);
+            user = ejb.findUserByLogin(login);
+            user = ejb.checkPassword(login,password);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
@@ -280,7 +279,7 @@ public class RESTUser {
     @GET
     @Path("/findGroupsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Group> findGroupOfUser(@PathParam("id") Long id) {
+    public Set<Group> findGroupsOfUser(@PathParam("id") Long id) {
         Set<Group> groups = null;
         try {
             groups = ejb.findGroupsOfUser(id);
@@ -289,5 +288,23 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         }
         return groups;
+    }
+    
+    @PUT
+    @Path("/savePaymentMethod")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void savePaymentMethod(Premium premium) {
+        try {
+            ejb.savePaymentMethod(premium);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+        }
+    }
+    
+    @GET
+    @Path("/findUserPrivilege/{login}")
+    @Produces(MediaType.APPLICATION_XML)
+    public String findPrivilegeOfUserByLogin(@PathParam("login") String login) {
+        return ejb.findPrivilegeOfUserByLogin(login);
     }
 }

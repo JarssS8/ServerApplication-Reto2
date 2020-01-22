@@ -16,6 +16,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import serverapplication.entities.Admin;
 import serverapplication.entities.Document;
@@ -155,11 +156,15 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public User findUserByLogin(String login) {
+    public User findUserByLogin(String login) throws LoginNotFoundException,
+            GenericServerErrorException {
         User user = null;
         try {
             user = (User) em.createNamedQuery("findUserByLogin").setParameter(
                     "login", login).getSingleResult();
+        } catch (NoResultException ex) {
+            LOGGER.warning("EJBUser: Login not found..." + ex.getMessage());
+            throw new LoginNotFoundException();
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -269,7 +274,10 @@ public class EJBUser implements EJBUserLocal {
     public Set<Rating> findRatingsOfUser(Long id) {
         Set<Rating> ratings = null;
         try {
-            ratings = new HashSet<Rating>(em.createQuery("findRatingsOfUser").setParameter("id", id).getResultList());
+            ratings = new HashSet<Rating>(
+                    em.createNamedQuery("findRatingsOfUser")
+                            .setParameter("id", id)
+                            .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -280,7 +288,10 @@ public class EJBUser implements EJBUserLocal {
     public Set<Document> findDocumentsOfUser(Long id) {
         Set<Document> documents = null;
         try {
-            documents = new HashSet<Document>(em.createQuery("findDocumentsOfUser").setParameter("id", id).getResultList());
+            documents = new HashSet<Document>(
+                    em.createNamedQuery("findDocumentsOfUser")
+                            .setParameter("id", id)
+                            .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -291,7 +302,10 @@ public class EJBUser implements EJBUserLocal {
     public Set<Group> findGroupsOfUser(Long id) {
         Set<Group> groups = null;
         try {
-            groups = new HashSet<Group>(em.createQuery("findGroupsOfUser").setParameter("id", id).getResultList());
+            groups = new HashSet<Group>(
+                    em.createNamedQuery("findGroupsOfUser")
+                            .setParameter("id", id)
+                            .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -310,39 +324,57 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public User logIn(String login, String password) throws LoginNotFoundException,
-            UserPasswordNotFoundException, GenericServerErrorException {
+    public User checkPassword(String login, String password)
+            throws UserPasswordNotFoundException, GenericServerErrorException {
         User user = null;
         try {
-            user = (User) em.createNamedQuery(
-                    "findUserByLogin").setParameter("login", login)
+            user = (User) em.createNamedQuery("findPasswordByLogin")
+                    .setParameter("login", login)
+                    .setParameter("password", password)
                     .getSingleResult();
-            if (user != null) {
-                user = (User) em.createNamedQuery(
-                        "findPasswordByLogin").setParameter(
-                                "login", login).setParameter(
-                        "password", password)
-                        .getSingleResult();
-                if (user == null) {
-                    LOGGER.warning("EJBUser: Password does not match...");
-                    throw new UserPasswordNotFoundException();
-                } else {
-                    LOGGER.info("Both login and password match");
-                }
-            } else {
-                LOGGER.warning("EJBUser: Login not found...");
-                throw new LoginNotFoundException();
-            }
-        } catch (LoginNotFoundException ex) {
-            LOGGER.warning(ex.getMessage());
-            throw new LoginNotFoundException();
-        } catch (UserPasswordNotFoundException ex) {
-            LOGGER.warning(ex.getMessage());
+        } catch (NoResultException ex) {
+            LOGGER.warning("EJBUser: Password not found..." + ex.getMessage());
             throw new UserPasswordNotFoundException();
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException();
         }
         return user;
+    }
+
+    @Override
+    public void savePaymentMethod(Premium premium) {
+        try {
+            Query q = em.createQuery("UPDATE Premium p SET p.cardNumber = :cardNumber, "
+                    + "p.cvc = :cvc, p.expirationMonth = :expirationMonth, "
+                    + "p.expirationYear = :expirationYear WHERE p.id = :id");
+            q.setParameter("cardNumber", premium.getCardNumber());
+            q.setParameter("cvc", premium.getCvc());
+            q.setParameter("expirationMonth", premium.getExpirationMonth());
+            q.setParameter("expirationYear", premium.getExpirationYear());
+            q.setParameter("id", premium.getId());
+            q.executeUpdate();
+            em.flush();
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+    }
+
+    public String findPrivilegeOfUserByLogin(String login) {
+        String privilege = null;
+        try {
+            privilege = em.createQuery("SELECT u.privilege FROM User u WHERE u.login = :login")
+                    .setParameter("login", login).getSingleResult().toString();
+        } catch (NoResultException ex) {
+            ex.printStackTrace();
+            LOGGER.warning(privilege);
+            LOGGER.warning(ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            LOGGER.warning(privilege);
+            LOGGER.warning(ex.getMessage());
+        }
+        return privilege;
     }
 
     @Override
