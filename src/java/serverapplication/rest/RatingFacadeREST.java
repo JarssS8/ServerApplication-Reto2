@@ -49,7 +49,6 @@ public class RatingFacadeREST{
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void newDocumentRating(Rating rating){
-        rating.setId(null);
         ejb.newDocumentRating(rating);
     }
     /**
