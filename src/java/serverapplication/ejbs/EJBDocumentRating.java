@@ -5,7 +5,6 @@
  */
 package serverapplication.ejbs;
 
-import static java.lang.reflect.Array.set;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;

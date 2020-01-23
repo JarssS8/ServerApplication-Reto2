@@ -8,6 +8,7 @@ package serverapplication.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -57,6 +58,10 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
             name="findRatingsOfUser",
             query="SELECT u.ratings FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findDocumentsOfUser",
+            query="SELECT u.documents FROM User u WHERE u.id = :id"
         ),
         @NamedQuery(
             name="findGroupsOfUser",
@@ -121,12 +126,12 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Document> documents;
     /**
      * A collection with all the groups for the user.
