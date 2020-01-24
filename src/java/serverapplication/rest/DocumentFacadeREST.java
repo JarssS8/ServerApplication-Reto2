@@ -183,7 +183,15 @@ public class DocumentFacadeREST{
     public List<Document> findDocumentNamebyName( @PathParam("name") String name){
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents=null;
-        
+        documents = ejb.findDocumentNameByName(name);
+         for(Document auxDocu: documents){
+                documentNoFile.add( new Document(
+                    auxDocu.getId(),
+                    auxDocu.getName(),
+                    auxDocu.getUploadDate(),
+                    auxDocu.getTotalRating(),
+                    auxDocu.getRatingCount()));
+            }
         return documentNoFile;
     }
     /**
@@ -210,7 +218,6 @@ public class DocumentFacadeREST{
                 documentNoFile.add( new Document(
                     auxDocu.getId(),
                     auxDocu.getName(),
-                    auxDocu.getUser().getLogin(),
                     auxDocu.getUploadDate(),
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));

@@ -7,6 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,10 +42,10 @@ public class Rating implements Serializable{
     @EmbeddedId
     private RatingId id;
     @MapsId("idDocument")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Document document;
     @MapsId("idUser")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
     /**
      * The rating given to the document
@@ -63,7 +64,7 @@ public class Rating implements Serializable{
     private Date ratingDate;
 
     public RatingId getId() {
-        return id;
+         return id;
     }
 
     public void setId(RatingId id) {

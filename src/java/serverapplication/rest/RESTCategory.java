@@ -115,10 +115,10 @@ public class RESTCategory {
      * @param id Long used for find the {@link Category} that is going to be removed from the data base
      */
     @DELETE
-    @Path("/id/{id}")
+    @Path("{id}")
     public void deleteCategory(@PathParam("id") Long id) {
         try {
-            eJBLocal.deleteCategory(id);
+            eJBLocal.deleteCategory(eJBLocal.findCategoryById(id));
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
         } catch (Exception e) {
@@ -136,14 +136,14 @@ public class RESTCategory {
     @GET
     @Path("/name/{name}")
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Category> findCategoryByName(@PathParam("name") String name) {
-        Set<Category> categories = null;
+    public Category findCategoryByName(@PathParam("name") String name) {
+        Category category = null;
         try {
-            categories = eJBLocal.findCategoryByName(name);
+            category = eJBLocal.findCategoryByName(name);
         } catch (Exception ex) {
             LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }
-        return categories;
+        return category;
     }
 
     /**

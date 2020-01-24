@@ -40,7 +40,7 @@ public interface CategoryEJBLocal {
      * the parameter
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Set<Category> findCategoryByName(String name)throws Exception;
+    public Category findCategoryByName(String name)throws Exception;
     
     /**
      * Find a {@link Document} into a {@link Category} that the name of the
@@ -100,6 +100,6 @@ public interface CategoryEJBLocal {
      * the id of the {@link Category} that we want delete.
      * @throws Exception Throws this exception if something unusual happens
      */
-    public void deleteCategory(Long id) throws CategoryNotFoundException,Exception;
+    public void deleteCategory(Category category) throws CategoryNotFoundException,Exception;
 
 }

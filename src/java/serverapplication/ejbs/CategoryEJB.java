@@ -68,10 +68,10 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Set<Category> findCategoryByName(String name) throws Exception {
-        Set<Category> categories = null;
-        categories = new HashSet<>(em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getResultList());
-        return categories;
+    public Category findCategoryByName(String name) throws Exception {
+        Category category = null;
+        category =(Category) em.createNamedQuery("findCategoryByName").setParameter("name", name ).getSingleResult();
+        return category;
     }
 
     /**
@@ -128,7 +128,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      */
     @Override
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException, Exception {
-        Set<Category> auxCategory = null;
+        Category auxCategory = null;
         auxCategory = findCategoryByName(category.getName());
         if (auxCategory != null) {
             em.persist(category);
@@ -150,7 +150,7 @@ public class CategoryEJB implements CategoryEJBLocal {
     @Override
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException, Exception {
         Category checkCategoryId = null;
-        Set<Category> checkCategoryName = null;
+        Category checkCategoryName = null;
         checkCategoryId = findCategoryById(category.getId());
         if (checkCategoryId != null) {
             checkCategoryName = findCategoryByName(category.getName());
@@ -176,16 +176,10 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public void deleteCategory(Long id) throws CategoryNotFoundException, Exception {
-        Category checkCategoryId = null;
-        checkCategoryId = findCategoryById(id);
-        if (checkCategoryId != null) {
+    public void deleteCategory(Category category) throws CategoryNotFoundException, Exception { 
             Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
-            q.setParameter("id", id);
+            q.setParameter("id", category.getId());
             q.executeUpdate();
-        } else {
-            throw new CategoryNotFoundException();
-        }
     }
 
 }

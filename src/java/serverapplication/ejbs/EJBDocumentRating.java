@@ -135,7 +135,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
         List<Document> docNames = null;
         try{
                 docNames = em.createNamedQuery("findDocumentNameByParameters").
-                setParameter("name", "%" + name + "%").
+                setParameter("name",name).
                 setParameter("category",category).
                 setParameter("uploadDate",uploadDate).getResultList();
                 if(docNames==null){
