@@ -7,6 +7,7 @@ package serverapplication.interfaces;
 
 import java.util.Set;
 import serverapplication.entities.Document;
+import serverapplication.entities.Free;
 import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
@@ -29,7 +30,7 @@ public interface EJBUserLocal {
      * @throws LoginAlreadyExistsException If the login already exists.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public void createUser(User user) throws LoginAlreadyExistsException, 
+    public Free createUser(User user) throws LoginAlreadyExistsException, 
             GenericServerErrorException;
     /**
      * This method modifies an existing user's email and full name and stores 
@@ -61,7 +62,8 @@ public interface EJBUserLocal {
      * @return An User object with the user. 
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public User findUserByLogin(String login) throws GenericServerErrorException;
+    public User findUserByLogin(String login) throws LoginNotFoundException, 
+            GenericServerErrorException;
     /**
      * This method finds all the users in the database.
      * @return a Set with all the users.
@@ -137,28 +139,15 @@ public interface EJBUserLocal {
      * @return 
      */
     public Set<Group> findGroupsRuledByUser(Long id);
-    /**
-     * 
-     * @param user A User object.
-     * @return
-     * @throws LoginNotFoundException
-     * @throws UserPasswordNotFoundException
-     * @throws GenericServerErrorException If there's an error in the server.
-     */
-    public User logIn(String login, String password) throws LoginNotFoundException, 
-            UserPasswordNotFoundException, GenericServerErrorException;
-    /**
-     * 
-     * @param user A User object.
-     * @return
-     * @throws LoginAlreadyExistsException
-     * @throws GenericServerErrorException If there's an error in the server.
-     */
-    public User signUp(User user) throws LoginAlreadyExistsException, 
-            GenericServerErrorException;
-    /**
-     * 
-     */
+    
+    public User checkPassword(String login, String password) 
+            throws UserPasswordNotFoundException, GenericServerErrorException;
+    
+    public void savePaymentMethod(Premium premium);
+    
+    public String findPrivilegeOfUserByLogin(String login) 
+            throws LoginNotFoundException, GenericServerErrorException;
+
     public void logOut();
 
 }
