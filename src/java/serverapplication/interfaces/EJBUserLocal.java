@@ -7,6 +7,7 @@ package serverapplication.interfaces;
 
 import java.util.Set;
 import serverapplication.entities.Document;
+import serverapplication.entities.Free;
 import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
@@ -29,7 +30,7 @@ public interface EJBUserLocal {
      * @throws LoginAlreadyExistsException If the login already exists.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public void createUser(User user) throws LoginAlreadyExistsException, 
+    public Free createUser(User user) throws LoginAlreadyExistsException, 
             GenericServerErrorException;
     /**
      * This method modifies an existing user's email and full name and stores 
@@ -144,20 +145,9 @@ public interface EJBUserLocal {
     
     public void savePaymentMethod(Premium premium);
     
-    public String findPrivilegeOfUserByLogin(String login);
-  
-    /**
-     * 
-     * @param user A User object.
-     * @return
-     * @throws LoginAlreadyExistsException
-     * @throws GenericServerErrorException If there's an error in the server.
-     */
-    public User signUp(User user) throws LoginAlreadyExistsException, 
-            GenericServerErrorException;
-    /**
-     * 
-     */
+    public String findPrivilegeOfUserByLogin(String login) 
+            throws LoginNotFoundException, GenericServerErrorException;
+
     public void logOut();
 
 }

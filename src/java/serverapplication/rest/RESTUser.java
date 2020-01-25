@@ -7,6 +7,7 @@ package serverapplication.rest;
 
 import serverapplication.interfaces.EJBUserLocal;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -23,6 +24,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Document;
+import serverapplication.entities.Free;
 import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
@@ -47,9 +49,11 @@ public class RESTUser {
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    public void createUser(User user) {
+    @Produces(MediaType.APPLICATION_XML)
+    public Free createUser(User user) {
+        Free free;
         try {
-            ejb.createUser(user);
+            free = ejb.createUser(user);
         } catch (LoginAlreadyExistsException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             // We use ForbiddenException 403 if login already exists
@@ -58,8 +62,10 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage() + "aaa");
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
+        return free;
     }
 
     @PUT
@@ -84,7 +90,8 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -94,16 +101,16 @@ public class RESTUser {
     public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
         User user = null;
         try {
-            user = ejb.findUserByLogin(login);
+            String auxLogin = ejb.findPrivilegeOfUserByLogin(login);
             user = ejb.checkPassword(login,password);
         } catch (LoginNotFoundException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (UserPasswordNotFoundException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotAuthorizedException(ex.getMessage());
         } catch (GenericServerErrorException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return user;
@@ -121,10 +128,10 @@ public class RESTUser {
                 throw new NotFoundException();
             }
         } catch (GenericServerErrorException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (UserNotFoundException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         }
         return user;
@@ -145,7 +152,8 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return user;
     }
@@ -177,6 +185,7 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -194,6 +203,7 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -211,6 +221,7 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -228,6 +239,7 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -245,6 +257,7 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -298,6 +311,7 @@ public class RESTUser {
             ejb.savePaymentMethod(premium);
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -305,6 +319,32 @@ public class RESTUser {
     @Path("/findUserPrivilege/{login}")
     @Produces(MediaType.APPLICATION_XML)
     public String findPrivilegeOfUserByLogin(@PathParam("login") String login) {
-        return ejb.findPrivilegeOfUserByLogin(login);
+        String auxLogin = null;
+        try {
+            auxLogin = ejb.findPrivilegeOfUserByLogin(login);
+        } catch (LoginNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getCause());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getCause());
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getCause());
+        }
+        return auxLogin;
+    }
+    
+    @GET
+    @Path("/checkPasswordByLogin/{login}/{password}")
+    @Produces(MediaType.APPLICATION_XML)
+    public User checkPassword(@PathParam("login") String login, @PathParam("password") String password) {
+        User user = null;
+        try {
+            user = ejb.checkPassword(login, password);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+        }
+        return user;
     }
 }
