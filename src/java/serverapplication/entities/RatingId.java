@@ -15,13 +15,17 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class RatingId implements Serializable{
     
-    private Long idDocument;
-    private Long idUser;
-
-    public void ratinId(Long idDocument,Long idUser){
+    public RatingId () {
+        
+    }
+ 
+    public RatingId(Long idDocument,Long idUser){
         this.idDocument=idDocument;
         this.idUser=idUser;
     }
+    
+    private Long idDocument;
+    private Long idUser;
     
     public Long getIdDocument() {
         return idDocument;

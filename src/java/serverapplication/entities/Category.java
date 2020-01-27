@@ -7,7 +7,9 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
         name="findCategoryByName",
-        query="SELECT c FROM Category c WHERE UPPER(c.name) LIKE UPPER(:name)"),
+        query="SELECT c FROM Category c WHERE c.name = :name"),
     @NamedQuery(
         name="findDocumentsByCategory",
         query="SELECT c FROM Category c WHERE UPPER(c.name) = UPPER(:name)"),
@@ -56,7 +58,7 @@ public class Category implements Serializable {
     /**
      * A collection with the documents of this category
      */
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Document> documents;
 
     public Long getId() {
@@ -74,7 +76,6 @@ public class Category implements Serializable {
     public void setName(String Name) {
         this.name = Name;
     }
-    
     @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
@@ -104,7 +105,6 @@ public class Category implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Category)) {
             return false;
         }

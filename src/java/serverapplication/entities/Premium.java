@@ -6,7 +6,6 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -23,6 +22,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "premium", schema = "team6dbreto2")
 @XmlRootElement
 public class Premium extends User implements Serializable {
+    
+    public Premium() {
+        super();
+    }
+    
+    public Premium(User user) {
+        super();
+        this.setId(user.getId());
+        this.setLogin(user.getLogin());
+        this.setEmail(user.getEmail());
+        this.setFullName(user.getFullName());
+        this.setStatus(Status.ENABLED);
+        this.setPrivilege(user.getPrivilege());
+        this.setLastAccess(user.getLastAccess());
+        this.setLastPasswordChange(user.getLastPasswordChange());
+        this.setPassword(user.getPassword());
+        this.setGroups(user.getGroups());
+        this.setDocuments(user.getDocuments());
+        this.setRatings(user.getRatings());
+        this.setAdminGroups(user.getAdminGroups());
+    }
 
     private static final long serialVersionUID = 1L;
     /**
@@ -33,7 +53,7 @@ public class Premium extends User implements Serializable {
     /**
      * Timestamp with the date when the User starts being premium
      */
-    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date beginSub;
     /**
      * A long with the number of the user's credit card 
@@ -46,8 +66,8 @@ public class Premium extends User implements Serializable {
     /**
      * Timestamp with the date when the User should finish his premium period
      */
-    @NotNull
-    private Timestamp endSub;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endSub;
     /**
      * A int with the month expiration of the user's credit card
      */
@@ -65,7 +85,6 @@ public class Premium extends User implements Serializable {
         this.autorenovation = autorenovation;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getBeginSub() {
         return beginSub;
     }
@@ -90,11 +109,11 @@ public class Premium extends User implements Serializable {
         this.cvc = cvc;
     }
 
-    public Timestamp getEndSub() {
+    public Date getEndSub() {
         return endSub;
     }
 
-    public void setEndSub(Timestamp endSub) {
+    public void setEndSub(Date endSub) {
         this.endSub = endSub;
     }
 

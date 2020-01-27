@@ -5,7 +5,7 @@
  */
 package serverapplication.rest;
 
-import java.sql.Date;
+import java.util.Date;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
 import java.util.Set;
@@ -81,10 +81,11 @@ public class DocumentFacadeREST{
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void newDocument(Document document) {
+        document.setId(null);
         ejb.newDocument(document);
     }
     
-    /**
+    /**<<
      * Method who use the ejb to modify a document
      * @param document the document will be modified
      * @throws DocumentNotFoundException exception if are no document 
@@ -161,7 +162,7 @@ public class DocumentFacadeREST{
      * the server
      */
     @GET
-    @Path("{id}")
+    @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Document findDocument(@PathParam("id") Long id) {
         Document document = null;
@@ -176,6 +177,23 @@ public class DocumentFacadeREST{
         }
         return document;
     }
+    @GET
+    @Path("name/{name}")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Document> findDocumentNamebyName( @PathParam("name") String name){
+        List<Document> documentNoFile = new Vector<Document>();
+        List<Document> documents=null;
+        documents = ejb.findDocumentNameByName(name);
+         for(Document auxDocu: documents){
+                documentNoFile.add( new Document(
+                    auxDocu.getId(),
+                    auxDocu.getName(),
+                    auxDocu.getUploadDate(),
+                    auxDocu.getTotalRating(),
+                    auxDocu.getRatingCount()));
+            }
+        return documentNoFile;
+    }
     /**
      * Method who use the ejb to search a document by various parameters
      * @param name the name to search by
@@ -184,12 +202,13 @@ public class DocumentFacadeREST{
      * @return A list of names of documents
      */
     @GET
-    @Path("{name}/{category}/{uploadDate}")
+    @Path("/parameters/{name}/{category}/{uploadDate}")
     @Produces(MediaType.APPLICATION_XML)
     public List<Document> findDocumentNameByParameters(
         @PathParam("name") String name, 
         @PathParam("category") String category,
         @PathParam("uploadDate") Date uploadDate){
+        
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents=null;
         try {
@@ -199,7 +218,6 @@ public class DocumentFacadeREST{
                 documentNoFile.add( new Document(
                     auxDocu.getId(),
                     auxDocu.getName(),
-                    auxDocu.getUser().getLogin(),
                     auxDocu.getUploadDate(),
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));
@@ -242,4 +260,7 @@ public class DocumentFacadeREST{
         }
         return ratingsDocument;
     }
+    
+   
+    
 }

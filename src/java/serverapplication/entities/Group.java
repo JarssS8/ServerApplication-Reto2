@@ -7,17 +7,39 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+@NamedQueries({
+    @NamedQuery(
+    name="findGroups",
+    query="SELECT g FROM Group g"),
+    @NamedQuery(
+    name="findGroupByNameAndPass",
+    query="SELECT g FROM Group g WHERE g.name = :groupName AND g.password = :password"),
+    @NamedQuery(
+    name="findGroupByName",
+    query="SELECT g.name FROM Group g WHERE g.name = :groupName"),
+    @NamedQuery(
+    name="findGroupById",
+    query="SELECT g FROM Group g WHERE g.id = :id"),
+    @NamedQuery(
+    name="findUsersOfGroup",
+    query="SELECT g FROM Group g WHERE g.id = :id")
+})
 
 /**
  * Entity of the groups of users
@@ -38,10 +60,10 @@ public class Group implements Serializable{
     @ManyToOne
     private User groupAdmin;
     //List of users that are in the group
-    @ManyToMany(mappedBy="groups")
+    @ManyToMany(mappedBy="groups", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<User> users;
     //List of documents that are uploaded by the group
-    @OneToMany(mappedBy="group")
+    @OneToMany(mappedBy="group", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Document> documents;
 
     /**
@@ -94,7 +116,7 @@ public class Group implements Serializable{
     }
 
     /**
-     * @param adminId the adminId to set
+     * @param groupAdmin the adminId to set
      */
     public void setGroupAdmin(User groupAdmin) {
         this.groupAdmin = groupAdmin;
@@ -119,7 +141,6 @@ public class Group implements Serializable{
     /**
      * @return the documents
      */
-    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
@@ -143,7 +164,7 @@ public class Group implements Serializable{
     }
     
     /**
-     * Compare if two group ids are equals
+     * Verify if object is a Group
      * @param object
      * @return true or false, it depends
      */
