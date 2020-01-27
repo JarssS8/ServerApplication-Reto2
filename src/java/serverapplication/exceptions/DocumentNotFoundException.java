@@ -7,24 +7,24 @@ package serverapplication.exceptions;
 
 /**
  *
- * @author Gaizka Andres
+ * @author aimar
  */
-public class documentNotFoundException extends Exception {
+public class DocumentNotFoundException extends Exception {
 
     /**
-     * Creates a new instance of <code>documentNotFound</code> without detail
-     * message.
+     * Creates a new instance of <code>DocumentNotFoundException</code> without
+     * detail message.
      */
-    public documentNotFoundException() {
+    public DocumentNotFoundException() {
     }
 
     /**
-     * Constructs an instance of <code>documentNotFound</code> with the
+     * Constructs an instance of <code>DocumentNotFoundException</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public documentNotFoundException(String msg) {
+    public DocumentNotFoundException(String msg) {
         super(msg);
     }
 }

@@ -49,7 +49,6 @@ public class RESTUser {
     @Consumes(MediaType.APPLICATION_XML)
     public void createUser(User user) {
         try {
-            
             ejb.createUser(user);
         } catch (LoginAlreadyExistsException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
