@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import serverapplication.entities.Category;
@@ -35,11 +36,11 @@ public class CategoryEJB implements CategoryEJBLocal {
      * Entity manager object.
      */
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em; 
+    private EntityManager em;
 
     /**
      * Finds a {@link Category} using a parameter id
-     * 
+     *
      * @param id Parameter used for search in database a category with the same
      * id
      * @return A {@link Category} object
@@ -70,7 +71,7 @@ public class CategoryEJB implements CategoryEJBLocal {
     @Override
     public Category findCategoryByName(String name) throws Exception {
         Category category = null;
-        category =(Category) em.createNamedQuery("findCategoryByName").setParameter("name", name ).getSingleResult();
+        category = (Category) em.createNamedQuery("findCategoryByName").setParameter("name", name).getSingleResult();
         return category;
     }
 
@@ -78,7 +79,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * Find a {@link Document} into a {@link Category} that the name of the
      * category match with the parameter catName and the document name match
      * with the parameter docName
-     * 
+     *
      * @param catName String with the complete name of the category
      * @param docName String with the complete name of the document
      * @return A {@link Document} that match with the parameter docName and is
@@ -107,7 +108,7 @@ public class CategoryEJB implements CategoryEJBLocal {
 
     /**
      * Find all the {@link Category} that are in the data base
-     * 
+     *
      * @return A Set with all the {@link Category} from the data base
      * @throws Exception Throws this exception if something unusual happens
      */
@@ -129,12 +130,14 @@ public class CategoryEJB implements CategoryEJBLocal {
     @Override
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException, Exception {
         Category auxCategory = null;
-        auxCategory = findCategoryByName(category.getName());
-        if (auxCategory != null) {
+        try {
+            auxCategory = findCategoryByName(category.getName());
+        } catch (NoResultException ex) {
             em.persist(category);
-        } else {
-            throw new CategoryNameAlreadyExistsException();
         }
+        if (auxCategory == null) {
+            throw new CategoryNameAlreadyExistsException();
+        } 
     }
 
     /**
@@ -176,10 +179,10 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public void deleteCategory(Category category) throws CategoryNotFoundException, Exception { 
-            Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
-            q.setParameter("id", category.getId());
-            q.executeUpdate();
+    public void deleteCategory(Category category) throws CategoryNotFoundException, Exception {
+        Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
+        q.setParameter("id", category.getId());
+        q.executeUpdate();
     }
 
 }

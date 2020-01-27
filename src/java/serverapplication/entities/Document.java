@@ -90,17 +90,17 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User user;
     /**
      * The category of the document
      */
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Category category;
     /**
      * The author group of the document

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +21,7 @@ import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
+import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 
 /**
@@ -31,6 +33,8 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     private static final Logger LOGGER = Logger.getLogger("rest");
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
+    
+    private EJBUser userejb = new EJBUser();
     
     //----------------------------Document------------------------------------\\
     
@@ -178,8 +182,17 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws RatingNotFoundException exception if are no rating 
      */
     @Override
-    public void newDocumentRating(Rating Rating) {
-        em.persist(Rating);
+    public void newDocumentRating(Rating rating) {
+        try {
+            userejb.setEM(em);
+            rating.setDocument(findDocumentById(rating.getId().getIdDocument()));
+            rating.setUser(userejb.findUserById(rating.getId().getIdUser()));
+        } catch (DocumentNotFoundException ex) {
+            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UserNotFoundException ex) {
+            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        em.persist(rating);
     }
     
     @Override

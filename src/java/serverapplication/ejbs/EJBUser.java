@@ -47,7 +47,10 @@ public class EJBUser implements EJBUserLocal {
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
 
     private EntityManager em;
-
+    
+    public void setEM(EntityManager em) {
+        this.em=em;
+    }
     /**
      * This method creates a new Free user. Checks if the login's taken and if
      * it's not, inserts the user via EntityManager.
@@ -387,5 +390,7 @@ public class EJBUser implements EJBUserLocal {
     @Override
     public void logOut() {
     }
+
+   
 
 }

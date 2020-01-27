@@ -58,7 +58,7 @@ public class Category implements Serializable {
     /**
      * A collection with the documents of this category
      */
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private Set<Document> documents;
 
     public Long getId() {
