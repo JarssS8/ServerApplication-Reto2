@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Rating implements Serializable{
     private static final long serialVersionUID=1L;
+
     /**
      * Id to indentificate the rating
      */
