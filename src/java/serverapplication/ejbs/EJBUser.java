@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 import javax.ejb.Stateless;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -33,6 +34,7 @@ import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
+import serverapplication.utilities.EmailSender;
 
 /**
  *
@@ -45,13 +47,15 @@ public class EJBUser implements EJBUserLocal {
 
     //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    
+
     public void setEm(EntityManager em) {
         this.em = em;
     }
-    
+
     private EntityManager em;
-    
+
+    private String[] method = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
+
     private EJBDocumentRating ejbDocument = new EJBDocumentRating();
 
     /**
@@ -112,12 +116,23 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
+        User auxUser;
         try {
             em.createNamedQuery("modifyUserData")
                     .setParameter("email", user.getEmail())
                     .setParameter("fullName", user.getFullName())
                     .setParameter("id", user.getId())
                     .executeUpdate();
+
+            auxUser = findUserById(user.getId());
+            if (!auxUser.getPassword().equalsIgnoreCase(user.getPassword())) {
+                em.createNamedQuery("modifyUserPassword")
+                        .setParameter("password", user.getPassword())
+                        .setParameter("id", user.getId())
+                        .executeUpdate();
+                sendEmail(method[1], null, user.getEmail());
+            }
+
         } catch (Exception ex) {
             LOGGER.warning("EJBUser: " + ex.getMessage());
         }
@@ -418,15 +433,67 @@ public class EJBUser implements EJBUserLocal {
         }
         return privilege;
     }
-    
+
     @Override
     public void restorePassword(String email) throws UserNotFoundException {
+        User user;
+        String password = generateRandomPassword();
+
         try {
-            
+            user = (User) em.createNamedQuery("findUserByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+
+            em.createNamedQuery("modifyUserPassword")
+                    .setParameter("password", password)
+                    .setParameter("id", user.getId())
+                    .executeUpdate();
+            sendEmail(method[0], password, email);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());
         }
+    }
+
+    private String generateRandomPassword() {
+        String NUMBERS = "0123456789";
+        String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+        String pswd = "", value = "";
+        String key = NUMBERS + UPPERCASE + LOWERCASE;
+        boolean upper = false, numbers = false;
+        do {
+            for (int i = 0; i < 10; i++) {
+                value = String.valueOf(key.charAt((int) (Math.random() * key.length())));
+                if (UPPERCASE.contains(value)) {
+                    upper = true;
+                } else if (NUMBERS.contains(value)) {
+                    numbers = true;
+                }
+                pswd += value;
+            }
+        } while (!upper || !numbers);
+        return pswd;
+    }
+
+    private void sendEmail(String method, String password, String email) throws MessagingException {
+        String message = "";
+        String subject = "";
+
+        switch (method) {
+            case "FORGOT_PASSWORD":
+                subject = "Forgotten password in toLearn() Application";
+                message = "From this moment you have 30 minutes to access with the "
+                        + "generated password. \n If you don't access in the next 30 minutes "
+                        + "you couldn't access.\n Generated Password: " + password;
+                break;
+            case "MODIFY_PASSWORD":
+                subject = "Succesfully modified password in toLearn() Application";
+                message = "The password was successfully modified, now you can access to your account with the new password";
+                break;
+        }
+        EmailSender emailSender = new EmailSender();
+        emailSender.sendMail(email, subject, message);
     }
 
 }

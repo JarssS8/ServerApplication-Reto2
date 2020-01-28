@@ -56,6 +56,15 @@ import javax.xml.bind.annotation.XmlTransient;
                     + "WHERE u.id = :id"
         ),
         @NamedQuery(
+            name="modifyUserPassword",
+            query="UPDATE User u SET u.password = :password "
+                    + "WHERE u.id = :id"
+        ),
+         @NamedQuery(
+            name="findUserByEmail",
+            query="SELECT u FROM User u WHERE u.email = :email"
+        ),
+        @NamedQuery(
             name="findRatingsOfUser",
             query="SELECT u.ratings FROM User u WHERE u.id = :id"
         ),

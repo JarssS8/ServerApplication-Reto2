@@ -348,7 +348,7 @@ public class RESTUser {
         return user;
     }
     
-    @PUT
+    @GET
     @Path("/restorePassword/{email}")
     public void restorePassword(@PathParam("email") String email) {
         try {
