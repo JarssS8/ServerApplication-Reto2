@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
@@ -35,7 +36,7 @@ public interface EJBDocumentRatingLocal {
     
     public Document findDocumentById(Long id) throws DocumentNotFoundException,ServerConnectionErrorException;
     
-    public List<Document> findDocumentNameByParameters(String name,Category category,Date uploadDate) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public List<Document> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException,ServerConnectionErrorException;
     
     public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
     
@@ -48,7 +49,7 @@ public interface EJBDocumentRatingLocal {
     
     public List<Rating> findAllRatings() throws RatingNotFoundException,ServerConnectionErrorException;
     
-    public Rating findRatingById(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
+    public Rating findRatingById(RatingId id) throws RatingNotFoundException,ServerConnectionErrorException;
     
     public void updateRating(Rating Rating) throws RatingNotFoundException,ServerConnectionErrorException;
     

@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
 
@@ -104,9 +105,9 @@ public class RatingFacadeREST{
      */
     @DELETE
     @Path("{id}")
-    public void deleteRating(Long id) {
+    public void deleteRating(RatingId ratingid) {
         try {
-            ejb.deleteRating(ejb.findRatingById(id));
+            ejb.deleteRating(ejb.findRatingById(ratingid));
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());

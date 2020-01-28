@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
     @NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE d.name = :name AND d.category = :category AND d.uploadDate = :uploadDate"),
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND d.category = :category"),
     
     @NamedQuery(
         name="findRatingsOfDocument",
@@ -111,13 +111,13 @@ public class Document implements Serializable{
     public Document(){
     }
     
-    public Document(Long id,String name, Date uploadDate, int totalRating, int ratingCount){
+    public Document(Long id,String name,Category category, Date uploadDate, int totalRating, int ratingCount){
         this.id=id;
         this.name=name;
+        this.category=category;
         this.uploadDate=uploadDate;
         this.totalRating=totalRating;
         this.ratingCount=ratingCount;
-        this.user.setId(user.getId());
     }
     
     public Long getId() {

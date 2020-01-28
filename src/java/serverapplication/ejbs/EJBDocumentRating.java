@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
@@ -142,13 +143,12 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
      * @throws DocumentNotFoundException exception if are no document 
      */
     @Override
-    public List<Document> findDocumentNameByParameters(String name, Category category, Date uploadDate) throws DocumentNotFoundException {
+    public List<Document> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
         List<Document> docNames = null;
         try{
                 docNames = em.createNamedQuery("findDocumentNameByParameters").
-                setParameter("name",name).
-                setParameter("category",category).
-                setParameter("uploadDate",uploadDate).getResultList();
+                setParameter("name","%" + name + "%").
+                setParameter("category",category).getResultList();
                 if(docNames==null){
                     LOGGER.severe("EJBDocumentandRating: Document Not Found");
                     throw new DocumentNotFoundException();
@@ -203,7 +203,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal{
     }
     
     @Override
-    public Rating findRatingById(Long id) throws RatingNotFoundException {
+    public Rating findRatingById(RatingId id) throws RatingNotFoundException {
         Rating rating= null;
         try{
            rating =  em.find(Rating.class, id);

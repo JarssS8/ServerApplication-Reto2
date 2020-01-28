@@ -188,6 +188,7 @@ public class DocumentFacadeREST{
                 documentNoFile.add( new Document(
                     auxDocu.getId(),
                     auxDocu.getName(),
+                    auxDocu.getCategory(),
                     auxDocu.getUploadDate(),
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));
@@ -202,22 +203,22 @@ public class DocumentFacadeREST{
      * @return A list of names of documents
      */
     @GET
-    @Path("/parameters/{name}/{category}/{uploadDate}")
+    @Path("/parameters/{name}/{category}")
     @Produces(MediaType.APPLICATION_XML)
     public List<Document> findDocumentNameByParameters(
         @PathParam("name") String name, 
-        @PathParam("category") String category,
-        @PathParam("uploadDate") Date uploadDate){
+        @PathParam("category") String category){
         
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents=null;
         try {
             documents = ejb.findDocumentNameByParameters(name, 
-                (Category) ejbCat.findCategoryByName(category), uploadDate);
+                (Category) ejbCat.findCategoryByName(category));
             for(Document auxDocu: documents){
                 documentNoFile.add( new Document(
                     auxDocu.getId(),
                     auxDocu.getName(),
+                    auxDocu.getCategory(),
                     auxDocu.getUploadDate(),
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));
