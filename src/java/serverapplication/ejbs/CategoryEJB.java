@@ -71,7 +71,12 @@ public class CategoryEJB implements CategoryEJBLocal {
     @Override
     public Category findCategoryByName(String name) throws Exception {
         Category category = null;
-        category = (Category) em.createNamedQuery("findCategoryByName").setParameter("name", name).getSingleResult();
+        try {
+
+            category = (Category) em.createNamedQuery("findCategoryByName").setParameter("name", name).getSingleResult();
+        } catch (NoResultException ex) {
+            category=null;
+        }
         return category;
     }
 
@@ -137,7 +142,7 @@ public class CategoryEJB implements CategoryEJBLocal {
         }
         if (auxCategory == null) {
             throw new CategoryNameAlreadyExistsException();
-        } 
+        }
     }
 
     /**
@@ -157,7 +162,7 @@ public class CategoryEJB implements CategoryEJBLocal {
         checkCategoryId = findCategoryById(category.getId());
         if (checkCategoryId != null) {
             checkCategoryName = findCategoryByName(category.getName());
-            if (checkCategoryName != null) {
+            if (checkCategoryName == null) {
                 em.merge(category);
                 em.flush();
             } else {
