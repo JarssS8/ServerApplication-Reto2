@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import serverapplication.entities.Document;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.exceptions.GroupIdNotFoundException;
@@ -157,6 +158,19 @@ public class EJBGroups implements EJBGroupLocal {
         return em.createNamedQuery("findUsersOfGroup").setParameter(
                 "id", id).getResultList();
     }
+    
+     /**
+     * Method to get all the documents of a group
+     * @param id
+     * @return
+     * @throws GroupIdNotFoundException
+     * @throws Exception 
+     */
+    @Override
+    public List<Document> findDocsOfGroup(Long id) throws GroupIdNotFoundException, Exception {
+        return em.createNamedQuery("findDocsOfGroup").setParameter(
+                "id", id).getResultList();
+    } 
     
     /**
      * Method to get a group by id

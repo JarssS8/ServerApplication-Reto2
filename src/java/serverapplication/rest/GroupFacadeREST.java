@@ -11,12 +11,16 @@ import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import serverapplication.entities.Document;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.exceptions.GroupIdNotFoundException;
@@ -51,10 +55,13 @@ public class GroupFacadeREST{
             ejb.createGroup(group);
         }catch(LoginNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(GroupNameAlreadyExistException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotAuthorizedException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREST: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -69,8 +76,10 @@ public class GroupFacadeREST{
             ejb.modifyGroup(group);
         }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
  
@@ -88,12 +97,16 @@ public class GroupFacadeREST{
             ejb.joinGroup(groupName, password, usr_id);
         }catch(UserNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(GroupPasswordNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -110,8 +123,10 @@ public class GroupFacadeREST{
             ejb.leaveGroup(id, usr_id);
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
     
@@ -127,6 +142,7 @@ public class GroupFacadeREST{
             auxGroups = ejb.findGroups();
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return auxGroups;
     }
@@ -145,8 +161,10 @@ public class GroupFacadeREST{
             group = ejb.findGroupByName(groupName);
         }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return group;
     }
@@ -166,10 +184,33 @@ public class GroupFacadeREST{
             users = ejb.findUsersOfGroup(gid);
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST:" + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREST: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return users;
+    }
+    
+     /**
+     * Method that gets the documents of a group
+     * @return list of users
+     */
+    @GET
+    @Path("giddocs/{giddocs}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Document> findDocsOfGroup(Long giddocs) {
+        List<Document> docs = null;
+        try{
+            docs = ejb.findDocsOfGroup(giddocs);
+        }catch(GroupIdNotFoundException ex){
+            LOGGER.warning("GroupFacadeREST:" + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        }catch(Exception ex){
+            LOGGER.warning("GroupFacadeREST: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return docs;
     }
     
     /**
@@ -186,8 +227,10 @@ public class GroupFacadeREST{
             group = ejb.findGroupById(id);
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return group;
     }
@@ -203,8 +246,10 @@ public class GroupFacadeREST{
             ejb.deleteGroup(ejb.findGroupById(id));
         }catch(GroupIdNotFoundException ex){
             LOGGER.warning("GroupFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch (Exception ex) {
             LOGGER.warning("GroupFacadeREst: "+ ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 }

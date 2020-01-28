@@ -7,6 +7,7 @@ package serverapplication.interfaces;
 
 import java.util.List;
 import javax.ejb.Local;
+import serverapplication.entities.Document;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
 import serverapplication.exceptions.GroupIdNotFoundException;
@@ -36,6 +37,8 @@ public interface EJBGroupLocal {
     public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception; 
     
     public List<User> findUsersOfGroup(Long id) throws GroupIdNotFoundException, Exception;
+    
+    public List<Document> findDocsOfGroup(Long id) throws GroupIdNotFoundException, Exception;
     
     public Group findGroupById(Long id) throws GroupIdNotFoundException, Exception; 
     

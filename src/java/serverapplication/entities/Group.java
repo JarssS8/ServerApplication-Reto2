@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     query="SELECT g FROM Group g WHERE g.id = :id"),
     @NamedQuery(
     name="findUsersOfGroup",
+    query="SELECT g FROM Group g WHERE g.id = :id"),
+    @NamedQuery(
+    name="findDocsOfGroup",
     query="SELECT g FROM Group g WHERE g.id = :id")
 })
 
