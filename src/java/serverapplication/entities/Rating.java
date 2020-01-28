@@ -7,6 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Rating implements Serializable{
     private static final long serialVersionUID=1L;
+
     /**
      * Id to indentificate the rating
      */
@@ -44,7 +46,7 @@ public class Rating implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER)
     private Document document;
     @MapsId("idUser")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
     /**
      * The rating given to the document

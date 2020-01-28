@@ -7,7 +7,6 @@ package serverapplication.rest;
 
 import serverapplication.interfaces.EJBUserLocal;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -177,9 +176,6 @@ public class RESTUser {
     public void modifyFreeToPremium(Premium premium) {
         try {
             ejb.modifyFreeToPremium(premium);
-        } catch (LoginNotFoundException ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new NotFoundException(ex.getMessage());
         } catch (GenericServerErrorException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -342,9 +338,24 @@ public class RESTUser {
         User user = null;
         try {
             user = ejb.checkPassword(login, password);
+        } catch (UserPasswordNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotAuthorizedException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return user;
+    }
+    
+    @PUT
+    @Path("/restorePassword/{email}")
+    public void restorePassword(@PathParam("email") String email) {
+        try {
+            ejb.restorePassword(email);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        }
     }
 }
