@@ -195,8 +195,7 @@ public class EJBUser implements EJBUserLocal {
     public void modifyFreeToPremium(Premium premium) throws GenericServerErrorException {
         try {
             Free free = em.find(Free.class, premium.getId());
-            User user = (User) premium;
-            Premium auxPremium = new Premium(user);
+            Premium auxPremium = new Premium((User) premium);
             auxPremium.setAutorenovation(true);
             auxPremium.setPrivilege(Privilege.PREMIUM);
             auxPremium.setBeginSub(Timestamp.valueOf(LocalDateTime.now()));
@@ -209,11 +208,12 @@ public class EJBUser implements EJBUserLocal {
                 em.flush();
                 for (Rating rating : auxPremium.getRatings()) {
                     if (!em.contains(rating)) {
+                        ejbDocument.setEm(em);
                         rating.setDocument(ejbDocument.findDocumentById(rating.getId().getIdDocument()));
-                        rating.setUser(findUserById(rating.getId().getIdUser()));
+                        rating.setUser((User) premium);
                         em.merge(rating);
                     }
-                }   
+                }
                 em.merge(auxPremium);
                 em.flush();
             }
@@ -398,6 +398,7 @@ public class EJBUser implements EJBUserLocal {
         }
     }
 
+    @Override
     public String findPrivilegeOfUserByLogin(String login)
             throws LoginNotFoundException, GenericServerErrorException {
         String privilege = null;
@@ -416,6 +417,16 @@ public class EJBUser implements EJBUserLocal {
             throw new GenericServerErrorException();
         }
         return privilege;
+    }
+    
+    @Override
+    public void restorePassword(String email) throws UserNotFoundException {
+        try {
+            
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new UserNotFoundException(ex.getMessage());
+        }
     }
 
 }

@@ -347,4 +347,15 @@ public class RESTUser {
         }
         return user;
     }
+    
+    @PUT
+    @Path("/restorePassword/{email}")
+    public void restorePassword(@PathParam("email") String email) {
+        try {
+            ejb.restorePassword(email);
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        }
+    }
 }

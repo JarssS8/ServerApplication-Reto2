@@ -171,4 +171,9 @@ public interface EJBUserLocal {
     public String findPrivilegeOfUserByLogin(String login) 
             throws LoginNotFoundException, GenericServerErrorException;
 
+    /**
+     * 
+     * @param email 
+     */
+    public void restorePassword(String email) throws UserNotFoundException;
 }

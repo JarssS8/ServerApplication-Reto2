@@ -30,7 +30,12 @@ import serverapplication.interfaces.EJBDocumentRatingLocal;
 public class EJBDocumentRating implements EJBDocumentRatingLocal{
     private static final Logger LOGGER = Logger.getLogger("rest");
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
+    
     private EntityManager em;
+    
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
     
     //----------------------------Document------------------------------------\\
     

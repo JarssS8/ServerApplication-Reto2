@@ -76,6 +76,7 @@ public class Category implements Serializable {
         this.name = Name;
     }
     
+    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }
