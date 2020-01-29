@@ -87,6 +87,10 @@ public class EJBUser implements EJBUserLocal {
             free.setPrivilege(Privilege.FREE);
             free.setStatus(Status.ENABLED);
             free.setTimeOnline(0);
+            String newPassword = free.getPassword();
+            newPassword = EncriptationAsymmetric.decrypt(newPassword);
+            newPassword = EncryptationLocal.encryptPass(newPassword);
+            free.setPassword(newPassword);
             // Guardamos en un objeto User el resultado de la busqueda del login.
             // Si existe lanzamos excepcion LoginAlreadyExists.
             // Si no existe capturamos la excepcion NoFoundException y dentro hacemos el em.persist(free).
@@ -388,7 +392,7 @@ public class EJBUser implements EJBUserLocal {
             throws UserPasswordNotFoundException, GenericServerErrorException {
         User user = null;
         try {
-            //password = EncriptationAsymmetric.decrypt(password);
+            password = EncriptationAsymmetric.decrypt(password);
             password = EncryptationLocal.encryptPass(password);
             user = (User) em.createNamedQuery("findPasswordByLogin")
                     .setParameter("login", login)
