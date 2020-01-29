@@ -54,6 +54,10 @@ public class EJBUser implements EJBUserLocal {
     
     private EJBDocumentRating ejbDocument = new EJBDocumentRating();
 
+    public void setEM(EntityManager em) {
+        this.em = em;
+    }
+
     /**
      * This method creates a new Free user. Checks if the login's taken and if
      * it's not, inserts the user via EntityManager.
@@ -85,7 +89,7 @@ public class EJBUser implements EJBUserLocal {
             // Si existe lanzamos excepcion LoginAlreadyExists.
             // Si no existe capturamos la excepcion NoFoundException y dentro hacemos el em.persist(free).
             User auxUser = (User) em.createNamedQuery("findUserByLogin")
-                    .setParameter("login", user.getLogin()).getSingleResult();
+                .setParameter("login", user.getLogin()).getSingleResult();
             if (auxUser.getLogin().equals(user.getLogin())) {
                 LOGGER.warning("Login already exists...");
                 // El login ya existe en la base de datos.
@@ -114,10 +118,10 @@ public class EJBUser implements EJBUserLocal {
     public void modifyUserData(User user) throws GenericServerErrorException {
         try {
             em.createNamedQuery("modifyUserData")
-                    .setParameter("email", user.getEmail())
-                    .setParameter("fullName", user.getFullName())
-                    .setParameter("id", user.getId())
-                    .executeUpdate();
+                .setParameter("email", user.getEmail())
+                .setParameter("fullName", user.getFullName())
+                .setParameter("id", user.getId())
+                .executeUpdate();
         } catch (Exception ex) {
             LOGGER.warning("EJBUser: " + ex.getMessage());
         }
@@ -132,6 +136,7 @@ public class EJBUser implements EJBUserLocal {
             q.executeUpdate();
             switch (user.getPrivilege().toString()) {
                 case "FREE": {
+   
                     em.remove(em.find(Free.class, user.getId()));
                     em.flush();
                     em.remove(user);
@@ -153,6 +158,7 @@ public class EJBUser implements EJBUserLocal {
                 }
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException();
         }
@@ -172,11 +178,11 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public User findUserByLogin(String login) throws LoginNotFoundException,
-            GenericServerErrorException {
+        GenericServerErrorException {
         User user = null;
         try {
             user = (User) em.createNamedQuery("findUserByLogin").setParameter(
-                    "login", login).getSingleResult();
+                "login", login).getSingleResult();
         } catch (NoResultException ex) {
             LOGGER.warning("EJBUser: Login not found..." + ex.getMessage());
             throw new LoginNotFoundException();
@@ -309,9 +315,9 @@ public class EJBUser implements EJBUserLocal {
         Set<Rating> ratings = null;
         try {
             ratings = new HashSet<Rating>(
-                    em.createNamedQuery("findRatingsOfUser")
-                            .setParameter("id", id)
-                            .getResultList());
+                em.createNamedQuery("findRatingsOfUser")
+                    .setParameter("id", id)
+                    .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
@@ -324,9 +330,9 @@ public class EJBUser implements EJBUserLocal {
         Set<Document> documents = null;
         try {
             documents = new HashSet<Document>(
-                    em.createNamedQuery("findDocumentsOfUser")
-                            .setParameter("id", id)
-                            .getResultList());
+                em.createNamedQuery("findDocumentsOfUser")
+                    .setParameter("id", id)
+                    .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -338,9 +344,9 @@ public class EJBUser implements EJBUserLocal {
         Set<Group> groups = null;
         try {
             groups = new HashSet<Group>(
-                    em.createNamedQuery("findGroupsOfUser")
-                            .setParameter("id", id)
-                            .getResultList());
+                em.createNamedQuery("findGroupsOfUser")
+                    .setParameter("id", id)
+                    .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -362,13 +368,13 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public User checkPassword(String login, String password)
-            throws UserPasswordNotFoundException, GenericServerErrorException {
+        throws UserPasswordNotFoundException, GenericServerErrorException {
         User user = null;
         try {
             user = (User) em.createNamedQuery("findPasswordByLogin")
-                    .setParameter("login", login)
-                    .setParameter("password", password)
-                    .getSingleResult();
+                .setParameter("login", login)
+                .setParameter("password", password)
+                .getSingleResult();
         } catch (NoResultException ex) {
             LOGGER.warning("EJBUser: Password not found..." + ex.getMessage());
             throw new UserPasswordNotFoundException(ex.getMessage());
@@ -383,8 +389,8 @@ public class EJBUser implements EJBUserLocal {
     public void savePaymentMethod(Premium premium) throws GenericServerErrorException {
         try {
             Query q = em.createQuery("UPDATE Premium p SET p.cardNumber = :cardNumber, "
-                    + "p.cvc = :cvc, p.expirationMonth = :expirationMonth, "
-                    + "p.expirationYear = :expirationYear WHERE p.id = :id");
+                + "p.cvc = :cvc, p.expirationMonth = :expirationMonth, "
+                + "p.expirationYear = :expirationYear WHERE p.id = :id");
             q.setParameter("cardNumber", premium.getCardNumber());
             q.setParameter("cvc", premium.getCvc());
             q.setParameter("expirationMonth", premium.getExpirationMonth());
@@ -403,7 +409,7 @@ public class EJBUser implements EJBUserLocal {
         String privilege = null;
         try {
             privilege = em.createQuery("SELECT u.privilege FROM User u WHERE u.login = :login")
-                    .setParameter("login", login).getSingleResult().toString();
+                .setParameter("login", login).getSingleResult().toString();
         } catch (NoResultException ex) {
             LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());

@@ -271,7 +271,7 @@ public class RESTUser {
         return ratings;
     }
 
-    @GET
+     @GET
     @Path("/findDocumentsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
@@ -284,7 +284,7 @@ public class RESTUser {
         }
         return documents;
     }
-
+    
     @GET
     @Path("/findGroupsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)

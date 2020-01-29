@@ -142,7 +142,7 @@ public class User implements Serializable {
     /**
      * A collection with the group the user administrates.
      */
-    @OneToMany(mappedBy="groupAdmin")
+    @OneToMany(mappedBy="groupAdmin",fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<Group> adminGroups;
 
     public Long getId() {
@@ -224,7 +224,7 @@ public class User implements Serializable {
     public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
-
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
