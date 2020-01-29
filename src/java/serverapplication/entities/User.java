@@ -136,7 +136,7 @@ public class User implements Serializable {
     /**
      * A collection with all the groups for the user.
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_group", schema = "team6dbreto2")
     private Set<Group> groups;
     /**

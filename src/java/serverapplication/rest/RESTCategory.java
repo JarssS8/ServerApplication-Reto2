@@ -5,7 +5,9 @@
  */
 package serverapplication.rest;
 
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,16 +16,21 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNameNotFoundException;
 import serverapplication.exceptions.CategoryNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -140,8 +147,12 @@ public class RESTCategory {
         Category category = null;
         try {
             category = eJBLocal.findCategoryByName(name);
-        } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (CategoryNameNotFoundException ex) {
+           LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
+           throw new NotFoundException(ex.getMessage());
         }
         return category;
     }
@@ -174,10 +185,10 @@ public class RESTCategory {
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Category> findAllCategories() {
-        Set<Category> categories = null;
+    public List<Category> findAllCategories() {
+        List<Category> categories = null;
         try {
-            categories = eJBLocal.findAllCategories();
+            categories = (List<Category>) eJBLocal.findAllCategories();
         } catch (Exception ex) {
             LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }

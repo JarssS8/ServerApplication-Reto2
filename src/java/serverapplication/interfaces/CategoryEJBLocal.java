@@ -5,13 +5,16 @@
  */
 package serverapplication.interfaces;
 
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNameNotFoundException;
 import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 
 /**
  *
@@ -29,7 +32,7 @@ public interface CategoryEJBLocal {
      * {@link Category} throw this exception
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Category findCategoryById(Long id)throws CategoryNotFoundException,Exception;
+    public Category findCategoryById(Long id)throws CategoryNotFoundException,GenericServerErrorException;
     
       /**
      * Finds any {@link Category} that his name match with the parameter name
@@ -40,7 +43,7 @@ public interface CategoryEJBLocal {
      * the parameter
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Category findCategoryByName(String name)throws Exception;
+    public Category findCategoryByName(String name)throws CategoryNameNotFoundException, GenericServerErrorException;
     
     /**
      * Find a {@link Document} into a {@link Category} that the name of the
@@ -57,7 +60,7 @@ public interface CategoryEJBLocal {
      * exception when can't find the id of the {@link Document}
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Document findDocumentsByCategory(String catName, String docName)throws CategoryNotFoundException,DocumentNotFoundException,Exception;
+    public Document findDocumentsByCategory(String catName, String docName)throws CategoryNotFoundException,DocumentNotFoundException,GenericServerErrorException;
     
         /**
      * Find all the {@link Category} that are in the data base
@@ -65,7 +68,7 @@ public interface CategoryEJBLocal {
      * @return A Set with all the {@link Category} from the data base
      * @throws Exception Throws this exception if something unusual happens
      */
-    public Set<Category> findAllCategories()throws Exception;
+    public List<Category> findAllCategories()throws GenericServerErrorException;
     
         /**
      * Create a new {@link Category} with the {@link Category} object, get it as
@@ -77,7 +80,7 @@ public interface CategoryEJBLocal {
      * name of the category exists on the data base
      * @throws Exception Throws this exception if something unusual happens
      */
-    public void createCategory(Category category) throws CategoryNameAlreadyExistsException,Exception;
+    public void createCategory(Category category) throws CategoryNameAlreadyExistsException,GenericServerErrorException;
     
      /**
      * Modify a {@link Category} changing only his name
@@ -89,7 +92,7 @@ public interface CategoryEJBLocal {
      * the id of the {@link Category} that we want modify
      * @throws Exception Throws this exception if something unusual happens
      */
-    public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException,CategoryNotFoundException,Exception;
+    public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException,CategoryNotFoundException,GenericServerErrorException;
     
       /**
      * Delete the {@link Category} with the same id from the data base
@@ -100,6 +103,6 @@ public interface CategoryEJBLocal {
      * the id of the {@link Category} that we want delete.
      * @throws Exception Throws this exception if something unusual happens
      */
-    public void deleteCategory(Category category) throws CategoryNotFoundException,Exception;
+    public void deleteCategory(Category category) throws CategoryNotFoundException,GenericServerErrorException;
 
 }

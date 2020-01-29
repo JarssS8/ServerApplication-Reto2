@@ -100,7 +100,7 @@ public class Document implements Serializable{
     /**
      * The category of the document
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     private Category category;
     /**
      * The author group of the document
