@@ -358,4 +358,18 @@ public class RESTUser {
             throw new NotFoundException(ex.getMessage());
         }
     }
+    
+    @GET
+    @Path("/getPublicKey")
+    public String getPublicKey(){
+        String publicKey;
+        try {
+           publicKey = ejb.getPublicKey();
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return publicKey;
+    }
+    
 }

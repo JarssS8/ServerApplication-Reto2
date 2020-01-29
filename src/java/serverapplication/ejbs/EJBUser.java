@@ -5,11 +5,14 @@
  */
 package serverapplication.ejbs;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.ejb.Stateless;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
@@ -119,6 +122,7 @@ public class EJBUser implements EJBUserLocal {
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
         User auxUser;
+        String password;
         try {
             em.createNamedQuery("modifyUserData")
                     .setParameter("email", user.getEmail())
@@ -127,7 +131,10 @@ public class EJBUser implements EJBUserLocal {
                     .executeUpdate();
 
             auxUser = findUserById(user.getId());
-            if (!auxUser.getPassword().equalsIgnoreCase(user.getPassword())) {
+            password = user.getPassword();
+            password = EncriptationAsymmetric.decrypt(password);
+            password = EncryptationLocal.encryptPass(password);
+            if (!auxUser.getPassword().equalsIgnoreCase(password)) {
                 em.createNamedQuery("modifyUserPassword")
                         .setParameter("password", user.getPassword())
                         .setParameter("id", user.getId())
@@ -383,6 +390,8 @@ public class EJBUser implements EJBUserLocal {
             throws UserPasswordNotFoundException, GenericServerErrorException {
         User user = null;
         try {
+            password = EncriptationAsymmetric.decrypt(password);
+            password = EncryptationLocal.encryptPass(password);
             user = (User) em.createNamedQuery("findPasswordByLogin")
                     .setParameter("login", login)
                     .setParameter("password", password)
@@ -437,7 +446,7 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void restorePassword(String email) throws UserNotFoundException {
+    public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException {
         User user;
         String password = generateRandomPassword();
 
@@ -447,7 +456,7 @@ public class EJBUser implements EJBUserLocal {
                     .getSingleResult();
 
             em.createNamedQuery("modifyUserPassword")
-                    .setParameter("password",EncryptationLocal.encryptPass(password))
+                    .setParameter("password", EncryptationLocal.encryptPass(password))
                     .setParameter("id", user.getId())
                     .executeUpdate();
             sendEmail(method[0], password, email);
@@ -455,6 +464,18 @@ public class EJBUser implements EJBUserLocal {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());
         }
+    }
+    
+    
+    @Override
+    public String getPublicKey() throws GenericServerErrorException{
+        String publicKey="";
+        try {
+            publicKey = EncriptationAsymmetric.getPublic();
+        } catch (IOException ex) {
+            Logger.getLogger(EJBUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return publicKey;
     }
 
     private String generateRandomPassword() {

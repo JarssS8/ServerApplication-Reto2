@@ -117,6 +117,7 @@ public class User implements Serializable {
      * The password value for the user.
      */
     @NotNull
+    @XmlTransient
     private String password;
     /**
      * The profile picture for the user.

@@ -5,6 +5,7 @@
  */
 package serverapplication.utilities;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -85,6 +86,17 @@ public class EncriptationAsymmetric {
                     + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
+    }
+    
+    public static String getPublic() throws IOException{
+        InputStream in = null;
+        byte[] publicKeyBytes = null;
+        in = EncriptationAsymmetric.class.getClassLoader().getResourceAsStream(PUBLIC_PATH);
+        publicKeyBytes = new byte[in.available()];
+        in.read(publicKeyBytes);
+        in.close();
+        
+        return toHexadecimal(publicKeyBytes);
     }
 
 }
