@@ -55,7 +55,7 @@ public class EJBUser implements EJBUserLocal {
         this.em = em;
     }
     
-    private final String[] method = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
+    private final String[] METHOD = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
     
     private EntityManager em;
     
@@ -66,7 +66,7 @@ public class EJBUser implements EJBUserLocal {
     }
 
     /**
-     * This method creates a new Free user. Checks if the login's taken and if
+     * This METHOD creates a new Free user. Checks if the login's taken and if
      * it's not, inserts the user via EntityManager.
      *
      * @param user The user object.
@@ -141,7 +141,7 @@ public class EJBUser implements EJBUserLocal {
                         .setParameter("password", user.getPassword())
                         .setParameter("id", user.getId())
                         .executeUpdate();
-                sendEmail(method[1], null, user.getEmail());
+                sendEmail(METHOD[1], null, user.getEmail());
             }
 
         } catch (Exception ex) {
@@ -460,7 +460,7 @@ public class EJBUser implements EJBUserLocal {
                     .setParameter("password", EncryptationLocal.encryptPass(password))
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            sendEmail(method[0], password, email);
+            sendEmail(METHOD[0], password, email);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());
