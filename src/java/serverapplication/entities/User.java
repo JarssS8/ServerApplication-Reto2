@@ -75,6 +75,10 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
             name="findGroupsOfUser",
             query="SELECT u.groups FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findUserPrivilegeByLogin",
+            query="SELECT u.privilege FROM User u WHERE u.login = :login"
         )
 })
 @XmlRootElement
@@ -117,7 +121,6 @@ public class User implements Serializable {
      * The password value for the user.
      */
     @NotNull
-    @XmlTransient
     private String password;
     /**
      * The profile picture for the user.

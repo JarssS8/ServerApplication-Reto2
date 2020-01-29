@@ -6,6 +6,7 @@
 package serverapplication.interfaces;
 
 import java.util.Set;
+import javax.ejb.Local;
 import serverapplication.entities.Document;
 import serverapplication.entities.Free;
 import serverapplication.entities.Group;
@@ -22,6 +23,7 @@ import serverapplication.exceptions.UserPasswordNotFoundException;
  * EJB Local Interface for managing User entity CRUD operations.
  * @author aimar
  */
+@Local
 public interface EJBUserLocal {
 
     /**
