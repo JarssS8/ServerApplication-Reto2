@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +25,7 @@ import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
+import serverapplication.interfaces.EJBUserLocal;
 
 /**
  *
@@ -33,8 +35,8 @@ import serverapplication.interfaces.EJBDocumentRatingLocal;
 public class EJBDocumentRating implements EJBDocumentRatingLocal {
 
     private static final Logger LOGGER = Logger.getLogger("rest");
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     
+    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
     
     public void setEm(EntityManager em) {

@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import javax.ejb.Stateless;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.mail.MessagingException;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -34,6 +35,7 @@ import serverapplication.exceptions.LoginNotFoundException;
 import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
+import serverapplication.interfaces.EJBDocumentRatingLocal;
 import serverapplication.interfaces.EJBUserLocal;
 import serverapplication.utilities.EmailSender;
 import serverapplication.utilities.EncriptationAsymmetric;
@@ -48,25 +50,18 @@ public class EJBUser implements EJBUserLocal {
 
     private static final Logger LOGGER = Logger.getLogger("serverapplication.ejbs.EJBUser");
 
+    private final String[] method = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
+    
     //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    
-    public void setEm(EntityManager em) {
-        this.em = em;
-    }
-    
-    private final String[] METHOD = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
-    
     private EntityManager em;
-    
-    private EJBDocumentRating ejbDocument = new EJBDocumentRating();
 
     public void setEM(EntityManager em) {
         this.em = em;
     }
 
     /**
-     * This METHOD creates a new Free user. Checks if the login's taken and if
+     * This method creates a new Free user. Checks if the login's taken and if
      * it's not, inserts the user via EntityManager.
      *
      * @param user The user object.
@@ -92,6 +87,10 @@ public class EJBUser implements EJBUserLocal {
             free.setPrivilege(Privilege.FREE);
             free.setStatus(Status.ENABLED);
             free.setTimeOnline(0);
+            String newPassword = free.getPassword();
+            newPassword = EncriptationAsymmetric.decrypt(newPassword);
+            newPassword = EncryptationLocal.encryptPass(newPassword);
+            free.setPassword(newPassword);
             // Guardamos en un objeto User el resultado de la busqueda del login.
             // Si existe lanzamos excepcion LoginAlreadyExists.
             // Si no existe capturamos la excepcion NoFoundException y dentro hacemos el em.persist(free).
@@ -141,7 +140,7 @@ public class EJBUser implements EJBUserLocal {
                         .setParameter("password", user.getPassword())
                         .setParameter("id", user.getId())
                         .executeUpdate();
-                sendEmail(METHOD[1], null, user.getEmail());
+                sendEmail(method[1], null, user.getEmail());
             }
 
         } catch (Exception ex) {
@@ -432,14 +431,12 @@ public class EJBUser implements EJBUserLocal {
             throws LoginNotFoundException, GenericServerErrorException {
         String privilege = null;
         try {
-            privilege = em.createQuery("SELECT u.privilege FROM User u WHERE u.login = :login")
-                .setParameter("login", login).getSingleResult().toString();
+            privilege = (String) em.createNamedQuery("findUserPrivilegeByLogin")
+                .setParameter("login", login).getSingleResult();
         } catch (NoResultException ex) {
-            LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
             throw new LoginNotFoundException();
         } catch (Exception ex) {
-            LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException();
         }
@@ -460,7 +457,7 @@ public class EJBUser implements EJBUserLocal {
                     .setParameter("password", EncryptationLocal.encryptPass(password))
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            sendEmail(METHOD[0], password, email);
+            sendEmail(method[0], password, email);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());

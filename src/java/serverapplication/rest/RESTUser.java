@@ -361,6 +361,7 @@ public class RESTUser {
     
     @GET
     @Path("/getPublicKey")
+    @Produces(MediaType.TEXT_PLAIN)
     public String getPublicKey(){
         String publicKey;
         try {
