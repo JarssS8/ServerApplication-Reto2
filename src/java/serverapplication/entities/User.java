@@ -126,7 +126,7 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.

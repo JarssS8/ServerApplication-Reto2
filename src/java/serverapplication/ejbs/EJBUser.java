@@ -127,26 +127,26 @@ public class EJBUser implements EJBUserLocal {
     @Override
     public void deleteUser(User user) throws UserNotFoundException {
         try {
+            Query q = em.createQuery("DELETE FROM Document d WHERE d.user = :user");
+            q.setParameter("user", user);
+            q.executeUpdate();
             switch (user.getPrivilege().toString()) {
                 case "FREE": {
-                    em.remove(em.find(Free.class,
-                            user.getId()));
+                    em.remove(em.find(Free.class, user.getId()));
                     em.flush();
                     em.remove(user);
                     break;
 
                 }
                 case "PREMIUM": {
-                    em.remove(em.find(Premium.class,
-                            user.getId()));
+                    em.remove(em.find(Premium.class, user.getId()));
                     em.flush();
                     em.remove(user);
                     break;
 
                 }
                 case "ADMIN": {
-                    em.remove(em.find(Admin.class,
-                            user.getId()));
+                    em.remove(em.find(Admin.class, user.getId()));
                     em.flush();
                     em.remove(user);
                     break;
@@ -206,20 +206,19 @@ public class EJBUser implements EJBUserLocal {
             if (em.contains(free)) {
                 em.remove(free);
                 em.flush();
-                for (Rating rating : auxPremium.getRatings()) {
+                /*for (Rating rating : auxPremium.getRatings()) {
                     if (!em.contains(rating)) {
                         ejbDocument.setEm(em);
                         rating.setDocument(ejbDocument.findDocumentById(rating.getId().getIdDocument()));
                         rating.setUser((User) premium);
                         em.merge(rating);
                     }
-                }
+                }*/
                 em.merge(auxPremium);
                 em.flush();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
         }
 
@@ -406,12 +405,10 @@ public class EJBUser implements EJBUserLocal {
             privilege = em.createQuery("SELECT u.privilege FROM User u WHERE u.login = :login")
                     .setParameter("login", login).getSingleResult().toString();
         } catch (NoResultException ex) {
-            ex.printStackTrace();
             LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
             throw new LoginNotFoundException();
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException();
