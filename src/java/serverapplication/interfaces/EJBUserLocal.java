@@ -7,6 +7,7 @@ package serverapplication.interfaces;
 
 import java.util.Set;
 import serverapplication.entities.Document;
+import serverapplication.entities.Free;
 import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
@@ -18,7 +19,7 @@ import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 
 /**
- *
+ * EJB Local Interface for managing User entity CRUD operations.
  * @author aimar
  */
 public interface EJBUserLocal {
@@ -29,7 +30,7 @@ public interface EJBUserLocal {
      * @throws LoginAlreadyExistsException If the login already exists.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public void createUser(User user) throws LoginAlreadyExistsException, 
+    public Free createUser(User user) throws LoginAlreadyExistsException, 
             GenericServerErrorException;
     /**
      * This method modifies an existing user's email and full name and stores 
@@ -59,6 +60,7 @@ public interface EJBUserLocal {
      * This method finds an User by its login.
      * @param login A string that contains the users login.
      * @return An User object with the user. 
+     * @throws LoginNotFoundException If the login doesn't exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public User findUserByLogin(String login) throws LoginNotFoundException, 
@@ -109,52 +111,69 @@ public interface EJBUserLocal {
      * This method deletes a Premium from the persistency context and adds a new 
      * entry as Admin with its unique attributes.
      * @param user A User object.
-     * @throws LoginNotFoundException
+     * @throws LoginNotFoundException If the login doesn't exist.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyAdminToFree(User user) throws LoginNotFoundException, 
             GenericServerErrorException;
     /**
-     * 
-     * @param id
-     * @return 
-     */
-    public Set<Rating> findRatingsOfUser(Long id);
-    
-      
-    public Set<Document> findDocumentsOfUser(Long id); 
-    /**
-     * 
-     * @param user A User object.
-     * @return 
-     */
-    public Set<Group> findGroupsOfUser(Long id);
-    /**
-     * 
-     * @param user A User object.
-     * @return 
-     */
-    public Set<Group> findGroupsRuledByUser(Long id);
-    
-    public User checkPassword(String login, String password) 
-            throws UserPasswordNotFoundException, GenericServerErrorException;
-    
-    public void savePaymentMethod(Premium premium);
-    
-    public String findPrivilegeOfUserByLogin(String login);
-  
-    /**
-     * 
-     * @param user A User object.
-     * @return
-     * @throws LoginAlreadyExistsException
+     * This method returns a Set of the ratings the user has given.
+     * @param id The user's primary key identifier.
+     * @return A Set object.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public User signUp(User user) throws LoginAlreadyExistsException, 
-            GenericServerErrorException;
+    public Set<Rating> findRatingsOfUser(Long id) throws GenericServerErrorException;
+    /**
+     * This method returns a Set of the user's documents.
+     * @param id The user's primary key identifier.
+     * @return A Set object.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public Set<Document> findDocumentsOfUser(Long id) throws GenericServerErrorException;
+    /**
+     * This method returns a Set of the user's groups.
+     * @param id The user's primary key identifier.
+     * @return A Set object.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public Set<Group> findGroupsOfUser(Long id) throws GenericServerErrorException;
+    /**
+     * This method returns a Set of the groups administrated by the user.
+     * @param id The user's primary key identifier.
+     * @return A Set object.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public Set<Group> findGroupsRuledByUser(Long id) throws GenericServerErrorException;
+    /**
+     * This method checks if the password given by the user matches with the 
+     * one stored in the database.
+     * @param login The user's login.
+     * @param password The user's password.
+     * @return A Set object.
+     * @throws UserPasswordNotFoundException If the password doesn't match.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public User checkPassword(String login, String password) 
+            throws UserPasswordNotFoundException, GenericServerErrorException;
+    /**
+     * This method saves the user's new payment data.
+     * @param premium The premium user.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public void savePaymentMethod(Premium premium) throws GenericServerErrorException;
+    /**
+     * This method finds the user's privilege.
+     * @param login The user's login.
+     * @return A String object with the user's privilege.
+     * @throws LoginNotFoundException If the login doesn't exist.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public String findPrivilegeOfUserByLogin(String login) 
+            throws LoginNotFoundException, GenericServerErrorException;
+
     /**
      * 
+     * @param email 
      */
-    public void logOut();
-
+    public void restorePassword(String email) throws UserNotFoundException;
 }

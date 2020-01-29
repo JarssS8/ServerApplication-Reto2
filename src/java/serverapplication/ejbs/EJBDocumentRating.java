@@ -34,10 +34,15 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
 
     private static final Logger LOGGER = Logger.getLogger("rest");
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
+    
     private EntityManager em;
-
+    
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
+  
     private EJBUser userejb = new EJBUser();
-
+  
     //----------------------------Document------------------------------------\\
     /**
      * Method to create a new document

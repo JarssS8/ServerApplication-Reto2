@@ -90,7 +90,7 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Rating> ratings;
     /**
      * The author of the document
@@ -184,8 +184,7 @@ public class Document implements Serializable{
        public User getUser() {
         return user;
     }
-       
-    
+  
     public Category getCategory() {
         return category;
     }

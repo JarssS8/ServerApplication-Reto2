@@ -45,8 +45,14 @@ public class EJBUser implements EJBUserLocal {
 
     //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-
+    
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
+    
     private EntityManager em;
+    
+    private EJBDocumentRating ejbDocument = new EJBDocumentRating();
 
     public void setEM(EntityManager em) {
         this.em = em;
@@ -62,8 +68,8 @@ public class EJBUser implements EJBUserLocal {
      * @throws GenericServerErrorException When there's an error at the server.
      */
     @Override
-    public void createUser(User user) throws LoginAlreadyExistsException,
-        GenericServerErrorException {
+    public Free createUser(User user) throws LoginAlreadyExistsException,
+            GenericServerErrorException {
         // El metodo recibe un user de inicio y nosotros le cargamos los datos de free que necesitemos.
         Free free = null;
         try {
@@ -71,9 +77,9 @@ public class EJBUser implements EJBUserLocal {
             free = new Free(user);
             // Cargamos el atributo propio de free.
             Random random = new Random();
-            Long randId = random.nextLong();
+            Long randId = new Long(random.nextInt());
             while (randId < 1 || em.find(User.class, randId) != null) {
-                randId = random.nextLong();
+                randId++;
             }
             free.setId(randId);
             free.setPrivilege(Privilege.FREE);
@@ -89,21 +95,25 @@ public class EJBUser implements EJBUserLocal {
                 // El login ya existe en la base de datos.
                 throw new LoginAlreadyExistsException("Login Already Exists...");
             }
-        } catch (NoResultException ex) { // Login is not taken
+        } catch (NoResultException ex) { // Login is AVAILABLE
             // Login disponible, procedemos a crear el usuario.
             LOGGER.warning("Login available... Creating new user...");
             em.persist(free);
+            em.flush();
             LOGGER.warning("New user created successfully...");
+        } catch (LoginAlreadyExistsException ex) {
+            LOGGER.warning("EJBUser: " + ex.getMessage());
+            throw new LoginAlreadyExistsException(ex.getMessage());
         } catch (EntityExistsException | IllegalArgumentException | TransactionRequiredException ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("EJBUser: " + ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("EJBUser: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
+        return free;
     }
 
-    // NECESITAMOS UN METODO @PUT EN RESTFUL PARA CADA TIPO DE USUARIO. EL METODO RECIBIRA EL TIPO DE USER QUE VAYA A SER.
-    // public void mod(Free free), public void mod(Premium premium), public void mod(Admin admin).
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
         try {
@@ -113,7 +123,7 @@ public class EJBUser implements EJBUserLocal {
                 .setParameter("id", user.getId())
                 .executeUpdate();
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
+            LOGGER.warning("EJBUser: " + ex.getMessage());
         }
 
     }
@@ -121,7 +131,6 @@ public class EJBUser implements EJBUserLocal {
     @Override
     public void deleteUser(User user) throws UserNotFoundException {
         try {
-
             Query q = em.createQuery("DELETE FROM Document d WHERE d.user = :user");
             q.setParameter("user", user);
             q.executeUpdate();
@@ -132,12 +141,14 @@ public class EJBUser implements EJBUserLocal {
                     em.flush();
                     em.remove(user);
                     break;
+
                 }
                 case "PREMIUM": {
                     em.remove(em.find(Premium.class, user.getId()));
                     em.flush();
                     em.remove(user);
                     break;
+
                 }
                 case "ADMIN": {
                     em.remove(em.find(Admin.class, user.getId()));
@@ -187,28 +198,43 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void modifyFreeToPremium(Premium premium)
-        throws LoginNotFoundException, GenericServerErrorException {
+    public void modifyFreeToPremium(Premium premium) throws GenericServerErrorException {
         try {
             Free free = em.find(Free.class, premium.getId());
-            premium.setPrivilege(Privilege.PREMIUM);
-            premium.setBeginSub(Timestamp.valueOf(LocalDateTime.now()));
+            Premium auxPremium = new Premium((User) premium);
+            auxPremium.setAutorenovation(true);
+            auxPremium.setPrivilege(Privilege.PREMIUM);
+            auxPremium.setBeginSub(Timestamp.valueOf(LocalDateTime.now()));
+            auxPremium.setCardNumber(premium.getCardNumber());
+            auxPremium.setCvc(premium.getCvc());
+            auxPremium.setExpirationMonth(premium.getExpirationMonth());
+            auxPremium.setExpirationYear(premium.getExpirationYear());
             if (em.contains(free)) {
                 em.remove(free);
-                em.merge(premium);
+                em.flush();
+                /*for (Rating rating : auxPremium.getRatings()) {
+                    if (!em.contains(rating)) {
+                        ejbDocument.setEm(em);
+                        rating.setDocument(ejbDocument.findDocumentById(rating.getId().getIdDocument()));
+                        rating.setUser((User) premium);
+                        em.merge(rating);
+                    }
+                }*/
+                em.merge(auxPremium);
                 em.flush();
             }
         } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
+            ex.printStackTrace();
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
 
     @Override
-    public void modifyFreeToAdmin(User user)
-        throws LoginNotFoundException, GenericServerErrorException {
+    public void modifyFreeToAdmin(User user) throws GenericServerErrorException {
         try {
-            Free free = em.find(Free.class, user.getId());
+            Free free = em.find(Free.class,
+                    user.getId());
             Admin admin = new Admin(user);
             admin.setPrivilege(Privilege.ADMIN);
             admin.setAdminDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -219,15 +245,16 @@ public class EJBUser implements EJBUserLocal {
             }
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
 
     @Override
-    public void modifyPremiumToFree(User user)
-        throws LoginNotFoundException, GenericServerErrorException {
+    public void modifyPremiumToFree(User user) throws GenericServerErrorException {
         try {
-            Premium premium = em.find(Premium.class, user.getId());
+            Premium premium = em.find(Premium.class,
+                    user.getId());
             Free free = new Free(user);
             free.setPrivilege(Privilege.FREE);
             free.setTimeOnline(0);
@@ -238,15 +265,16 @@ public class EJBUser implements EJBUserLocal {
             }
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
 
     @Override
-    public void modifyPremiumToAdmin(User user)
-        throws LoginNotFoundException, GenericServerErrorException {
+    public void modifyPremiumToAdmin(User user) throws GenericServerErrorException {
         try {
-            Premium premium = em.find(Premium.class, user.getId());
+            Premium premium = em.find(Premium.class,
+                    user.getId());
             Admin admin = new Admin(user);
             admin.setPrivilege(Privilege.ADMIN);
             admin.setAdminDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -257,15 +285,16 @@ public class EJBUser implements EJBUserLocal {
             }
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
 
     @Override
-    public void modifyAdminToFree(User user)
-        throws LoginNotFoundException, GenericServerErrorException {
+    public void modifyAdminToFree(User user) throws GenericServerErrorException {
         try {
-            Admin admin = em.find(Admin.class, user.getId());
+            Admin admin = em.find(Admin.class,
+                    user.getId());
             Free free = new Free(user);
             free.setPrivilege(Privilege.FREE);
             free.setTimeOnline(0);
@@ -276,12 +305,13 @@ public class EJBUser implements EJBUserLocal {
             }
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
 
     @Override
-    public Set<Rating> findRatingsOfUser(Long id) {
+    public Set<Rating> findRatingsOfUser(Long id) throws GenericServerErrorException {
         Set<Rating> ratings = null;
         try {
             ratings = new HashSet<Rating>(
@@ -290,12 +320,13 @@ public class EJBUser implements EJBUserLocal {
                     .getResultList());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
         return ratings;
     }
 
     @Override
-    public Set<Document> findDocumentsOfUser(Long id) {
+    public Set<Document> findDocumentsOfUser(Long id) throws GenericServerErrorException {
         Set<Document> documents = null;
         try {
             documents = new HashSet<Document>(
@@ -309,7 +340,7 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public Set<Group> findGroupsOfUser(Long id) {
+    public Set<Group> findGroupsOfUser(Long id) throws GenericServerErrorException {
         Set<Group> groups = null;
         try {
             groups = new HashSet<Group>(
@@ -323,10 +354,12 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public Set<Group> findGroupsRuledByUser(Long id) {
+    public Set<Group> findGroupsRuledByUser(Long id) throws GenericServerErrorException {
         User user = null;
+
         try {
-            user = em.find(User.class, id);
+            user = em.find(User.class,
+                    id);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -344,7 +377,7 @@ public class EJBUser implements EJBUserLocal {
                 .getSingleResult();
         } catch (NoResultException ex) {
             LOGGER.warning("EJBUser: Password not found..." + ex.getMessage());
-            throw new UserPasswordNotFoundException();
+            throw new UserPasswordNotFoundException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException();
@@ -353,7 +386,7 @@ public class EJBUser implements EJBUserLocal {
     }
 
     @Override
-    public void savePaymentMethod(Premium premium) {
+    public void savePaymentMethod(Premium premium) throws GenericServerErrorException {
         try {
             Query q = em.createQuery("UPDATE Premium p SET p.cardNumber = :cardNumber, "
                 + "p.cvc = :cvc, p.expirationMonth = :expirationMonth, "
@@ -370,32 +403,33 @@ public class EJBUser implements EJBUserLocal {
         }
     }
 
-    public String findPrivilegeOfUserByLogin(String login) {
+    @Override
+    public String findPrivilegeOfUserByLogin(String login)
+            throws LoginNotFoundException, GenericServerErrorException {
         String privilege = null;
         try {
             privilege = em.createQuery("SELECT u.privilege FROM User u WHERE u.login = :login")
                 .setParameter("login", login).getSingleResult().toString();
         } catch (NoResultException ex) {
-            ex.printStackTrace();
             LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
+            throw new LoginNotFoundException();
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOGGER.warning(privilege);
             LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException();
         }
         return privilege;
     }
-
+    
     @Override
-    public User signUp(User user) throws LoginAlreadyExistsException,
-        GenericServerErrorException {
-        return user;
-
-    }
-
-    @Override
-    public void logOut() {
+    public void restorePassword(String email) throws UserNotFoundException {
+        try {
+            
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new UserNotFoundException(ex.getMessage());
+        }
     }
 
 }

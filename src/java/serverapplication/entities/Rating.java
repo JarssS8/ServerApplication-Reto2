@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Rating implements Serializable{
     private static final long serialVersionUID=1L;
+
     /**
      * Id to indentificate the rating
      */
@@ -43,7 +44,7 @@ public class Rating implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER)
     private Document document;
     @MapsId("idUser")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
     /**
      * The rating given to the document

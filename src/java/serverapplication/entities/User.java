@@ -126,17 +126,17 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Document> documents;
     /**
      * A collection with all the groups for the user.
      */
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_group", schema = "team6dbreto2")
     private Set<Group> groups;
     /**
