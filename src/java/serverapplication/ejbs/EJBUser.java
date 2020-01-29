@@ -116,17 +116,31 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
+        User auxUser;
+        String password;
         try {
             em.createNamedQuery("modifyUserData")
-                .setParameter("email", user.getEmail())
-                .setParameter("fullName", user.getFullName())
-                .setParameter("id", user.getId())
-                .executeUpdate();
+                    .setParameter("email", user.getEmail())
+                    .setParameter("fullName", user.getFullName())
+                    .setParameter("id", user.getId())
+                    .executeUpdate();
+
+            auxUser = findUserById(user.getId());
+            password = user.getPassword();
+            password = EncriptationAsymmetric.decrypt(password);
+            password = EncryptationLocal.encryptPass(password);
+            if (!auxUser.getPassword().equalsIgnoreCase(password)) {
+                em.createNamedQuery("modifyUserPassword")
+                        .setParameter("password", user.getPassword())
+                        .setParameter("id", user.getId())
+                        .executeUpdate();
+                sendEmail(method[1], null, user.getEmail());
+            }
+
         } catch (Exception ex) {
             LOGGER.warning("EJBUser: " + ex.getMessage());
         }
 
-    }
 
     @Override
     public void deleteUser(User user) throws UserNotFoundException {
@@ -368,13 +382,15 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public User checkPassword(String login, String password)
-        throws UserPasswordNotFoundException, GenericServerErrorException {
+            throws UserPasswordNotFoundException, GenericServerErrorException {
         User user = null;
         try {
+            password = EncriptationAsymmetric.decrypt(password);
+            password = EncryptationLocal.encryptPass(password);
             user = (User) em.createNamedQuery("findPasswordByLogin")
-                .setParameter("login", login)
-                .setParameter("password", password)
-                .getSingleResult();
+                    .setParameter("login", login)
+                    .setParameter("password", password)
+                    .getSingleResult();
         } catch (NoResultException ex) {
             LOGGER.warning("EJBUser: Password not found..." + ex.getMessage());
             throw new UserPasswordNotFoundException(ex.getMessage());
@@ -423,13 +439,77 @@ public class EJBUser implements EJBUserLocal {
     }
     
     @Override
-    public void restorePassword(String email) throws UserNotFoundException {
+    public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException {
+        User user;
+        String password = generateRandomPassword();
+
         try {
-            
+            user = (User) em.createNamedQuery("findUserByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+
+            em.createNamedQuery("modifyUserPassword")
+                    .setParameter("password", EncryptationLocal.encryptPass(password))
+                    .setParameter("id", user.getId())
+                    .executeUpdate();
+            sendEmail(method[0], password, email);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());
         }
+    }
+    
+    
+    @Override
+    public String getPublicKey() throws GenericServerErrorException{
+        String publicKey="";
+        try {
+            publicKey = EncriptationAsymmetric.getPublic();
+        } catch (IOException ex) {
+            Logger.getLogger(EJBUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return publicKey;
+    }
+
+    private String generateRandomPassword() {
+        String NUMBERS = "0123456789";
+        String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+        String pswd = "", value = "";
+        String key = NUMBERS + UPPERCASE + LOWERCASE;
+        boolean upper = false, numbers = false;
+        do {
+            for (int i = 0; i < 10; i++) {
+                value = String.valueOf(key.charAt((int) (Math.random() * key.length())));
+                if (UPPERCASE.contains(value)) {
+                    upper = true;
+                } else if (NUMBERS.contains(value)) {
+                    numbers = true;
+                }
+                pswd += value;
+            }
+        } while (!upper || !numbers);
+        return pswd;
+    }
+
+    private void sendEmail(String method, String password, String email) throws MessagingException {
+        String message = "";
+        String subject = "";
+
+        switch (method) {
+            case "FORGOT_PASSWORD":
+                subject = "Forgotten password in toLearn() Application";
+                message = "From this moment you have 30 minutes to access with the "
+                        + "generated password. \n If you don't access in the next 30 minutes "
+                        + "you couldn't access.\n Generated Password: " + password;
+                break;
+            case "MODIFY_PASSWORD":
+                subject = "Succesfully modified password in toLearn() Application";
+                message = "The password was successfully modified, now you can access to your account with the new password";
+                break;
+        }
+        EmailSender emailSender = new EmailSender();
+        emailSender.sendMail(email, subject, message);
     }
 
 }
