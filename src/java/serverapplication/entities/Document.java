@@ -87,7 +87,7 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy= "document", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Rating> ratings;
     /**
      * The author of the document
