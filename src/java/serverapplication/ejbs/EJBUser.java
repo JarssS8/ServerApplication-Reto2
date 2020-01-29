@@ -35,6 +35,8 @@ import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
 import serverapplication.utilities.EmailSender;
+import serverapplication.utilities.EncriptationAsymmetric;
+import serverapplication.utilities.EncryptationLocal;
 
 /**
  *
@@ -445,7 +447,7 @@ public class EJBUser implements EJBUserLocal {
                     .getSingleResult();
 
             em.createNamedQuery("modifyUserPassword")
-                    .setParameter("password", password)
+                    .setParameter("password",EncryptationLocal.encryptPass(password))
                     .setParameter("id", user.getId())
                     .executeUpdate();
             sendEmail(method[0], password, email);
