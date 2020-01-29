@@ -177,7 +177,7 @@ public interface EJBUserLocal {
      * @throws serverapplication.exceptions.UserNotFoundException 
      * @throws serverapplication.exceptions.GenericServerErrorException 
      */
-    public void restorePassword(String email) throws UserNotFoundException;
+    public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException;
   
     public String getPublicKey() throws GenericServerErrorException;
 }

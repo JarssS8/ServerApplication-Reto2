@@ -5,6 +5,7 @@
  */
 package serverapplication.ejbs;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import javax.ejb.Stateless;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -33,6 +35,9 @@ import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
+import serverapplication.utilities.EmailSender;
+import serverapplication.utilities.EncriptationAsymmetric;
+import serverapplication.utilities.EncryptationLocal;
 
 /**
  *
@@ -50,6 +55,8 @@ public class EJBUser implements EJBUserLocal {
         this.em = em;
     }
     
+    private final String[] METHOD = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
+    
     private EntityManager em;
     
     private EJBDocumentRating ejbDocument = new EJBDocumentRating();
@@ -59,7 +66,7 @@ public class EJBUser implements EJBUserLocal {
     }
 
     /**
-     * This method creates a new Free user. Checks if the login's taken and if
+     * This METHOD creates a new Free user. Checks if the login's taken and if
      * it's not, inserts the user via EntityManager.
      *
      * @param user The user object.
@@ -134,12 +141,13 @@ public class EJBUser implements EJBUserLocal {
                         .setParameter("password", user.getPassword())
                         .setParameter("id", user.getId())
                         .executeUpdate();
-                sendEmail(method[1], null, user.getEmail());
+                sendEmail(METHOD[1], null, user.getEmail());
             }
 
         } catch (Exception ex) {
             LOGGER.warning("EJBUser: " + ex.getMessage());
         }
+    }
 
 
     @Override
@@ -452,7 +460,7 @@ public class EJBUser implements EJBUserLocal {
                     .setParameter("password", EncryptationLocal.encryptPass(password))
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            sendEmail(method[0], password, email);
+            sendEmail(METHOD[0], password, email);
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new UserNotFoundException(ex.getMessage());
@@ -466,7 +474,7 @@ public class EJBUser implements EJBUserLocal {
         try {
             publicKey = EncriptationAsymmetric.getPublic();
         } catch (IOException ex) {
-            Logger.getLogger(EJBUser.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warning(ex.getMessage());
         }
         return publicKey;
     }
