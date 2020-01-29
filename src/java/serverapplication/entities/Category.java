@@ -7,6 +7,7 @@ package serverapplication.entities;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import static javax.persistence.FetchType.EAGER;
@@ -29,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
         name="findCategoryByName",
-        query="SELECT c FROM Category c WHERE UPPER(c.name) LIKE UPPER(:name)"),
+        query="SELECT c FROM Category c WHERE c.name = :name"),
     @NamedQuery(
         name="findDocumentsByCategory",
         query="SELECT c FROM Category c WHERE UPPER(c.name) = UPPER(:name)"),
@@ -57,7 +58,7 @@ public class Category implements Serializable {
     /**
      * A collection with the documents of this category
      */
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<Document> documents;
 
     public Long getId() {
@@ -75,7 +76,7 @@ public class Category implements Serializable {
     public void setName(String Name) {
         this.name = Name;
     }
-    
+    @XmlTransient
     public Set<Document> getDocuments() {
         return documents;
     }

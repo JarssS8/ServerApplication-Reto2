@@ -6,6 +6,7 @@
 package serverapplication.rest;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import javax.ejb.EJB;
@@ -18,9 +19,11 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import serverapplication.entities.Rating;
+import serverapplication.entities.RatingId;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
 
@@ -102,9 +105,9 @@ public class RatingFacadeREST{
      */
     @DELETE
     @Path("{id}")
-    public void deleteRating(Long id) {
+    public void deleteRating(RatingId ratingid) {
         try {
-            ejb.deleteRating(ejb.findRatingById(id));
+            ejb.deleteRating(ejb.findRatingById(ratingid));
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
@@ -112,6 +115,14 @@ public class RatingFacadeREST{
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+    }
+    @GET
+    @Path("/documentRatings/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Rating> DocumentsRating(@PathParam("id") Long id){
+        List<Rating> ratings;
+        ratings = ejb.DocumentsRating(id);
+        return ratings;
     }
  
 }

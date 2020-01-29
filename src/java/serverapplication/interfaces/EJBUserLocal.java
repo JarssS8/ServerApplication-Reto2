@@ -61,7 +61,8 @@ public interface EJBUserLocal {
      * @return An User object with the user. 
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public User findUserByLogin(String login) throws GenericServerErrorException;
+    public User findUserByLogin(String login) throws LoginNotFoundException, 
+            GenericServerErrorException;
     /**
      * This method finds all the users in the database.
      * @return a Set with all the users.
@@ -119,12 +120,9 @@ public interface EJBUserLocal {
      * @return 
      */
     public Set<Rating> findRatingsOfUser(Long id);
-    /**
-     * 
-     * @param user
-     * @return 
-     */
-    public Set<Document> findDocumentsOfUser(Long id);
+    
+      
+    public Set<Document> findDocumentsOfUser(Long id); 
     /**
      * 
      * @param user A User object.
@@ -137,16 +135,14 @@ public interface EJBUserLocal {
      * @return 
      */
     public Set<Group> findGroupsRuledByUser(Long id);
-    /**
-     * 
-     * @param user A User object.
-     * @return
-     * @throws LoginNotFoundException
-     * @throws UserPasswordNotFoundException
-     * @throws GenericServerErrorException If there's an error in the server.
-     */
-    public User logIn(String login, String password) throws LoginNotFoundException, 
-            UserPasswordNotFoundException, GenericServerErrorException;
+    
+    public User checkPassword(String login, String password) 
+            throws UserPasswordNotFoundException, GenericServerErrorException;
+    
+    public void savePaymentMethod(Premium premium);
+    
+    public String findPrivilegeOfUserByLogin(String login);
+  
     /**
      * 
      * @param user A User object.
