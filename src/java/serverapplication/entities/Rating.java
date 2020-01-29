@@ -11,7 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
@@ -21,7 +20,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
         name="findAllRating",
@@ -65,7 +63,7 @@ public class Rating implements Serializable{
     private Date ratingDate;
 
     public RatingId getId() {
-        return id;
+         return id;
     }
 
     public void setId(RatingId id) {
@@ -96,7 +94,7 @@ public class Rating implements Serializable{
         this.ratingDate = ratingDate;
     }
 
-    @XmlTransient
+    
     public Document getDocument() {
         return document;
     }
@@ -104,7 +102,7 @@ public class Rating implements Serializable{
     public void setDocument(Document document) {
         this.document = document;
     }
-    @XmlTransient
+    
     public User getUser() {
         return user;
     }

@@ -5,7 +5,9 @@
  */
 package serverapplication.rest;
 
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,16 +16,21 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNameNotFoundException;
 import serverapplication.exceptions.CategoryNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -58,6 +65,7 @@ public class RESTCategory {
     @Consumes(MediaType.APPLICATION_XML)
     public void create(Category category) {
         try {
+            category.setId(null);
             eJBLocal.createCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists " + ex.getMessage());
@@ -114,10 +122,10 @@ public class RESTCategory {
      * @param id Long used for find the {@link Category} that is going to be removed from the data base
      */
     @DELETE
-    @Path("/id/{id}")
+    @Path("{id}")
     public void deleteCategory(@PathParam("id") Long id) {
         try {
-            eJBLocal.deleteCategory(id);
+            eJBLocal.deleteCategory(eJBLocal.findCategoryById(id));
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
         } catch (Exception e) {
@@ -135,14 +143,18 @@ public class RESTCategory {
     @GET
     @Path("/name/{name}")
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Category> findCategoryByName(@PathParam("name") String name) {
-        Set<Category> categories = null;
+    public Category findCategoryByName(@PathParam("name") String name) {
+        Category category = null;
         try {
-            categories = eJBLocal.findCategoryByName(name);
-        } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
+            category = eJBLocal.findCategoryByName(name);
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (CategoryNameNotFoundException ex) {
+           LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
+           throw new NotFoundException(ex.getMessage());
         }
-        return categories;
+        return category;
     }
 
     /**
@@ -173,10 +185,10 @@ public class RESTCategory {
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Category> findAllCategories() {
-        Set<Category> categories = null;
+    public List<Category> findAllCategories() {
+        List<Category> categories = null;
         try {
-            categories = eJBLocal.findAllCategories();
+            categories = (List<Category>) eJBLocal.findAllCategories();
         } catch (Exception ex) {
             LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
         }

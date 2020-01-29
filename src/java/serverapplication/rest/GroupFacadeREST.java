@@ -156,7 +156,7 @@ public class GroupFacadeREST{
      * Method that gets the users of a group
      * @param gid group id
      * @return list of users
-     */
+    
     @GET
     @Path("gid/{gid}")
     @Produces({MediaType.APPLICATION_XML})
@@ -171,7 +171,7 @@ public class GroupFacadeREST{
         }
         return users;
     }
-    
+     */
     /**
      * Method that gets a group by id
      * @param id

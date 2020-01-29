@@ -6,7 +6,6 @@
 package serverapplication.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -35,12 +34,16 @@ import javax.xml.bind.annotation.XmlTransient;
         query="SELECT d FROM Document d ORDER BY d.id ASC"),
     @NamedQuery(
         name="findDocumentNameByParameters",
-        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) OR d.category = :category OR d.uploadDate = :uploadDate"),
+        query="SELECT d FROM Document d WHERE UPPER(d.name) LIKE UPPER(:name) AND d.category = :category"),
     
     @NamedQuery(
         name="findRatingsOfDocument",
         query="SELECT d FROM Document d WHERE d.id = :id"
-    )
+    ),
+    @NamedQuery(
+            name="findDocumentNamebyName",
+            query="SELECT d FROM Document d WHERE d.name = :name"
+    ),
 })
 
 /**
@@ -67,7 +70,7 @@ public class Document implements Serializable{
      * The date when the document has been upload
      */
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
     /**
      * The total rating of the document
@@ -87,36 +90,34 @@ public class Document implements Serializable{
     /**
      * The collection of rating the document has been given
      */
-    @OneToMany(mappedBy= "document", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy= "document", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Rating> ratings;
     /**
      * The author of the document
      */
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
     private User user;
     /**
      * The category of the document
      */
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
     private Category category;
     /**
      * The author group of the document
      */
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne()
     private Group group;
     
     public Document(){
     }
     
-    public Document(Long id,String name, String author, Date uploadDate, int totalRating, int ratingCount){
+    public Document(Long id,String name,Category category, Date uploadDate, int totalRating, int ratingCount){
         this.id=id;
         this.name=name;
-        this.user = new User();
-        this.user.setLogin(author);
+        this.category=category;
         this.uploadDate=uploadDate;
         this.totalRating=totalRating;
         this.ratingCount=ratingCount;
-        
     }
     
     public Long getId() {
@@ -166,7 +167,7 @@ public class Document implements Serializable{
     public void setFile(byte[] file) {
         this.file = file;
     }
-
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }
@@ -183,7 +184,7 @@ public class Document implements Serializable{
        public User getUser() {
         return user;
     }
-
+  
     public Category getCategory() {
         return category;
     }
