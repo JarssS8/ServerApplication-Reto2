@@ -5,6 +5,7 @@
  */
 package serverapplication.ejbs;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import javax.ejb.Stateless;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -33,6 +35,9 @@ import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBUserLocal;
+import serverapplication.utilities.EmailSender;
+import serverapplication.utilities.EncriptationAsymmetric;
+import serverapplication.utilities.EncryptationLocal;
 
 /**
  *
@@ -49,6 +54,8 @@ public class EJBUser implements EJBUserLocal {
     public void setEm(EntityManager em) {
         this.em = em;
     }
+    
+    private final String[] method = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
     
     private EntityManager em;
     
@@ -140,6 +147,7 @@ public class EJBUser implements EJBUserLocal {
         } catch (Exception ex) {
             LOGGER.warning("EJBUser: " + ex.getMessage());
         }
+    }
 
 
     @Override
@@ -466,7 +474,7 @@ public class EJBUser implements EJBUserLocal {
         try {
             publicKey = EncriptationAsymmetric.getPublic();
         } catch (IOException ex) {
-            Logger.getLogger(EJBUser.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warning(ex.getMessage());
         }
         return publicKey;
     }
