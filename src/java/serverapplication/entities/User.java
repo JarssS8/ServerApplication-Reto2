@@ -75,6 +75,10 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
             name="findGroupsOfUser",
             query="SELECT u.groups FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+            name="findUserPrivilegeByLogin",
+            query="SELECT u.privilege FROM User u WHERE u.login = :login"
         )
 })
 @XmlRootElement
@@ -117,7 +121,6 @@ public class User implements Serializable {
      * The password value for the user.
      */
     @NotNull
-    @XmlTransient
     private String password;
     /**
      * The profile picture for the user.
@@ -136,7 +139,7 @@ public class User implements Serializable {
     /**
      * A collection with all the ratings given by the user.
      */
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Rating> ratings;
     /**
      * A collection with all the documents uploaded by the user.
@@ -152,7 +155,7 @@ public class User implements Serializable {
     /**
      * A collection with the group the user administrates.
      */
-    @OneToMany(mappedBy="groupAdmin")
+    @OneToMany(mappedBy="groupAdmin",fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<Group> adminGroups;
 
     public Long getId() {
@@ -234,7 +237,7 @@ public class User implements Serializable {
     public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
-
+    @XmlTransient
     public Set<Rating> getRatings() {
         return ratings;
     }

@@ -6,17 +6,22 @@
 package serverapplication.ejbs;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
+import serverapplication.exceptions.CategoryNameNotFoundException;
 import serverapplication.exceptions.CategoryNotFoundException;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -35,11 +40,11 @@ public class CategoryEJB implements CategoryEJBLocal {
      * Entity manager object.
      */
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em; 
+    private EntityManager em;
 
     /**
      * Finds a {@link Category} using a parameter id
-     * 
+     *
      * @param id Parameter used for search in database a category with the same
      * id
      * @return A {@link Category} object
@@ -48,12 +53,17 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Category findCategoryById(Long id) throws CategoryNotFoundException, Exception {
+    public Category findCategoryById(Long id) throws CategoryNotFoundException, GenericServerErrorException {
         Category category = null;
-        category = em.find(Category.class, id);
-        if (category == null) {
-            throw new CategoryNotFoundException();
+        try {
+            category = em.find(Category.class, id);
+            if (category == null) {
+                throw new CategoryNotFoundException();
+            }
+        } catch (Exception ex) {
+            throw new GenericServerErrorException();
         }
+
         return em.find(Category.class, id);
 
     }
@@ -68,17 +78,25 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Set<Category> findCategoryByName(String name) throws Exception {
-        Set<Category> categories = null;
-        categories = new HashSet<>(em.createNamedQuery("findCategoryByName").setParameter("name", "%" + name + "%").getResultList());
-        return categories;
+    public Category findCategoryByName(String name) throws CategoryNameNotFoundException, GenericServerErrorException {
+        Category category = null;
+        try {
+            category = (Category) em.createNamedQuery("findCategoryByName").setParameter("name", name).getSingleResult();
+        } catch (NoResultException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNameNotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        }
+        return category;
     }
 
     /**
      * Find a {@link Document} into a {@link Category} that the name of the
      * category match with the parameter catName and the document name match
      * with the parameter docName
-     * 
+     *
      * @param catName String with the complete name of the category
      * @param docName String with the complete name of the document
      * @return A {@link Document} that match with the parameter docName and is
@@ -90,30 +108,43 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Document findDocumentsByCategory(String catName, String docName) throws CategoryNotFoundException, DocumentNotFoundException, Exception {
+    public Document findDocumentsByCategory(String catName, String docName) throws CategoryNotFoundException, DocumentNotFoundException, GenericServerErrorException {
         Category category = null;
-        category = (Category) em.createNamedQuery("findDocumentsByCategory").setParameter("name", catName).getSingleResult();
-        if (category != null) {
-            for (Document aux : category.getDocuments()) {
-                if (aux.getName().equalsIgnoreCase(docName)) {
-                    return aux;
+        try {
+            category = (Category) em.createNamedQuery("findDocumentsByCategory").setParameter("name", catName).getSingleResult();
+            if (category != null) {
+                for (Document aux : category.getDocuments()) {
+                    if (aux.getName().equalsIgnoreCase(docName)) {
+                        return aux;
+                    }
                 }
+                throw new DocumentNotFoundException();
+            } else {
+                throw new CategoryNotFoundException();
             }
-            throw new DocumentNotFoundException();
-        } else {
-            throw new CategoryNotFoundException();
+        } catch (Exception ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
+
     }
 
     /**
      * Find all the {@link Category} that are in the data base
-     * 
+     *
      * @return A Set with all the {@link Category} from the data base
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public Set<Category> findAllCategories() throws Exception {
-        return new HashSet<>(em.createNamedQuery("findAllCategories").getResultList());
+    public List<Category> findAllCategories() throws GenericServerErrorException {
+        List<Category> categories = null;
+        try {
+            categories = (List<Category>) em.createNamedQuery("findAllCategories").getResultList();
+        } catch (Exception ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        }
+        return categories;
     }
 
     /**
@@ -127,14 +158,19 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public void createCategory(Category category) throws CategoryNameAlreadyExistsException, Exception {
-        Set<Category> auxCategory = null;
-        auxCategory = findCategoryByName(category.getName());
-        if (auxCategory != null) {
+    public void createCategory(Category category) throws GenericServerErrorException {
+        try {
+            Category auxCategory = null;
+
+            auxCategory = findCategoryByName(category.getName());
+
+        } catch (CategoryNameNotFoundException ex) {
             em.persist(category);
-        } else {
-            throw new CategoryNameAlreadyExistsException();
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
+
     }
 
     /**
@@ -148,17 +184,25 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException, Exception {
+    public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException, GenericServerErrorException {
         Category checkCategoryId = null;
-        Set<Category> checkCategoryName = null;
+        Category checkCategoryName = null;
         checkCategoryId = findCategoryById(category.getId());
         if (checkCategoryId != null) {
-            checkCategoryName = findCategoryByName(category.getName());
-            if (checkCategoryName != null) {
-                em.merge(category);
-                em.flush();
-            } else {
-                throw new CategoryNameAlreadyExistsException();
+            try {
+                checkCategoryName = findCategoryByName(category.getName());
+                if (checkCategoryName == null) {
+
+                } else {
+                    throw new CategoryNameAlreadyExistsException();
+                }
+            } catch (CategoryNameNotFoundException ex) {
+
+                if (!em.contains(category)) {
+                    em.merge(category);
+                    em.flush();
+                }
+
             }
         } else {
             throw new CategoryNotFoundException();
@@ -176,16 +220,15 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @throws Exception Throws this exception if something unusual happens
      */
     @Override
-    public void deleteCategory(Long id) throws CategoryNotFoundException, Exception {
-        Category checkCategoryId = null;
-        checkCategoryId = findCategoryById(id);
-        if (checkCategoryId != null) {
-            Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
-            q.setParameter("id", id);
-            q.executeUpdate();
-        } else {
-            throw new CategoryNotFoundException();
-        }
+    public void deleteCategory(Category category) throws CategoryNotFoundException, GenericServerErrorException {
+        
+        Query qDoc = em.createQuery("DELETE FROM Document d WHERE d.category = :cat");
+        qDoc.setParameter("cat", findCategoryById(category.getId()));
+        qDoc.executeUpdate();
+ 
+        Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
+        q.setParameter("id", category.getId());
+        q.executeUpdate(); 
     }
 
 }
