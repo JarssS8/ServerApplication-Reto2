@@ -577,7 +577,7 @@ public class EJBUser implements EJBUserLocal {
                 break;
         }
         EmailSender emailSender = new EmailSender();
-        emailSender.sendMail(email, subject, message);
+       // emailSender.sendMail(email, subject, message);
     }
 
 }

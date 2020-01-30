@@ -116,6 +116,12 @@ public class RatingFacadeREST{
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+ 
+    /**
+     * Method who use the ejb to search the ratings of a document
+     * @param id id of the document
+     * @return a list of ratings
+     */
     @GET
     @Path("/documentRatings/{id}")
     @Produces(MediaType.APPLICATION_XML)
