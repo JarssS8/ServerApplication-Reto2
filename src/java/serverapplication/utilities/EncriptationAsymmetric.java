@@ -60,6 +60,7 @@ public class EncriptationAsymmetric {
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
 
+        cipher = Cipher.getInstance(OPCION_RSA);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] messageInBytes = cipher.doFinal(hexStringToByteArray(encryptedMessage));
         String message = new String(messageInBytes);

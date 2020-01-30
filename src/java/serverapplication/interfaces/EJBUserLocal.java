@@ -140,13 +140,6 @@ public interface EJBUserLocal {
      */
     public Set<Group> findGroupsOfUser(Long id) throws GenericServerErrorException;
     /**
-     * This method returns a Set of the groups administrated by the user.
-     * @param id The user's primary key identifier.
-     * @return A Set object.
-     * @throws GenericServerErrorException If there's an error in the server.
-     */
-    public Set<Group> findGroupsRuledByUser(Long id) throws GenericServerErrorException;
-    /**
      * This method checks if the password given by the user matches with the 
      * one stored in the database.
      * @param login The user's login.
@@ -171,6 +164,16 @@ public interface EJBUserLocal {
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public String findPrivilegeOfUserByLogin(String login) 
+            throws LoginNotFoundException, GenericServerErrorException;
+    
+    /**
+     * This method finds the user's privilege.
+     * @param id The user's id.
+     * @return A String object with the user's privilege.
+     * @throws LoginNotFoundException If the id doesn't exist.
+     * @throws GenericServerErrorException If there's an error in the server.
+     */
+    public String findPrivilegeOfUserById(Long id) 
             throws LoginNotFoundException, GenericServerErrorException;
 
     /**
