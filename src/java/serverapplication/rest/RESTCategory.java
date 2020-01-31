@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -30,6 +31,7 @@ import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
 import serverapplication.exceptions.CategoryNameNotFoundException;
 import serverapplication.exceptions.CategoryNotFoundException;
+import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
@@ -66,8 +68,13 @@ public class RESTCategory {
             eJBLocal.createCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists " + ex.getMessage());
-        } catch (Exception e) {
-            LOGGER.warning("REST Category: Exception creating the category" + e.getMessage());
+            throw new ForbiddenException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -84,17 +91,21 @@ public class RESTCategory {
             eJBLocal.modifyCategory(category);
         } catch (CategoryNameAlreadyExistsException ex) {
             LOGGER.warning("REST Category: The name of the category alredy exists on modifyCategory " + ex.getMessage());
+            throw new ForbiddenException(ex.getMessage());
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on modifyCategory " + ex.getMessage());
-        } catch (Exception e) {
-            LOGGER.warning("REST Category: Exception modifying the category " + e.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: Exception modifying the category " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
 
     }
 
     /**
-     * RESTful GET method for find {@link  Category} objects using the Path id through an XML
-     * representation
+     * RESTful GET method for find {@link  Category} objects using the Path id
+     * through an XML representation
+     *
      * @param id Long used for find one Category
      * @return A {@link Category} object with the category for that id
      */
@@ -107,16 +118,24 @@ public class RESTCategory {
             category = eJBLocal.findCategoryById(id);
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on findCategoryById " + ex.getMessage());
-        } catch (Exception e) {
-            LOGGER.warning("REST Category: Exception finding the category" + e.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return category;
 
     }
 
     /**
-     * RESTful DELETE method for remove {@link  Category} objects using the Path id
-     * @param id Long used for find the {@link Category} that is going to be removed from the data base
+     * RESTful DELETE method for remove {@link  Category} objects using the Path
+     * id
+     *
+     * @param id Long used for find the {@link Category} that is going to be
+     * removed from the data base
      */
     @DELETE
     @Path("{id}")
@@ -125,17 +144,25 @@ public class RESTCategory {
             eJBLocal.deleteCategory(eJBLocal.findCategoryById(id));
         } catch (CategoryNotFoundException ex) {
             LOGGER.warning("REST Category: The category not found on deleteCategory " + ex.getMessage());
-        } catch (Exception e) {
-            LOGGER.warning("REST Category: Exception deleting the category" + e.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
 
     }
 
-     /**
-     * RESTful GET method for find every {@link  Category} objects that contains the Path name and through an XML
-     * representation
-     * @param name String used for find Set of  {@link Category} that contains the string on his name attribute
-     * @return A Set of {@link Category} object with the categories that contains the string on his name attribute
+    /**
+     * RESTful GET method for find every {@link  Category} objects that contains
+     * the Path name and through an XML representation
+     *
+     * @param name String used for find Set of {@link Category} that contains
+     * the string on his name attribute
+     * @return A Set of {@link Category} object with the categories that
+     * contains the string on his name attribute
      */
     @GET
     @Path("/name/{name}")
@@ -144,22 +171,25 @@ public class RESTCategory {
         Category category = null;
         try {
             category = eJBLocal.findCategoryByName(name);
+        } catch (CategoryNameNotFoundException ex) {
+            LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         } catch (GenericServerErrorException ex) {
             LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
-        } catch (CategoryNameNotFoundException ex) {
-           LOGGER.warning("REST Category: Exception finding " + ex.getMessage());
-           throw new NotFoundException(ex.getMessage());
         }
         return category;
     }
 
     /**
-     * RESTful GET method for find a {@link  Document} object using the {@link Category} name and the {@link Document} name and through an XML
+     * RESTful GET method for find a {@link  Document} object using the
+     * {@link Category} name and the {@link Document} name and through an XML
      * representation
+     *
      * @param catName String with the literal name of the category
      * @param docName String with the literal name of the document
-     * @return A {@link Document} object with the document that match with the parameters
+     * @return A {@link Document} object with the document that match with the
+     * parameters
      */
     @GET
     @Path("{catName}/{docName}")
@@ -168,17 +198,26 @@ public class RESTCategory {
         Document doc = null;
         try {
             doc = eJBLocal.findDocumentsByCategory(catName, docName);
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return doc;
 
     }
 
     /**
-     * RESTful GET method for find every {@link  Category} objects and through an XML
-     * representation
-     * @return A Set of {@link Category} object with all the categories in the data base 
+     * RESTful GET method for find every {@link  Category} objects and through an
+     * XML representation
+     *
+     * @return A Set of {@link Category} object with all the categories in the
+     * data base
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -187,7 +226,8 @@ public class RESTCategory {
         try {
             categories = (List<Category>) eJBLocal.findAllCategories();
         } catch (Exception ex) {
-            LOGGER.warning("REST Category: Exception creating " + ex.getMessage());
+            LOGGER.warning("REST Category: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return categories;
     }

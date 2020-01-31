@@ -205,7 +205,7 @@ public class CategoryEJB implements CategoryEJBLocal {
                 try {
                     checkCategoryName = findCategoryByName(category.getName());
                     if (checkCategoryName == null) {
-
+                        LOGGER.info("Category name available...");
                     } else {
                         throw new CategoryNameAlreadyExistsException();
                     }
@@ -221,6 +221,9 @@ public class CategoryEJB implements CategoryEJBLocal {
                 throw new CategoryNotFoundException();
             }
 
+        } catch (CategoryNameAlreadyExistsException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNameAlreadyExistsException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("CategoryEJB: " + ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
