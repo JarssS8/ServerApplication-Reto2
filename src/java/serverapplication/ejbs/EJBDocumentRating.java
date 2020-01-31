@@ -22,6 +22,7 @@ import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
@@ -57,6 +58,8 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
             userejb.setEM(em);
             document.setUser(userejb.findUserById(Long.valueOf(document.getRatingCount())));
         } catch (UserNotFoundException ex) {
+            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GenericServerErrorException ex) {
             Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
         }
         document.setRatingCount(0);
@@ -219,6 +222,8 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         } catch (DocumentNotFoundException ex) {
             Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UserNotFoundException ex) {
+            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GenericServerErrorException ex) {
             Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
         }
         em.persist(rating);

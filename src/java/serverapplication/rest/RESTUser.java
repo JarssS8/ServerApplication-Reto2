@@ -7,6 +7,7 @@ package serverapplication.rest;
 
 import serverapplication.interfaces.EJBUserLocal;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -28,9 +29,11 @@ import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
 import serverapplication.entities.User;
+import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
 import serverapplication.exceptions.GenericServerErrorException;
+import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 
@@ -76,7 +79,6 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-        // AQUI HACE FALTA UNA EXCEPCION RESTful
 
     }
 
@@ -86,6 +88,9 @@ public class RESTUser {
         try {
             ejb.deleteUser((User) ejb.findUserById(id));
         } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (UserNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
@@ -274,6 +279,9 @@ public class RESTUser {
         Set<Document> documents = null;
         try {
             documents = ejb.findDocumentsOfUser(id);
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -288,6 +296,12 @@ public class RESTUser {
         Set<Group> groups = null;
         try {
             groups = ejb.findGroupsOfUser(id);
+        } catch (GroupNameNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -301,6 +315,9 @@ public class RESTUser {
     public void savePaymentMethod(Premium premium) {
         try {
             ejb.savePaymentMethod(premium);
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
