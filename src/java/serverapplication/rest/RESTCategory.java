@@ -46,9 +46,6 @@ public class RESTCategory {
     private static final Logger LOGGER = Logger.getLogger(
             "serverapplication.rest.RESTCategory");
 
-    @PersistenceContext(unitName = "ServerApplication-Reto2PU")
-    private EntityManager em;
-
     /**
      * EJB reference for business logic object.
      */

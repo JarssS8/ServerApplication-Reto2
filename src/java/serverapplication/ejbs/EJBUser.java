@@ -212,6 +212,9 @@ public class EJBUser implements EJBUserLocal {
                 LOGGER.warning("EJBUser: User not found...");
                 throw new UserNotFoundException();
             }
+        } catch (UserNotFoundException ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new UserNotFoundException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
