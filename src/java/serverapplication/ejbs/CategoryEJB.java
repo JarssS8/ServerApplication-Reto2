@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.ws.rs.InternalServerErrorException;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.exceptions.CategoryNameAlreadyExistsException;
@@ -26,6 +27,7 @@ import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
  * EJB class for managing Category operations.
+ *
  * @author Adrian
  */
 @Stateless
@@ -60,8 +62,12 @@ public class CategoryEJB implements CategoryEJBLocal {
             if (category == null) {
                 throw new CategoryNotFoundException();
             }
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            throw new GenericServerErrorException();
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
         return em.find(Category.class, id);
@@ -122,6 +128,12 @@ public class CategoryEJB implements CategoryEJBLocal {
             } else {
                 throw new CategoryNotFoundException();
             }
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNotFoundException(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning("CategoryEJB: " + ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
@@ -185,27 +197,36 @@ public class CategoryEJB implements CategoryEJBLocal {
      */
     @Override
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException, GenericServerErrorException {
-        Category checkCategoryId = null;
-        Category checkCategoryName = null;
-        checkCategoryId = findCategoryById(category.getId());
-        if (checkCategoryId != null) {
-            try {
-                checkCategoryName = findCategoryByName(category.getName());
-                if (checkCategoryName == null) {
+        try {
+            Category checkCategoryId = null;
+            Category checkCategoryName = null;
+            checkCategoryId = findCategoryById(category.getId());
+            if (checkCategoryId != null) {
+                try {
+                    checkCategoryName = findCategoryByName(category.getName());
+                    if (checkCategoryName == null) {
+                        LOGGER.info("Category name available...");
+                    } else {
+                        throw new CategoryNameAlreadyExistsException();
+                    }
+                } catch (CategoryNameNotFoundException ex) {
 
-                } else {
-                    throw new CategoryNameAlreadyExistsException();
+                    if (!em.contains(category)) {
+                        em.merge(category);
+                        em.flush();
+                    }
+
                 }
-            } catch (CategoryNameNotFoundException ex) {
-
-                if (!em.contains(category)) {
-                    em.merge(category);
-                    em.flush();
-                }
-
+            } else {
+                throw new CategoryNotFoundException();
             }
-        } else {
-            throw new CategoryNotFoundException();
+
+        } catch (CategoryNameAlreadyExistsException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNameAlreadyExistsException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
@@ -221,14 +242,25 @@ public class CategoryEJB implements CategoryEJBLocal {
      */
     @Override
     public void deleteCategory(Category category) throws CategoryNotFoundException, GenericServerErrorException {
-        
-        Query qDoc = em.createQuery("DELETE FROM Document d WHERE d.category = :cat");
-        qDoc.setParameter("cat", findCategoryById(category.getId()));
-        qDoc.executeUpdate();
- 
-        Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
-        q.setParameter("id", category.getId());
-        q.executeUpdate(); 
+        try {
+            Query qDoc = em.createQuery("DELETE FROM Document d WHERE d.category = :cat");
+            qDoc.setParameter("cat", findCategoryById(category.getId()));
+            qDoc.executeUpdate();
+
+            Query q = em.createQuery("DELETE FROM Category c WHERE c.id = :id");
+            q.setParameter("id", category.getId());
+            q.executeUpdate();
+        } catch (CategoryNotFoundException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new CategoryNotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("CategoryEJB: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        }
+
     }
 
 }

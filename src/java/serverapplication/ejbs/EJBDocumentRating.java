@@ -5,43 +5,44 @@
  */
 package serverapplication.ejbs;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import serverapplication.entities.Category;
 import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
-import serverapplication.interfaces.EJBUserLocal;
 
 /**
  * EJB class for managing Document and Rating operations.
+ *
  * @author Gaizka Andrés
  */
 @Stateless
 public class EJBDocumentRating implements EJBDocumentRatingLocal {
 
-    private static final Logger LOGGER = Logger.getLogger("rest");
+    private static final Logger LOGGER = Logger.getLogger("serverapplication.ejbs.EJBDocumentRating");
     /**
      * Entity manager object.
      */
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
+
     /**
      * Setter to the Entity Manager
+     *
      * @param em a Entity Manager
      */
     public void setEm(EntityManager em) {
@@ -57,35 +58,45 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      * Method to create a new document
      *
      * @param document the object will be created.
+     * @throws UserNotFoundException If user's not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public void newDocument(Document document) {
+    public void newDocument(Document document) throws UserNotFoundException, GenericServerErrorException {
         try {
             userejb.setEM(em);
             document.setUser(userejb.findUserById(Long.valueOf(document.getRatingCount())));
+            document.setRatingCount(0);
+            em.persist(document);
         } catch (UserNotFoundException ex) {
-            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warning("EJBDocumentRating: " + ex.getMessage());
+            throw new UserNotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
-        document.setRatingCount(0);
-        em.persist(document);
+
     }
 
     /**
      * Method to modify a specific document
      *
      * @param document the document will be modificated.
-     * @throws DocumentNotFoundException exception if are no document
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public void modifyDocument(Document document) throws DocumentNotFoundException {
+    public void modifyDocument(Document document) throws GenericServerErrorException {
         try {
             if (!em.contains(document)) {
                 em.merge(document);
                 em.flush();
             }
-
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
 
     }
@@ -94,16 +105,17 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      * Method to remove a specific document
      *
      * @param document the object will be removed.
-     * @throws DocumentNotFoundException exception if are no document
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public void deleteDocument(Document document) {
+    public void deleteDocument(Document document) throws GenericServerErrorException {
         try {
             Query q = em.createQuery("DELETE FROM Document d WHERE d.id = :id");
             q.setParameter("id", document.getId());
             q.executeUpdate();
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
     }
 
@@ -112,16 +124,24 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      *
      * @param id the id of the document
      * @return The document with the specified id
+     * @throws DocumentNotFoundException If the document is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public Document findDocumentById(Long id) throws DocumentNotFoundException {
+    public Document findDocumentById(Long id) throws DocumentNotFoundException, GenericServerErrorException {
         Document document = null;
         try {
             document = em.find(Document.class, id);
+            if (document == null) {
+                throw new DocumentNotFoundException();
+            }
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
-
         return document;
     }
 
@@ -129,10 +149,11 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      * Method who give all the documents
      *
      * @return All the documents list
-     * @throws DocumentNotFoundException exception if are no document
+     * @throws DocumentNotFoundException If the document is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public List<Document> findAllDocuments() throws DocumentNotFoundException {
+    public List<Document> findAllDocuments() throws DocumentNotFoundException, GenericServerErrorException {
         List<Document> allDocs = null;
         try {
             allDocs = em.createNamedQuery("findAllDocuments").getResultList();
@@ -140,8 +161,12 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
                 LOGGER.severe("EJBDocumentandRating: Document Not Found");
                 throw new DocumentNotFoundException();
             }
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
         return allDocs;
     }
@@ -151,13 +176,22 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      *
      * @param name document name
      * @return list of document with that name
+     * @throws DocumentNotFoundException If the document is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
-    public List<Document> findDocumentNameByName(String name) {
+    @Override
+    public List<Document> findDocumentNameByName(String name) throws DocumentNotFoundException, GenericServerErrorException {
         List<Document> documents = null;
-
-        documents = em.createNamedQuery("findDocumentNamebyName")
-                .setParameter("name", name).getResultList();
-
+        try {
+            documents = em.createNamedQuery("findDocumentNamebyName")
+                    .setParameter("name", name).getResultList();
+        } catch (NoResultException ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        }
         return documents;
     }
 
@@ -166,23 +200,24 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
      *
      * @param name the name of the document
      * @param category the category of the document
-     * @param uploadDate the date of the upload date
      * @return A list of documents
-     * @throws DocumentNotFoundException exception if are no document
+     * @throws DocumentNotFoundException If the document is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public List<Document> findDocumentNameByParameters(String name, Category category) throws DocumentNotFoundException {
+    public List<Document> findDocumentNameByParameters(String name, Category category)
+            throws DocumentNotFoundException, GenericServerErrorException {
         List<Document> docNames = null;
         try {
             docNames = em.createNamedQuery("findDocumentNameByParameters").
                     setParameter("name", "%" + name + "%").
                     setParameter("category", category).getResultList();
-            if (docNames == null) {
-                LOGGER.severe("EJBDocumentandRating: Document Not Found");
-                throw new DocumentNotFoundException();
-            }
+        } catch (NoResultException ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
         return docNames;
     }
@@ -190,23 +225,25 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
     /**
      * Method to search all the ratings of a specific document
      *
-     * @param name the name of the document to search by
+     * @param id
      * @return A ratings list of the specified document
-     * @throws documentNotFoundException exception if are no document
+     * @throws DocumentNotFoundException If the document is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
-    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException {
+    public Set<Rating> findRatingsOfDocument(Long id)
+            throws DocumentNotFoundException, GenericServerErrorException {
         Document document = null;
         try {
-            document = (Document) em.createNamedQuery("findRatingsOfDocument").setParameter("id", id).getSingleResult();
-            if (document == null) {
-                LOGGER.severe("EJBDocumentandRating: Document Not Found");
-                throw new DocumentNotFoundException();
-            }
+            document = (Document) em.createNamedQuery("findRatingsOfDocument")
+                    .setParameter("id", id).getSingleResult();
+        } catch (NoResultException ex) {
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new DocumentNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("EJBDocumentRating: " + ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
         }
-
         return new HashSet<>(document.getRatings());
     }
     //--------------------------------Rating----------------------------------\\
@@ -227,11 +264,15 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
             Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UserNotFoundException ex) {
             Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GenericServerErrorException ex) {
+            Logger.getLogger(EJBDocumentRating.class.getName()).log(Level.SEVERE, null, ex);
         }
         em.persist(rating);
     }
+
     /**
      * Method to search a Rating by his ID
+     *
      * @param id id to search by
      * @return a rating with the send id
      * @throws RatingNotFoundException if are no rating with that id
@@ -301,8 +342,10 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         }
 
     }
+
     /**
      * Method who return all the ratings of a document
+     *
      * @param id Id of the document from which we will get the ratings
      * @return List of ratings of that document
      */

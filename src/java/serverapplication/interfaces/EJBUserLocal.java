@@ -13,9 +13,11 @@ import serverapplication.entities.Group;
 import serverapplication.entities.Premium;
 import serverapplication.entities.Rating;
 import serverapplication.entities.User;
+import serverapplication.exceptions.DocumentNotFoundException;
 import serverapplication.exceptions.LoginAlreadyExistsException;
 import serverapplication.exceptions.LoginNotFoundException;
 import serverapplication.exceptions.GenericServerErrorException;
+import serverapplication.exceptions.GroupNameNotFoundException;
 import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.exceptions.UserPasswordNotFoundException;
 
@@ -131,14 +133,14 @@ public interface EJBUserLocal {
      * @return A Set object.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public Set<Document> findDocumentsOfUser(Long id) throws GenericServerErrorException;
+    public Set<Document> findDocumentsOfUser(Long id) throws DocumentNotFoundException, GenericServerErrorException;
     /**
      * This method returns a Set of the user's groups.
      * @param id The user's primary key identifier.
      * @return A Set object.
      * @throws GenericServerErrorException If there's an error in the server.
      */
-    public Set<Group> findGroupsOfUser(Long id) throws GenericServerErrorException;
+    public Set<Group> findGroupsOfUser(Long id) throws GroupNameNotFoundException, GenericServerErrorException;
     /**
      * This method checks if the password given by the user matches with the 
      * one stored in the database.

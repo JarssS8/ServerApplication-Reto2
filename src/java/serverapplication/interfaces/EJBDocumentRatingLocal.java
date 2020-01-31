@@ -14,8 +14,10 @@ import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.UserNotFoundException;
 
 /**
  *
@@ -26,21 +28,21 @@ public interface EJBDocumentRatingLocal {
     
     //----------------------Document-----------------------------
     
-    public void newDocument(Document document);
+    public void newDocument(Document document) throws UserNotFoundException, GenericServerErrorException;
 
-    public void modifyDocument(Document document) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public void modifyDocument(Document document) throws GenericServerErrorException;
     
-    public void deleteDocument(Document document);
+    public void deleteDocument(Document document) throws GenericServerErrorException;
     
-    public List<Document> findAllDocuments() throws DocumentNotFoundException,ServerConnectionErrorException;
+    public List<Document> findAllDocuments() throws DocumentNotFoundException,GenericServerErrorException;
     
-    public Document findDocumentById(Long id) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public Document findDocumentById(Long id) throws DocumentNotFoundException,GenericServerErrorException;
     
-    public List<Document> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException,ServerConnectionErrorException;
+    public List<Document> findDocumentNameByParameters(String name,Category category) throws DocumentNotFoundException, GenericServerErrorException;
     
-    public Set<Rating> findRatingsOfDocument(Long id) throws RatingNotFoundException,ServerConnectionErrorException;
+    public Set<Rating> findRatingsOfDocument(Long id) throws DocumentNotFoundException, GenericServerErrorException;
     
-    public List<Document> findDocumentNameByName(String name);
+    public List<Document> findDocumentNameByName(String name) throws DocumentNotFoundException, GenericServerErrorException;
     
  
     //----------------------Rating-----------------------------

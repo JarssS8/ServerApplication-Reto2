@@ -5,7 +5,6 @@
  */
 package serverapplication.rest;
 
-import java.util.Date;
 import serverapplication.interfaces.EJBDocumentRatingLocal;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +29,10 @@ import serverapplication.entities.Document;
 import serverapplication.entities.Rating;
 import serverapplication.entities.RatingId;
 import serverapplication.exceptions.DocumentNotFoundException;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.RatingNotFoundException;
 import serverapplication.exceptions.ServerConnectionErrorException;
+import serverapplication.exceptions.UserNotFoundException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
@@ -42,7 +43,7 @@ import serverapplication.interfaces.CategoryEJBLocal;
 @Path("document")
 public class DocumentFacadeREST {
 
-    private static final Logger LOGGER = Logger.getLogger("rest");
+    private static final Logger LOGGER = Logger.getLogger("serverapplication.rest.DocumentFacadeREST");
 
     private RatingId getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -85,17 +86,26 @@ public class DocumentFacadeREST {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void newDocument(Document document) {
-        document.setId(null);
-        ejb.newDocument(document);
+        try {
+            document.setId(null);
+            ejb.newDocument(document);
+        } catch (UserNotFoundException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+
     }
 
     /**
      * Method who use the ejb to modify a document
      *
      * @param document the document will be modifie
-     * @throws DocumentNotFoundException exception if are no document
-     * @throws ServerConnectionErrorException exception if are a problem with
-     * the server
      */
     @PUT
     @Path("{id}")
@@ -103,11 +113,11 @@ public class DocumentFacadeREST {
     public void modifyDocument(Document document) {
         try {
             ejb.modifyDocument(document);
-        } catch (DocumentNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -115,10 +125,7 @@ public class DocumentFacadeREST {
     /**
      * Method who use the ejb to delete a document
      *
-     * @param document the document will be deleted
-     * @throws DocumentNotFoundException exception if are no document
-     * @throws ServerConnectionErrorException exception if are a problem with
-     * the server
+     * @param id
      */
     @DELETE
     @Path("{id}")
@@ -127,10 +134,13 @@ public class DocumentFacadeREST {
         try {
             ejb.deleteDocument(ejb.findDocumentById(id));
         } catch (DocumentNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -139,9 +149,6 @@ public class DocumentFacadeREST {
      * Method who use the ejb to search all the documents
      *
      * @return All the documents list
-     * @throws DocumentNotFoundException exception if are no document
-     * @throws ServerConnectionErrorException exception if are a problem with
-     * the server
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -150,10 +157,13 @@ public class DocumentFacadeREST {
         try {
             documents = ejb.findAllDocuments();
         } catch (DocumentNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return documents;
@@ -165,9 +175,6 @@ public class DocumentFacadeREST {
      *
      * @param id the id to search by
      * @return the document with the specified id
-     * @throws DocumentNotFoundException exception if are no document
-     * @throws ServerConnectionErrorException exception if are a problem with
-     * the server
      */
     @GET
     @Path("/id/{id}")
@@ -177,10 +184,13 @@ public class DocumentFacadeREST {
         try {
             document = ejb.findDocumentById(id);
         } catch (DocumentNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return document;
@@ -198,15 +208,26 @@ public class DocumentFacadeREST {
     public List<Document> findDocumentNamebyName(@PathParam("name") String name) {
         List<Document> documentNoFile = new Vector<Document>();
         List<Document> documents = null;
-        documents = ejb.findDocumentNameByName(name);
-        for (Document auxDocu : documents) {
-            documentNoFile.add(new Document(
-                    auxDocu.getId(),
-                    auxDocu.getName(),
-                    auxDocu.getCategory(),
-                    auxDocu.getUploadDate(),
-                    auxDocu.getTotalRating(),
-                    auxDocu.getRatingCount()));
+        try {
+            documents = ejb.findDocumentNameByName(name);
+            for (Document auxDocu : documents) {
+                documentNoFile.add(new Document(
+                        auxDocu.getId(),
+                        auxDocu.getName(),
+                        auxDocu.getCategory(),
+                        auxDocu.getUploadDate(),
+                        auxDocu.getTotalRating(),
+                        auxDocu.getRatingCount()));
+            }
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return documentNoFile;
     }
@@ -240,13 +261,14 @@ public class DocumentFacadeREST {
                         auxDocu.getRatingCount()));
             }
         } catch (DocumentNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            Logger.getLogger(DocumentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return documentNoFile;
     }
@@ -254,24 +276,22 @@ public class DocumentFacadeREST {
     /**
      * Method who use the ejb to search Rating of a document
      *
-     * @param name the name of the document
-     * @throws documentNotFoundException exception if are no document
-     * @throws ServerConnectionErrorException exception if are a problem with
-     * the server
      */
     @GET
     @Path("/ratings/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Rating> findRatingsOfDocument(@PathParam("id") Long id) {
-
         Set<Rating> ratingsDocument = null;
         try {
             ratingsDocument = (Set<Rating>) ejb.findRatingsOfDocument(id);
-        } catch (RatingNotFoundException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (DocumentNotFoundException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new NotFoundException(ex.getMessage());
-        } catch (ServerConnectionErrorException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning("DocumentFacadeREST: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return ratingsDocument;
