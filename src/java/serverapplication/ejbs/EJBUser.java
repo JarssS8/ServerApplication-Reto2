@@ -44,7 +44,7 @@ import serverapplication.utilities.EncriptationAsymmetric;
 import serverapplication.utilities.EncryptationLocal;
 
 /**
- *
+ * EJB class for managing User operations.
  * @author aimar
  */
 @Stateless
@@ -54,7 +54,6 @@ public class EJBUser implements EJBUserLocal {
 
     private final String[] method = new String[]{"FORGOT_PASSWORD", "MODIFY_PASSWORD"};
 
-    //Necesitamos esta anotacion para injectar el EntityManager
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
 
@@ -122,6 +121,12 @@ public class EJBUser implements EJBUserLocal {
         return free;
     }
 
+    /**
+     * This method modify the common user data for all users of the app. Checks if the password
+     * is being modified for send and email.
+     * @param user User with new data
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
         User auxUser;
@@ -151,6 +156,11 @@ public class EJBUser implements EJBUserLocal {
         }
     }
 
+    /**
+     * Delete one user of the application
+     * @param user User who is going to be removed
+     * @throws UserNotFoundException 
+     */
     @Override
     public void deleteUser(User user) throws UserNotFoundException {
         try {
@@ -187,6 +197,12 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Find one user using his id
+     * @param id Long for search the user
+     * @return User find with that id
+     * @throws UserNotFoundException 
+     */
     @Override
     public User findUserById(Long id) throws UserNotFoundException, GenericServerErrorException {
         User user = null;
@@ -203,6 +219,13 @@ public class EJBUser implements EJBUserLocal {
         return user;
     }
 
+    /**
+     * Find one user using his login
+     * @param login String for search the user by login
+     * @return User find with that login
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException 
+     */
     @Override
     public User findUserByLogin(String login) throws LoginNotFoundException,
         GenericServerErrorException {
@@ -219,11 +242,20 @@ public class EJBUser implements EJBUserLocal {
         return user;
     }
 
+    /**
+     * Find all user on the Database
+     * @return Set with all the users from the database
+     */
     @Override
     public Set<User> findAllUsers() {
         return new HashSet<>(em.createNamedQuery("findAllUsers").getResultList());
     }
 
+    /**
+     * Change privilege from one free user and become in one Premium
+     * @param premium Premium object with the new data required for become in premium
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyFreeToPremium(Premium premium) throws GenericServerErrorException {
         try {
@@ -249,6 +281,11 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Change privilege from one free user and become in one Admin
+     * @param user User object who is going to be Admin
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyFreeToAdmin(User user) throws GenericServerErrorException {
         try {
@@ -269,6 +306,11 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Change privilege from one Prrmium user and become in one Free
+     * @param user User object who is going to be Free
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyPremiumToFree(User user) throws GenericServerErrorException {
         try {
@@ -289,6 +331,11 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Change privilege from one Prrmium user and become in one Admin
+     * @param user User object who is going to be Admin
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyPremiumToAdmin(User user) throws GenericServerErrorException {
         try {
@@ -309,6 +356,11 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Change privilege from one Admin user and become in one Free
+     * @param user User object who is going to be Free
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void modifyAdminToFree(User user) throws GenericServerErrorException {
         try {
@@ -329,6 +381,12 @@ public class EJBUser implements EJBUserLocal {
 
     }
 
+    /**
+     * Find all ratings did it by that user
+     * @param id Long of the user id used for find the Ratings
+     * @return Set with all the ratings made it from that user id
+     * @throws GenericServerErrorException 
+     */
     @Override
     public Set<Rating> findRatingsOfUser(Long id) throws GenericServerErrorException {
         String privilege;
@@ -365,6 +423,12 @@ public class EJBUser implements EJBUserLocal {
         return ratings;
     }
 
+    /**
+     * Find all the documents uploaded by one user
+     * @param id Long with the id of the user
+     * @return Set of documents from the user with that id
+     * @throws GenericServerErrorException 
+     */
     @Override
     public Set<Document> findDocumentsOfUser(Long id) throws DocumentNotFoundException, GenericServerErrorException {
         String privilege;
@@ -401,6 +465,12 @@ public class EJBUser implements EJBUserLocal {
         return documents;
     }
 
+    /**
+     * Find all the groups from one user by id
+     * @param id Long id from the user
+     * @return Set with the groups of that user
+     * @throws GenericServerErrorException 
+     */
     @Override
     public Set<Group> findGroupsOfUser(Long id) throws GroupNameNotFoundException, GenericServerErrorException {
         String privilege;
@@ -437,6 +507,14 @@ public class EJBUser implements EJBUserLocal {
         return groups;
     }
 
+    /**
+     * Method that checks if the password is correct checking with the database
+     * @param login String with the login of the user
+     * @param password String with the password of the user
+     * @return User that have that both parameters
+     * @throws UserPasswordNotFoundException
+     * @throws GenericServerErrorException 
+     */
     @Override
     public User checkPassword(String login, String password)
         throws UserPasswordNotFoundException, GenericServerErrorException {
@@ -458,6 +536,11 @@ public class EJBUser implements EJBUserLocal {
         return user;
     }
 
+    /**
+     * Method that save the payment method for one Premium user
+     * @param premium The user with the payment data
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void savePaymentMethod(Premium premium) throws GenericServerErrorException {
         try {
@@ -477,6 +560,13 @@ public class EJBUser implements EJBUserLocal {
         }
     }
 
+    /**
+     * Find the privilege of one user using his login
+     * @param login String with the login of one user
+     * @return String with the privilege of the found user
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException 
+     */
     @Override
     public String findPrivilegeOfUserByLogin(String login)
         throws LoginNotFoundException, GenericServerErrorException {
@@ -493,7 +583,14 @@ public class EJBUser implements EJBUserLocal {
         }
         return privilege;
     }
-
+    
+    /**
+     * Find the privilege of one user using his id
+     * @param id Long with the id of one user
+     * @return String with the privilege of the found user
+     * @throws LoginNotFoundException
+     * @throws GenericServerErrorException 
+     */
     @Override
     public String findPrivilegeOfUserById(Long id)
         throws LoginNotFoundException, GenericServerErrorException {
@@ -510,7 +607,13 @@ public class EJBUser implements EJBUserLocal {
         }
         return privilege;
     }
-
+    
+    /**
+     * Method that restore the password for someone who forgot it and send it by email
+     * @param email String email from user where is going to be send the email
+     * @throws UserNotFoundException
+     * @throws GenericServerErrorException 
+     */
     @Override
     public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException {
         User user;
@@ -531,7 +634,13 @@ public class EJBUser implements EJBUserLocal {
             throw new UserNotFoundException(ex.getMessage());
         }
     }
-
+    
+    
+   /**
+    * Method that send the public key from the Encryptation class 
+    * @return String with the public key in hexadecimal
+    * @throws GenericServerErrorException 
+    */
     @Override
     public String getPublicKey() throws GenericServerErrorException {
         String publicKey = "";
@@ -543,6 +652,11 @@ public class EJBUser implements EJBUserLocal {
         return publicKey;
     }
 
+    /**
+     * Generate a new random password with at least one uppercase and one number for a user who forget it.
+     * The length of the new password always is going to be 10
+     * @return String the new password generated
+     */
     private String generateRandomPassword() {
         String NUMBERS = "0123456789";
         String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -551,6 +665,7 @@ public class EJBUser implements EJBUserLocal {
         String key = NUMBERS + UPPERCASE + LOWERCASE;
         boolean upper = false, numbers = false;
         do {
+            pswd="";
             for (int i = 0; i < 10; i++) {
                 value = String.valueOf(key.charAt((int) (Math.random() * key.length())));
                 if (UPPERCASE.contains(value)) {
@@ -564,17 +679,25 @@ public class EJBUser implements EJBUserLocal {
         return pswd;
     }
 
-    private void sendEmail(String method, String password, String email)
-        throws MessagingException, IOException, Exception {
+    /**
+     * Method that execute the action to send the information to the class who send the emails
+     * @param method String with who email type is going to be send
+     * @param password String with new generated password for one user in case that was a forgot password email
+     * @param email String with the email of the user where the email is going to be send
+     * @throws MessagingException
+     * @throws IOException
+     * @throws Exception 
+     */
+    private void sendEmail(String method, String password, String email) 
+            throws MessagingException, IOException, Exception {
         String message = "";
         String subject = "";
 
         switch (method) {
             case "FORGOT_PASSWORD":
                 subject = "Forgotten password in toLearn() Application";
-                message = "From this moment you have 30 minutes to access with the "
-                    + "generated password. \n If you don't access in the next 30 minutes "
-                    + "you couldn't access.\n Generated Password: " + password;
+                message = "Now you can access with the "
+                        + "generated password.\n Generated Password: " + password;
                 break;
             case "MODIFY_PASSWORD":
                 subject = "Succesfully modified password in toLearn() Application";

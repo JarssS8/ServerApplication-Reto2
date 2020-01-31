@@ -25,7 +25,7 @@ import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
- *
+ * EJB class for managing Category operations.
  * @author Adrian
  */
 @Stateless

@@ -5,7 +5,10 @@
  */
 package serverapplication.utilities;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import javax.mail.Authenticator;
@@ -26,15 +29,18 @@ import javax.mail.internet.MimeMultipart;
 public class EmailSender {
     
 // Server mail user & pass
-	private String user = "2dam2curious";
-	private String pass = "abcd*1234";
+        private String userPath = ResourceBundle.getBundle("serverapplication.utilities.KeysProperties").getString("user_email");
+        private String emailPath = ResourceBundle.getBundle("serverapplication.utilities.KeysProperties").getString("email_email");
+        private String passPath = ResourceBundle.getBundle("serverapplication.utilities.KeysProperties").getString("pass_email");
+	private String user = "";
+	private String pass = "";
 
 	// DNS Host + SMTP Port
 	private String smtp_host = "smtp.gmail.com";
 	private int smtp_port = 25;
         
         //Email sender paramethers
-        String emailSender="2dam2curious@gmail.com";
+        private String emailSender="";
 
 	/**
 	 * Sends the given <b>text</b> from the <b>sender</b> to the <b>receiver</b>. In
@@ -52,8 +58,8 @@ public class EmailSender {
 	 * @throws MessagingException Is something awry happens
 	 * 
 	 */
-	public void sendMail( String receiver, String subject, String text) throws MessagingException {
-		
+	public void sendMail( String receiver, String subject, String text) throws MessagingException, IOException, Exception {
+		getCredentials();
 		// Mail properties
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", true);
@@ -91,5 +97,29 @@ public class EmailSender {
 		// And here it goes...
 		Transport.send(message);
 	}
+
+    private void getCredentials() throws IOException, Exception {
+        InputStream in = null;
+        byte[] variableBytes = null;
+        in = EncriptationAsymmetric.class.getClassLoader().getResourceAsStream(userPath);
+        variableBytes = new byte[in.available()];
+        in.read(variableBytes);
+        in.close();
+        user = EncriptationAsymmetric.decrypt(EncriptationAsymmetric.toHexadecimal(variableBytes));
+        
+        in = EncriptationAsymmetric.class.getClassLoader().getResourceAsStream(emailPath);
+        variableBytes = new byte[in.available()];
+        in.read(variableBytes);
+        in.close();
+        emailSender = EncriptationAsymmetric.decrypt(EncriptationAsymmetric.toHexadecimal(variableBytes));
+        
+        in = EncriptationAsymmetric.class.getClassLoader().getResourceAsStream(passPath);
+        variableBytes = new byte[in.available()];
+        in.read(variableBytes);
+        in.close();
+        pass = EncriptationAsymmetric.decrypt(EncriptationAsymmetric.toHexadecimal(variableBytes));
+        
+        
+    }
 
 }

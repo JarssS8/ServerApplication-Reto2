@@ -35,12 +35,15 @@ import serverapplication.exceptions.ServerConnectionErrorException;
 import serverapplication.interfaces.CategoryEJBLocal;
 
 /**
+ * RESTful web service class exposing CRUD operations for Document.
  *
  * @author Gaizka Andrés
  */
 @Path("document")
-public class DocumentFacadeREST{
+public class DocumentFacadeREST {
+
     private static final Logger LOGGER = Logger.getLogger("rest");
+
     private RatingId getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
@@ -61,21 +64,22 @@ public class DocumentFacadeREST{
         }
         return key;
     }
-    
+
     /**
      * Injection of the Docuement & Rating ejb
      */
     @EJB
     private EJBDocumentRatingLocal ejb;
-    
+
     /**
      * Injection of the Category ejb
      */
     @EJB
     private CategoryEJBLocal ejbCat;
-    
+
     /**
-     * Method who use the ejb to create a Document 
+     * Method who use the ejb to create a Document
+     *
      * @param document the document will be created
      */
     @POST
@@ -84,12 +88,13 @@ public class DocumentFacadeREST{
         document.setId(null);
         ejb.newDocument(document);
     }
-    
-    /**<<
+
+    /**
      * Method who use the ejb to modify a document
-     * @param document the document will be modified
-     * @throws DocumentNotFoundException exception if are no document 
-     * @throws ServerConnectionErrorException exception if are a problem with 
+     *
+     * @param document the document will be modifie
+     * @throws DocumentNotFoundException exception if are no document
+     * @throws ServerConnectionErrorException exception if are a problem with
      * the server
      */
     @PUT
@@ -102,16 +107,17 @@ public class DocumentFacadeREST{
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
-           LOGGER.severe(ex.getMessage());
-           throw new InternalServerErrorException(ex.getMessage());
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     /**
      * Method who use the ejb to delete a document
+     *
      * @param document the document will be deleted
-     * @throws DocumentNotFoundException exception if are no document 
-     * @throws ServerConnectionErrorException exception if are a problem with 
+     * @throws DocumentNotFoundException exception if are no document
+     * @throws ServerConnectionErrorException exception if are a problem with
      * the server
      */
     @DELETE
@@ -128,12 +134,13 @@ public class DocumentFacadeREST{
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     /**
      * Method who use the ejb to search all the documents
+     *
      * @return All the documents list
-     * @throws DocumentNotFoundException exception if are no document 
-     * @throws ServerConnectionErrorException exception if are a problem with 
+     * @throws DocumentNotFoundException exception if are no document
+     * @throws ServerConnectionErrorException exception if are a problem with
      * the server
      */
     @GET
@@ -146,19 +153,20 @@ public class DocumentFacadeREST{
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
         } catch (ServerConnectionErrorException ex) {
-           LOGGER.severe(ex.getMessage());
+            LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return documents;
-        
+
     }
-    
+
     /**
      * Method who use the ejb to search a document by his id
+     *
      * @param id the id to search by
      * @return the document with the specified id
-     * @throws DocumentNotFoundException exception if are no document 
-     * @throws ServerConnectionErrorException exception if are a problem with 
+     * @throws DocumentNotFoundException exception if are no document
+     * @throws ServerConnectionErrorException exception if are a problem with
      * the server
      */
     @GET
@@ -177,51 +185,59 @@ public class DocumentFacadeREST{
         }
         return document;
     }
+
+    /**
+     * Method who use the ejb to search a document by his name
+     *
+     * @param name the name to search by
+     * @return List of documents with that name or contains that name
+     */
     @GET
     @Path("name/{name}")
     @Produces(MediaType.APPLICATION_XML)
-    public List<Document> findDocumentNamebyName( @PathParam("name") String name){
+    public List<Document> findDocumentNamebyName(@PathParam("name") String name) {
         List<Document> documentNoFile = new Vector<Document>();
-        List<Document> documents=null;
+        List<Document> documents = null;
         documents = ejb.findDocumentNameByName(name);
-         for(Document auxDocu: documents){
-                documentNoFile.add( new Document(
+        for (Document auxDocu : documents) {
+            documentNoFile.add(new Document(
                     auxDocu.getId(),
                     auxDocu.getName(),
                     auxDocu.getCategory(),
                     auxDocu.getUploadDate(),
                     auxDocu.getTotalRating(),
                     auxDocu.getRatingCount()));
-            }
+        }
         return documentNoFile;
     }
+
     /**
      * Method who use the ejb to search a document by various parameters
+     *
      * @param name the name to search by
      * @param category the category to search by
-     * @param uploadDate the date to search by
      * @return A list of names of documents
      */
     @GET
     @Path("/parameters/{name}/{category}")
     @Produces(MediaType.APPLICATION_XML)
     public List<Document> findDocumentNameByParameters(
-        @PathParam("name") String name, 
-        @PathParam("category") String category){
-        
+            @PathParam("name") String name,
+            @PathParam("category") String category) {
+
         List<Document> documentNoFile = new Vector<Document>();
-        List<Document> documents=null;
+        List<Document> documents = null;
         try {
-            documents = ejb.findDocumentNameByParameters(name, 
-                (Category) ejbCat.findCategoryByName(category));
-            for(Document auxDocu: documents){
-                documentNoFile.add( new Document(
-                    auxDocu.getId(),
-                    auxDocu.getName(),
-                    auxDocu.getCategory(),
-                    auxDocu.getUploadDate(),
-                    auxDocu.getTotalRating(),
-                    auxDocu.getRatingCount()));
+            documents = ejb.findDocumentNameByParameters(name,
+                    (Category) ejbCat.findCategoryByName(category));
+            for (Document auxDocu : documents) {
+                documentNoFile.add(new Document(
+                        auxDocu.getId(),
+                        auxDocu.getName(),
+                        auxDocu.getCategory(),
+                        auxDocu.getUploadDate(),
+                        auxDocu.getTotalRating(),
+                        auxDocu.getRatingCount()));
             }
         } catch (DocumentNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
@@ -234,24 +250,23 @@ public class DocumentFacadeREST{
         }
         return documentNoFile;
     }
-    
-    
+
     /**
      * Method who use the ejb to search Rating of a document
+     *
      * @param name the name of the document
-     * @throws documentNotFoundException exception if are no document 
-     * @throws ServerConnectionErrorException exception if are a problem with 
+     * @throws documentNotFoundException exception if are no document
+     * @throws ServerConnectionErrorException exception if are a problem with
      * the server
      */
-    
     @GET
     @Path("/ratings/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Set<Rating> findRatingsOfDocument(@PathParam("id") Long id){
-        
+    public Set<Rating> findRatingsOfDocument(@PathParam("id") Long id) {
+
         Set<Rating> ratingsDocument = null;
         try {
-            ratingsDocument =  (Set<Rating>) ejb.findRatingsOfDocument(id);
+            ratingsDocument = (Set<Rating>) ejb.findRatingsOfDocument(id);
         } catch (RatingNotFoundException ex) {
             LOGGER.severe(ex.getMessage());
             throw new NotFoundException(ex.getMessage());
@@ -261,7 +276,5 @@ public class DocumentFacadeREST{
         }
         return ratingsDocument;
     }
-    
-   
-    
+
 }

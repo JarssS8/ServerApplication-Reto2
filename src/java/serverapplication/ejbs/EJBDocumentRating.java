@@ -29,23 +29,30 @@ import serverapplication.interfaces.EJBDocumentRatingLocal;
 import serverapplication.interfaces.EJBUserLocal;
 
 /**
- *
+ * EJB class for managing Document and Rating operations.
  * @author Gaizka Andrés
  */
 @Stateless
 public class EJBDocumentRating implements EJBDocumentRatingLocal {
 
     private static final Logger LOGGER = Logger.getLogger("rest");
-    
+    /**
+     * Entity manager object.
+     */
     @PersistenceContext(unitName = "ServerApplication-Reto2PU")
     private EntityManager em;
-    
+    /**
+     * Setter to the Entity Manager
+     * @param em a Entity Manager
+     */
     public void setEm(EntityManager em) {
         this.em = em;
     }
-  
+    /**
+     * A new UserEJB
+     */
     private EJBUser userejb = new EJBUser();
-  
+
     //----------------------------Document------------------------------------\\
     /**
      * Method to create a new document
@@ -152,7 +159,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         List<Document> documents = null;
 
         documents = em.createNamedQuery("findDocumentNamebyName")
-            .setParameter("name", name).getResultList();
+                .setParameter("name", name).getResultList();
 
         return documents;
     }
@@ -171,8 +178,8 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         List<Document> docNames = null;
         try {
             docNames = em.createNamedQuery("findDocumentNameByParameters").
-                setParameter("name", "%" + name + "%").
-                setParameter("category", category).getResultList();
+                    setParameter("name", "%" + name + "%").
+                    setParameter("category", category).getResultList();
             if (docNames == null) {
                 LOGGER.severe("EJBDocumentandRating: Document Not Found");
                 throw new DocumentNotFoundException();
@@ -228,7 +235,12 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         }
         em.persist(rating);
     }
-
+    /**
+     * Method to search a Rating by his ID
+     * @param id id to search by
+     * @return a rating with the send id
+     * @throws RatingNotFoundException if are no rating with that id
+     */
     @Override
     public Rating findRatingById(RatingId id) throws RatingNotFoundException {
         Rating rating = null;
@@ -243,7 +255,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
     /**
      * Method to modify a specific rating
      *
-     * @param Rating
+     * @param Rating modified rating
      * @throws RatingNotFoundException exception if are no rating
      */
     @Override
@@ -280,7 +292,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
     /**
      * Method to remove a specific rating
      *
-     * @param rating
+     * @param rating a rating to delete
      * @throws RatingNotFoundException exception if are no rating
      */
     @Override
@@ -294,7 +306,11 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
         }
 
     }
-
+    /**
+     * Method who return all the ratings of a document
+     * @param id Id of the document from which we will get the ratings
+     * @return List of ratings of that document
+     */
     @Override
     public List<Rating> DocumentsRating(Long id) {
         List<Rating> ratings;
