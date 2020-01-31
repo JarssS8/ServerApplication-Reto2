@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
     query="SELECT g FROM Group g WHERE g.name = :groupName AND g.password = :password"),
     @NamedQuery(
     name="findGroupByName",
-    query="SELECT g.name FROM Group g WHERE g.name = :groupName"),
+    query="SELECT g FROM Group g WHERE g.name = :groupName"),
     @NamedQuery(
     name="findGroupById",
     query="SELECT g FROM Group g WHERE g.id = :id"),

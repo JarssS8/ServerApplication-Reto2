@@ -11,9 +11,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.GroupIdNotFoundException;
 import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.exceptions.GroupNameNotFoundException;
@@ -141,8 +143,20 @@ public class EJBGroups implements EJBGroupLocal {
      * @throws GroupNameNotFoundException
      * @throws Exception 
      */
-    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception{
-        return (Group) em.createNamedQuery("findGroupByName").getSingleResult();
+    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, GenericServerErrorException {
+        Group group = null;
+        try {
+            group = (Group) em.createNamedQuery("findGroupByName")
+                    .setParameter("groupName", groupName)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new GroupNameNotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException(ex.getMessage());
+        }
+        return group; 
     }
 
     /**
