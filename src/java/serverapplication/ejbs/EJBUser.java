@@ -485,6 +485,7 @@ public class EJBUser implements EJBUserLocal {
         String key = NUMBERS + UPPERCASE + LOWERCASE;
         boolean upper = false, numbers = false;
         do {
+            pswd="";
             for (int i = 0; i < 10; i++) {
                 value = String.valueOf(key.charAt((int) (Math.random() * key.length())));
                 if (UPPERCASE.contains(value)) {
@@ -505,9 +506,8 @@ public class EJBUser implements EJBUserLocal {
         switch (method) {
             case "FORGOT_PASSWORD":
                 subject = "Forgotten password in toLearn() Application";
-                message = "From this moment you have 30 minutes to access with the "
-                        + "generated password. \n If you don't access in the next 30 minutes "
-                        + "you couldn't access.\n Generated Password: " + password;
+                message = "Now you can access with the "
+                        + "generated password.\n Generated Password: " + password;
                 break;
             case "MODIFY_PASSWORD":
                 subject = "Succesfully modified password in toLearn() Application";
