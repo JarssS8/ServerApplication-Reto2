@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Local;
 import serverapplication.entities.Group;
 import serverapplication.entities.User;
+import serverapplication.exceptions.GenericServerErrorException;
 import serverapplication.exceptions.GroupIdNotFoundException;
 import serverapplication.exceptions.GroupNameAlreadyExistException;
 import serverapplication.exceptions.GroupNameNotFoundException;
@@ -33,7 +34,7 @@ public interface EJBGroupLocal {
     
     public List<Group> findGroups() throws Exception;
     
-    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, Exception; 
+    public Group findGroupByName(String groupName) throws GroupNameNotFoundException, GenericServerErrorException; 
     
     public List<User> findUsersOfGroup(Long id) throws GroupIdNotFoundException, Exception;
     

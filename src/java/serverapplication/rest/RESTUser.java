@@ -100,11 +100,7 @@ public class RESTUser {
     public User logIn(@PathParam("login") String login, @PathParam("password") String password) {
         User user = null;
         try {
-            String auxLogin = ejb.findPrivilegeOfUserByLogin(login);
-            user = ejb.checkPassword(login,password);
-        } catch (LoginNotFoundException ex) {
-            LOGGER.warning("RESTUser: " + ex.getMessage());
-            throw new NotFoundException(ex.getMessage());
+            user = ejb.checkPassword(login, password);
         } catch (UserPasswordNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotAuthorizedException(ex.getMessage());
@@ -271,7 +267,7 @@ public class RESTUser {
         return ratings;
     }
 
-     @GET
+    @GET
     @Path("/findDocumentsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Set<Document> findDocumentsOfUser(@PathParam("id") Long id) {
@@ -284,7 +280,7 @@ public class RESTUser {
         }
         return documents;
     }
-    
+
     @GET
     @Path("/findGroupsOfUser/{id}")
     @Produces(MediaType.APPLICATION_XML)
@@ -298,7 +294,7 @@ public class RESTUser {
         }
         return groups;
     }
-    
+
     @PUT
     @Path("/savePaymentMethod")
     @Consumes(MediaType.APPLICATION_XML)
@@ -310,14 +306,14 @@ public class RESTUser {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @GET
-    @Path("/findUserPrivilege/{login}")
+    @Path("/findUserPrivilegeByLogin/{login}")
     @Produces(MediaType.APPLICATION_XML)
     public String findPrivilegeOfUserByLogin(@PathParam("login") String login) {
-        String auxLogin = null;
+        String privilege = null;
         try {
-            auxLogin = ejb.findPrivilegeOfUserByLogin(login);
+            privilege = ejb.findPrivilegeOfUserByLogin(login);
         } catch (LoginNotFoundException ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new NotFoundException(ex.getCause());
@@ -328,9 +324,29 @@ public class RESTUser {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getCause());
         }
-        return auxLogin;
+        return privilege;
     }
     
+    @GET
+    @Path("/findUserPrivilegeById/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public String findPrivilegeOfUserById(@PathParam("id") Long id) {
+        String privilege = null;
+        try {
+            privilege = ejb.findPrivilegeOfUserById(id);
+        } catch (LoginNotFoundException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new NotFoundException(ex.getCause());
+        } catch (GenericServerErrorException ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getCause());
+        } catch (Exception ex) {
+            LOGGER.warning("RESTUser: " + ex.getMessage());
+            throw new InternalServerErrorException(ex.getCause());
+        }
+        return privilege;
+    }
+
     @GET
     @Path("/checkPasswordByLogin/{login}/{password}")
     @Produces(MediaType.APPLICATION_XML)
@@ -347,9 +363,10 @@ public class RESTUser {
         }
         return user;
     }
-    
+
     @GET
     @Path("/restorePassword/{email}")
+    @Produces(MediaType.APPLICATION_XML)
     public void restorePassword(@PathParam("email") String email) {
         try {
             ejb.restorePassword(email);
@@ -358,19 +375,19 @@ public class RESTUser {
             throw new NotFoundException(ex.getMessage());
         }
     }
-    
+
     @GET
     @Path("/getPublicKey")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getPublicKey(){
+    public String getPublicKey() {
         String publicKey;
         try {
-           publicKey = ejb.getPublicKey();
+            publicKey = ejb.getPublicKey();
         } catch (Exception ex) {
             LOGGER.warning("RESTUser: " + ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
         return publicKey;
     }
-    
+
 }

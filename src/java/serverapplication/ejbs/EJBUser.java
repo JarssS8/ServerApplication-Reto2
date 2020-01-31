@@ -114,7 +114,6 @@ public class EJBUser implements EJBUserLocal {
             LOGGER.warning("EJBUser: " + ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOGGER.warning("EJBUser: " + ex.getMessage());
             throw new GenericServerErrorException(ex.getMessage());
         }
@@ -334,27 +333,66 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public Set<Rating> findRatingsOfUser(Long id) throws GenericServerErrorException {
+        String privilege;
+        Premium premium = null;
+        Admin admin = null;
+        Free free = null;
         Set<Rating> ratings = null;
         try {
-            ratings = new HashSet<Rating>(
-                em.createNamedQuery("findRatingsOfUser")
-                    .setParameter("id", id)
-                    .getResultList());
+            privilege = em.createNamedQuery("findUserPrivilegeById")
+                .setParameter("id", id).getSingleResult().toString();
+            switch (privilege) {
+                case "PREMIUM": {
+                    premium = em.find(Premium.class, id);
+                    ratings = premium.getRatings();
+                    break;
+                }
+                case "ADMIN": {
+                    admin = em.find(Admin.class, id);
+                    ratings = admin.getRatings();
+                    break;
+                }
+                default: {
+                    free = em.find(Free.class, id);
+                    ratings = free.getRatings();
+                }
+            }
+        } catch (NoResultException ex) {
+            LOGGER.warning(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
-            throw new GenericServerErrorException(ex.getMessage());
         }
         return ratings;
     }
 
     @Override
     public Set<Document> findDocumentsOfUser(Long id) throws GenericServerErrorException {
+        String privilege;
+        Premium premium = null;
+        Admin admin = null;
+        Free free = null;
         Set<Document> documents = null;
         try {
-            documents = new HashSet<Document>(
-                em.createNamedQuery("findDocumentsOfUser")
-                    .setParameter("id", id)
-                    .getResultList());
+            privilege = em.createNamedQuery("findUserPrivilegeById")
+                .setParameter("id", id).getSingleResult().toString();
+            switch (privilege) {
+                case "PREMIUM": {
+                    premium = em.find(Premium.class, id);
+                    documents = premium.getDocuments();
+                    break;
+                }
+                case "ADMIN": {
+                    admin = em.find(Admin.class, id);
+                    documents = admin.getDocuments();
+                    break;
+                }
+                default: {
+                    free = em.find(Free.class, id);
+                    documents = free.getDocuments();
+                }
+            }
+        } catch (NoResultException ex) {
+            LOGGER.warning(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -363,29 +401,36 @@ public class EJBUser implements EJBUserLocal {
 
     @Override
     public Set<Group> findGroupsOfUser(Long id) throws GenericServerErrorException {
+        String privilege;
+        Premium premium = null;
+        Admin admin = null;
+        Free free = null;
         Set<Group> groups = null;
         try {
-            groups = new HashSet<Group>(
-                em.createNamedQuery("findGroupsOfUser")
-                    .setParameter("id", id)
-                    .getResultList());
+            privilege = em.createNamedQuery("findUserPrivilegeById")
+                .setParameter("id", id).getSingleResult().toString();
+            switch (privilege) {
+                case "PREMIUM": {
+                    premium = em.find(Premium.class, id);
+                    groups = premium.getGroups();
+                    break;
+                }
+                case "ADMIN": {
+                    admin = em.find(Admin.class, id);
+                    groups = admin.getGroups();
+                    break;
+                }
+                default: {
+                    free = em.find(Free.class, id);
+                    groups = free.getGroups();
+                }
+            }
+        } catch (NoResultException ex) {
+            LOGGER.warning(ex.getMessage());
         } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
         }
         return groups;
-    }
-
-    @Override
-    public Set<Group> findGroupsRuledByUser(Long id) throws GenericServerErrorException {
-        User user = null;
-
-        try {
-            user = em.find(User.class,
-                    id);
-        } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
-        }
-        return new HashSet<>(user.getGroups());
     }
 
     @Override
@@ -434,6 +479,23 @@ public class EJBUser implements EJBUserLocal {
         try {
             privilege = em.createNamedQuery("findUserPrivilegeByLogin")
                 .setParameter("login", login).getSingleResult().toString();
+        } catch (NoResultException ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new LoginNotFoundException();
+        } catch (Exception ex) {
+            LOGGER.warning(ex.getMessage());
+            throw new GenericServerErrorException();
+        }
+        return privilege;
+    }
+    
+    @Override
+    public String findPrivilegeOfUserById(Long id)
+            throws LoginNotFoundException, GenericServerErrorException {
+        String privilege = null;
+        try {
+            privilege = em.createNamedQuery("findUserPrivilegeById")
+                .setParameter("id", id).getSingleResult().toString();
         } catch (NoResultException ex) {
             LOGGER.warning(ex.getMessage());
             throw new LoginNotFoundException();
@@ -499,7 +561,8 @@ public class EJBUser implements EJBUserLocal {
         return pswd;
     }
 
-    private void sendEmail(String method, String password, String email) throws MessagingException, IOException, Exception {
+    private void sendEmail(String method, String password, String email) 
+            throws MessagingException, IOException, Exception {
         String message = "";
         String subject = "";
 

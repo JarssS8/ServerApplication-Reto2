@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
     query="SELECT g FROM Group g WHERE g.name = :groupName AND g.password = :password"),
     @NamedQuery(
     name="findGroupByName",
-    query="SELECT g.name FROM Group g WHERE g.name = :groupName"),
+    query="SELECT g FROM Group g WHERE g.name = :groupName"),
     @NamedQuery(
     name="findGroupById",
     query="SELECT g FROM Group g WHERE g.id = :id"),
@@ -63,7 +63,7 @@ public class Group implements Serializable{
     @ManyToMany(mappedBy="groups", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<User> users;
     //List of documents that are uploaded by the group
-    @OneToMany(mappedBy="group", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Document> documents;
 
     /**
