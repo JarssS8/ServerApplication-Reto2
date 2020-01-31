@@ -560,7 +560,8 @@ public class EJBUser implements EJBUserLocal {
         return pswd;
     }
 
-    private void sendEmail(String method, String password, String email) throws MessagingException {
+    private void sendEmail(String method, String password, String email) 
+            throws MessagingException, IOException, Exception {
         String message = "";
         String subject = "";
 

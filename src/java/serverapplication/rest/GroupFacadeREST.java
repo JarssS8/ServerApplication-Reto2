@@ -11,6 +11,8 @@ import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -145,8 +147,10 @@ public class GroupFacadeREST{
             group = ejb.findGroupByName(groupName);
         }catch(GroupNameNotFoundException ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }catch(Exception ex){
             LOGGER.warning("GroupFacadeREST" + ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return group;
     }
