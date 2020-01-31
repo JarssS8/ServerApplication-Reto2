@@ -165,7 +165,7 @@ public class Group implements Serializable{
     
     /**
      * Verify if object is a Group
-     * @param object
+     * @param object The received object.
      * @return true or false, it depends
      */
     @Override

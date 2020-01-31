@@ -44,7 +44,7 @@ public class GroupFacadeREST{
 
     /**
      * Method that creates a group
-     * @param group 
+     * @param group The group object.
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -62,7 +62,7 @@ public class GroupFacadeREST{
 
     /**
      * Method that modify the group
-     * @param group 
+     * @param group The group object.
      */
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
@@ -78,9 +78,9 @@ public class GroupFacadeREST{
  
     /**
      * Method that joins a user to a group
-     * @param groupName
-     * @param password
-     * @param usr_id 
+     * @param groupName A string that contains the group's name.
+     * @param password A string with the group's password.
+     * @param usr_id A Long with the user's id.
      */
     @PUT
     @Path("join/{groupName}/{password}/{usr_id}")
@@ -101,8 +101,8 @@ public class GroupFacadeREST{
     
     /**
      * Method that kicks a user out of a group
-     * @param id
-     * @param usr_id 
+     * @param id A Long with the group's id.
+     * @param usr_id A Long with the user's id.
      */
     @PUT
     @Path("leave/{id}/{usr_id}")
@@ -135,7 +135,7 @@ public class GroupFacadeREST{
     
     /**
      * Method that gets a group by name
-     * @param groupName
+     * @param groupName A strin with the group's name.
      * @return list of groups
      */
     @GET
@@ -178,7 +178,7 @@ public class GroupFacadeREST{
      */
     /**
      * Method that gets a group by id
-     * @param id
+     * @param id A Long with the group's id.
      * @return list of groups
      */
     @GET
@@ -198,7 +198,7 @@ public class GroupFacadeREST{
     
     /**
      * Method that deletes a group
-     * @param id 
+     * @param id A String with the group's id.
      */
     @DELETE
     @Path("id/{id}")

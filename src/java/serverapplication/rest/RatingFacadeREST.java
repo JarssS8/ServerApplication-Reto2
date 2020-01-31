@@ -53,10 +53,8 @@ public class RatingFacadeREST{
         ejb.newDocumentRating(rating);
     }
     /**
-     * Method who use the ejb to search all the ratings
-     * @throws RatingNotFoundException exception if are no rating 
-     * @throws ServerConnectionErrorException exception if are a problem with 
-     * the server
+     * Method who use the ejb to search all the ratings 
+     * @return a List of ratings.
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -77,9 +75,6 @@ public class RatingFacadeREST{
     /**
      * Method who use the ejb to mofify the Rating
      * @param rating the rating will be modified
-     * @throws RatingNotFoundException exception if are no rating 
-     * @throws ServerConnectionErrorException exception if are a problem with 
-     * the server
      */
     @PUT
     @Path("{id}")
@@ -97,11 +92,8 @@ public class RatingFacadeREST{
     }
     
     /**
-     * Method who use the ejb to delete a Rating
-     * @param rating the rating will be deleted
-     * @throws RatingNotFoundException exception if are no rating 
-     * @throws ServerConnectionErrorException exception if are a problem with 
-     * the server
+     * Method who use the ejb to delete a Rating 
+     * @param ratingid the id of the rating.
      */
     @DELETE
     @Path("{id}")

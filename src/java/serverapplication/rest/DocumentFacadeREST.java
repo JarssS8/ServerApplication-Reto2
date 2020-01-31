@@ -125,7 +125,7 @@ public class DocumentFacadeREST {
     /**
      * Method who use the ejb to delete a document
      *
-     * @param id
+     * @param id The id of the document.
      */
     @DELETE
     @Path("{id}")
@@ -276,6 +276,8 @@ public class DocumentFacadeREST {
     /**
      * Method who use the ejb to search Rating of a document
      *
+     * @param id The id of the document.
+     * @return a Set of ratings.
      */
     @GET
     @Path("/ratings/{id}")

@@ -125,7 +125,7 @@ public class EJBUser implements EJBUserLocal {
      * This method modify the common user data for all users of the app. Checks if the password
      * is being modified for send and email.
      * @param user User with new data
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public void modifyUserData(User user) throws GenericServerErrorException {
@@ -159,7 +159,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Delete one user of the application
      * @param user User who is going to be removed
-     * @throws UserNotFoundException 
+     * @throws UserNotFoundException If the user's not found.
      */
     @Override
     public void deleteUser(User user) throws UserNotFoundException {
@@ -201,7 +201,7 @@ public class EJBUser implements EJBUserLocal {
      * Find one user using his id
      * @param id Long for search the user
      * @return User find with that id
-     * @throws UserNotFoundException 
+     * @throws UserNotFoundException If the user's not found.
      */
     @Override
     public User findUserById(Long id) throws UserNotFoundException, GenericServerErrorException {
@@ -226,8 +226,8 @@ public class EJBUser implements EJBUserLocal {
      * Find one user using his login
      * @param login String for search the user by login
      * @return User find with that login
-     * @throws LoginNotFoundException
-     * @throws GenericServerErrorException 
+     * @throws LoginNotFoundException If the login is not found.
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public User findUserByLogin(String login) throws LoginNotFoundException,
@@ -257,7 +257,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Change privilege from one free user and become in one Premium
      * @param premium Premium object with the new data required for become in premium
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void modifyFreeToPremium(Premium premium) throws GenericServerErrorException {
@@ -287,7 +287,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Change privilege from one free user and become in one Admin
      * @param user User object who is going to be Admin
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void modifyFreeToAdmin(User user) throws GenericServerErrorException {
@@ -312,7 +312,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Change privilege from one Prrmium user and become in one Free
      * @param user User object who is going to be Free
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void modifyPremiumToFree(User user) throws GenericServerErrorException {
@@ -337,7 +337,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Change privilege from one Prrmium user and become in one Admin
      * @param user User object who is going to be Admin
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void modifyPremiumToAdmin(User user) throws GenericServerErrorException {
@@ -362,7 +362,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Change privilege from one Admin user and become in one Free
      * @param user User object who is going to be Free
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void modifyAdminToFree(User user) throws GenericServerErrorException {
@@ -388,7 +388,7 @@ public class EJBUser implements EJBUserLocal {
      * Find all ratings did it by that user
      * @param id Long of the user id used for find the Ratings
      * @return Set with all the ratings made it from that user id
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public Set<Rating> findRatingsOfUser(Long id) throws GenericServerErrorException {
@@ -430,7 +430,7 @@ public class EJBUser implements EJBUserLocal {
      * Find all the documents uploaded by one user
      * @param id Long with the id of the user
      * @return Set of documents from the user with that id
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public Set<Document> findDocumentsOfUser(Long id) throws DocumentNotFoundException, GenericServerErrorException {
@@ -472,7 +472,7 @@ public class EJBUser implements EJBUserLocal {
      * Find all the groups from one user by id
      * @param id Long id from the user
      * @return Set with the groups of that user
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public Set<Group> findGroupsOfUser(Long id) throws GroupNameNotFoundException, GenericServerErrorException {
@@ -515,8 +515,8 @@ public class EJBUser implements EJBUserLocal {
      * @param login String with the login of the user
      * @param password String with the password of the user
      * @return User that have that both parameters
-     * @throws UserPasswordNotFoundException
-     * @throws GenericServerErrorException 
+     * @throws UserPasswordNotFoundException if the password's not found.
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public User checkPassword(String login, String password)
@@ -542,7 +542,7 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Method that save the payment method for one Premium user
      * @param premium The user with the payment data
-     * @throws GenericServerErrorException 
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void savePaymentMethod(Premium premium) throws GenericServerErrorException {
@@ -567,8 +567,8 @@ public class EJBUser implements EJBUserLocal {
      * Find the privilege of one user using his login
      * @param login String with the login of one user
      * @return String with the privilege of the found user
-     * @throws LoginNotFoundException
-     * @throws GenericServerErrorException 
+     * @throws LoginNotFoundException If the login's not found.
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public String findPrivilegeOfUserByLogin(String login)
@@ -591,8 +591,8 @@ public class EJBUser implements EJBUserLocal {
      * Find the privilege of one user using his id
      * @param id Long with the id of one user
      * @return String with the privilege of the found user
-     * @throws LoginNotFoundException
-     * @throws GenericServerErrorException 
+     * @throws LoginNotFoundException If the login's not found.
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public String findPrivilegeOfUserById(Long id)
@@ -614,8 +614,8 @@ public class EJBUser implements EJBUserLocal {
     /**
      * Method that restore the password for someone who forgot it and send it by email
      * @param email String email from user where is going to be send the email
-     * @throws UserNotFoundException
-     * @throws GenericServerErrorException 
+     * @throws UserNotFoundException If the user's not found.
+     * @throws GenericServerErrorException If there's an error in the server. 
      */
     @Override
     public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException {
@@ -642,7 +642,7 @@ public class EJBUser implements EJBUserLocal {
    /**
     * Method that send the public key from the Encryptation class 
     * @return String with the public key in hexadecimal
-    * @throws GenericServerErrorException 
+    * @throws GenericServerErrorException If there's an error in the server. 
     */
     @Override
     public String getPublicKey() throws GenericServerErrorException {

@@ -52,7 +52,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * @return A {@link Category} object
      * @throws CategoryNotFoundException If don't found the id of the
      * {@link Category} throw this exception
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public Category findCategoryById(Long id) throws CategoryNotFoundException, GenericServerErrorException {
@@ -81,7 +81,8 @@ public class CategoryEJB implements CategoryEJBLocal {
      * contains this name parameter
      * @return Set of {@link Category} with all the categories that match with
      * the parameter
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws CategoryNameNotFoundException If the category is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public Category findCategoryByName(String name) throws CategoryNameNotFoundException, GenericServerErrorException {
@@ -111,7 +112,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * exception when can't find the id of the {@link Category}
      * @throws serverapplication.exceptions.DocumentNotFoundException Throw this
      * exception when can't find the id of the {@link Document}
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public Document findDocumentsByCategory(String catName, String docName) throws CategoryNotFoundException, DocumentNotFoundException, GenericServerErrorException {
@@ -145,7 +146,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * Find all the {@link Category} that are in the data base
      *
      * @return A Set with all the {@link Category} from the data base
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public List<Category> findAllCategories() throws GenericServerErrorException {
@@ -165,9 +166,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      *
      * @param category A {@link Category} with the data of the new
      * {@link Category}
-     * @throws CategoryNameAlreadyExistsException Throw this exception with the
-     * name of the category exists on the data base
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public void createCategory(Category category) throws GenericServerErrorException {
@@ -193,7 +192,7 @@ public class CategoryEJB implements CategoryEJBLocal {
      * new name of the category exists on the data base
      * @throws CategoryNotFoundException Throw this exception when can't find
      * the id of the {@link Category} that we want modify
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException, CategoryNotFoundException, GenericServerErrorException {
@@ -234,11 +233,9 @@ public class CategoryEJB implements CategoryEJBLocal {
     /**
      * Delete the {@link Category} with the same id from the data base
      *
-     * @param id Parameter used for search in database a category with the same
-     * id
      * @throws CategoryNotFoundException Throw this exception when can't find
      * the id of the {@link Category} that we want delete.
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     @Override
     public void deleteCategory(Category category) throws CategoryNotFoundException, GenericServerErrorException {

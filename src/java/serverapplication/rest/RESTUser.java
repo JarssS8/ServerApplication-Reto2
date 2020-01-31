@@ -60,7 +60,7 @@ public class RESTUser {
      * representation
      *
      * @param user User who is going to be created
-     * @return
+     * @return A Free user.
      */
     @POST
     @Consumes(MediaType.APPLICATION_XML)

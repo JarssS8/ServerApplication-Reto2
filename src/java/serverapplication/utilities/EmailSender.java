@@ -44,9 +44,7 @@ public class EmailSender {
 
 	/**
 	 * Sends the given <b>text</b> from the <b>sender</b> to the <b>receiver</b>. In
-	 * any case, both the <b>sender</b> and <b>receiver</b> must exist and be valid
-	 * mail addresses. <br/>
-	 * <br/>
+	 * any case, both the <b>sender</b> and <b>receiver</b> must exist and be valid.
 	 * 
 	 * Note the <b>user</b> and <b>pass</b> for the authentication is provided in
 	 * the class constructor. Ideally, the <b>sender</b> and the <b>user</b>
@@ -56,6 +54,7 @@ public class EmailSender {
 	 * @param subject  The mail's SUBJECT
 	 * @param text     The proper MESSAGE
 	 * @throws MessagingException Is something awry happens
+         * @throws java.io.IOException IOException
 	 * 
 	 */
 	public void sendMail( String receiver, String subject, String text) throws MessagingException, IOException, Exception {

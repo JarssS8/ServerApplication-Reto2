@@ -31,6 +31,7 @@ public interface EJBUserLocal {
     /**
      * This method creates a new user and stores it in the database.
      * @param user A User object.
+     * @return The Free user.
      * @throws LoginAlreadyExistsException If the login already exists.
      * @throws GenericServerErrorException If there's an error in the server.
      */
@@ -131,6 +132,7 @@ public interface EJBUserLocal {
      * This method returns a Set of the user's documents.
      * @param id The user's primary key identifier.
      * @return A Set object.
+     * @throws DocumentNotFoundException If the document is not found.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public Set<Document> findDocumentsOfUser(Long id) throws DocumentNotFoundException, GenericServerErrorException;
@@ -138,6 +140,7 @@ public interface EJBUserLocal {
      * This method returns a Set of the user's groups.
      * @param id The user's primary key identifier.
      * @return A Set object.
+     * @throws GroupNameNotFoundException If the group name is not found.
      * @throws GenericServerErrorException If there's an error in the server.
      */
     public Set<Group> findGroupsOfUser(Long id) throws GroupNameNotFoundException, GenericServerErrorException;
@@ -180,9 +183,9 @@ public interface EJBUserLocal {
 
     /**
      * 
-     * @param email 
-     * @throws serverapplication.exceptions.UserNotFoundException 
-     * @throws serverapplication.exceptions.GenericServerErrorException 
+     * @param email A string that contains the email.
+     * @throws UserNotFoundException If the user is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public void restorePassword(String email) throws UserNotFoundException, GenericServerErrorException;
   

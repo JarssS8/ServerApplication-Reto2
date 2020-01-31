@@ -38,10 +38,10 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Method to create a group
-     * @param group
-     * @throws GroupNameAlreadyExistException
-     * @throws LoginNotFoundException
-     * @throws Exception 
+     * @param group The group object.
+     * @throws GroupNameAlreadyExistException If the group name already exists.
+     * @throws LoginNotFoundException If the login is not found.
+     * @throws Exception Exception.
      */
     @Override
     public void createGroup(Group group) throws GroupNameAlreadyExistException, LoginNotFoundException, Exception {
@@ -50,9 +50,9 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Method to modify a group
-     * @param group
-     * @throws GroupNameNotFoundException
-     * @throws Exception 
+     * @param group A group object.
+     * @throws GroupNameNotFoundException Group name not found.
+     * @throws Exception If there's an error.
      */
     @Override
     public void modifyGroup(Group group) throws GroupNameNotFoundException, Exception {
@@ -62,12 +62,12 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Methpd to join a user to a group
-     * @param groupName
-     * @param password
-     * @param usr_id
-     * @throws GroupPasswordNotFoundException
-     * @throws GroupNameNotFoundException
-     * @throws Exception 
+     * @param groupName The group name.
+     * @param password The password.
+     * @param usr_id The user's id.
+     * @throws GroupPasswordNotFoundException Group password not found.
+     * @throws GroupNameNotFoundException Group name not found.
+     * @throws Exception If there's an error.
      */
     @Override
     public void joinGroup(String groupName, String password, Long usr_id) throws UserNotFoundException,GroupPasswordNotFoundException, GroupNameNotFoundException, Exception {
@@ -93,10 +93,10 @@ public class EJBGroups implements EJBGroupLocal {
      * Method to kick a user out of a group, if was the last user, the group 
      * deletes itself, otherwise, if there is another user, it will be the 
      * next group admin
-     * @param id
-     * @param usr_id
-     * @throws GroupIdNotFoundException
-     * @throws Exception 
+     * @param id the id
+     * @param usr_id the id
+     * @throws GroupIdNotFoundException Group name not found.
+     * @throws Exception if there's an error 
      */
     @Override
     public void leaveGroup(Long id, Long usr_id) throws GroupIdNotFoundException, Exception {
@@ -128,8 +128,8 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Method to get all the groups
-     * @return
-     * @throws Exception 
+     * @return a list of groups
+     * @throws Exception if there's an error.
      */
     @Override
     public List<Group> findGroups() throws Exception {
@@ -138,11 +138,11 @@ public class EJBGroups implements EJBGroupLocal {
     
     /**
      * Method to get a group by name
-     * @param groupName
-     * @return
-     * @throws GroupNameNotFoundException
-     * @throws Exception 
+     * @param groupName the group name
+     * @return a group
+     * @throws GroupNameNotFoundException if the groups name is not found.
      */
+    @Override
     public Group findGroupByName(String groupName) throws GroupNameNotFoundException, GenericServerErrorException {
         Group group = null;
         try {
@@ -161,10 +161,10 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Method to get all the users of a group
-     * @param id
-     * @return
-     * @throws GroupIdNotFoundException
-     * @throws Exception 
+     * @param id the id
+     * @return a list of groups
+     * @throws GroupIdNotFoundException if the groups id is not found.
+     * @throws Exception if theres an error.
      */
     @Override
     public List<User> findUsersOfGroup(Long id) throws GroupIdNotFoundException, Exception {
@@ -174,10 +174,10 @@ public class EJBGroups implements EJBGroupLocal {
     
     /**
      * Method to get a group by id
-     * @param id
-     * @return
-     * @throws GroupIdNotFoundException
-     * @throws Exception 
+     * @param id the id
+     * @return a group
+     * @throws GroupIdNotFoundException if the groups id is not found.
+     * @throws Exception if theres an error.
      */
     @Override
     public Group findGroupById(Long id) throws GroupIdNotFoundException, Exception{
@@ -186,7 +186,7 @@ public class EJBGroups implements EJBGroupLocal {
 
     /**
      * Method to delete a group
-     * @param group 
+     * @param group a groupS
      */
     @Override
     public void deleteGroup(Group group) {

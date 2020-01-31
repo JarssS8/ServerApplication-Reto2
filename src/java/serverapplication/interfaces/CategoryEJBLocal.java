@@ -30,7 +30,7 @@ public interface CategoryEJBLocal {
      * @return A {@link Category} object
      * @throws CategoryNotFoundException If don't found the id of the
      * {@link Category} throw this exception
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public Category findCategoryById(Long id)throws CategoryNotFoundException,GenericServerErrorException;
     
@@ -41,7 +41,8 @@ public interface CategoryEJBLocal {
      * contains this name parameter
      * @return Set of {@link Category} with all the categories that match with
      * the parameter
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws CategoryNameNotFoundException If the category is not found.
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public Category findCategoryByName(String name)throws CategoryNameNotFoundException, GenericServerErrorException;
     
@@ -58,7 +59,7 @@ public interface CategoryEJBLocal {
      * exception when can't find the id of the {@link Category}
      * @throws serverapplication.exceptions.DocumentNotFoundException Throw this
      * exception when can't find the id of the {@link Document}
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public Document findDocumentsByCategory(String catName, String docName)throws CategoryNotFoundException,DocumentNotFoundException,GenericServerErrorException;
     
@@ -66,7 +67,7 @@ public interface CategoryEJBLocal {
      * Find all the {@link Category} that are in the data base
      * 
      * @return A Set with all the {@link Category} from the data base
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public List<Category> findAllCategories()throws GenericServerErrorException;
     
@@ -78,7 +79,7 @@ public interface CategoryEJBLocal {
      * {@link Category}
      * @throws CategoryNameAlreadyExistsException Throw this exception with the
      * name of the category exists on the data base
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public void createCategory(Category category) throws CategoryNameAlreadyExistsException,GenericServerErrorException;
     
@@ -90,18 +91,17 @@ public interface CategoryEJBLocal {
      * new name of the category exists on the data base
      * @throws CategoryNotFoundException Throw this exception when can't find
      * the id of the {@link Category} that we want modify
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public void modifyCategory(Category category) throws CategoryNameAlreadyExistsException,CategoryNotFoundException,GenericServerErrorException;
     
       /**
      * Delete the {@link Category} with the same id from the data base
      *
-     * @param id Parameter used for search in database a category with the same
-     * id
+     * @param category A Category object.
      * @throws CategoryNotFoundException Throw this exception when can't find
      * the id of the {@link Category} that we want delete.
-     * @throws Exception Throws this exception if something unusual happens
+     * @throws GenericServerErrorException If there's an error in the server.
      */
     public void deleteCategory(Category category) throws CategoryNotFoundException,GenericServerErrorException;
 

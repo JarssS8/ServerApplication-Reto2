@@ -225,7 +225,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
     /**
      * Method to search all the ratings of a specific document
      *
-     * @param id
+     * @param id The id
      * @return A ratings list of the specified document
      * @throws DocumentNotFoundException If the document is not found.
      * @throws GenericServerErrorException If there's an error in the server.
@@ -251,8 +251,7 @@ public class EJBDocumentRating implements EJBDocumentRatingLocal {
     /**
      * Method to create a new Rating
      *
-     * @param Rating the rating will be created
-     * @throws RatingNotFoundException exception if are no rating
+     * @param rating A Rating object.
      */
     @Override
     public void newDocumentRating(Rating rating) {

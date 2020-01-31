@@ -58,7 +58,7 @@ public class RESTCategory {
      * RESTful POST method for create new {@link  Category} objects from an XML
      * representation
      *
-     * @param category
+     * @param category The category object.
      */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
@@ -82,7 +82,7 @@ public class RESTCategory {
      * RESTful PUT method for update {@link  Category} objects from an XML
      * representation
      *
-     * @param category
+     * @param category the category object.
      */
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
